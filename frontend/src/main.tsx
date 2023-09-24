@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+  // eslint-disable-next-line react/jsx-filename-extension
   <React.StrictMode>
     <App />
   </React.StrictMode>,
