@@ -4,6 +4,10 @@ Spring:
     url: jdbc:mysql://localhost:3306/achieve?serverTimezone=Asia/Seoul&autoReconnect=true&createDatabaseIfNotExist=true
     username: root
     password: 1105
+  redis:
+    host: localhost
+    port: 6379
+
   devtools:
     restart:
       enabled: true
