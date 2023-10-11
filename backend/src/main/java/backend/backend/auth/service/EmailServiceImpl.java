@@ -95,8 +95,6 @@ public class EmailServiceImpl implements EmailService {
     public Boolean verifyEmail(String email, String code) {
         String verificationCode = redisUtil.getData(email);
         if (code.equals(verificationCode)) {
-            System.out.println("verificationCode : " + verificationCode);
-            System.out.println("code : " + code);
             redisUtil.setDataAfterVerification(email, "verified", 10 * 60L);
             return true;
         }

@@ -1,14 +1,16 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
-import backend.backend.user.dto.SignUpRequest;
-import backend.backend.user.dto.SignUpResponse;
+import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpSession;
 
 @Service
 @Transactional(readOnly = true)
@@ -16,11 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
+    private final HttpSession session;
 
     @Transactional
     public SignUpResponse create(User user) {
         userRepository.save(user);
-        return SignUpResponse.of(user);
+        return new SignUpResponse(201, true, "회원가입이 완료 되었습니다.", UserDto.of(user));
     }
 
     @Transactional
@@ -30,13 +33,12 @@ public class UserService {
                 bcryptingPassword(signUpRequest);
                 User user = signUpRequest.toEntity();
                 return create(user);
-            } else {
-                throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
             }
-        } else {
-            throw new IllegalStateException("이미 사용중인 이메일입니다.");
+            throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
         }
+        throw new IllegalStateException("이미 사용중인 이메일입니다.");
     }
+
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
@@ -47,5 +49,12 @@ public class UserService {
         signUpRequest.setPassword(encode);
     }
 
-
+    public SignInResponse processSignIn (SignInRequest signInRequest) {
+        User user = findUserByEmail(signInRequest.getEmail());
+        if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword()) ) {
+            session.setAttribute("userId", user.getId());
+            return new SignInResponse(200, true,"로그인이 완료 되었습니다", UserDto.of(user));
+        }
+        throw new IllegalStateException("아이디나 비빌번호를 다시 확인해주세요");
+    }
 }
