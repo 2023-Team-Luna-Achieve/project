@@ -1,12 +1,7 @@
 import React from 'react';
 
-function MainPage() {
-  return (
-    <div>
-      <h1>Hello, World!</h1>
-      <p>This is a basic JSX template.</p>
-    </div>
-  );
-}
+const MainPage: React.FC = () => {
+  return <div>메인페이지</div>;
+};
 
 export default MainPage;
