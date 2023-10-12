@@ -30,6 +30,7 @@ const BannerSlider: React.FC = () => {
     border-radius: 10px;
     padding: 20px;
     position: relative;
+    margin-left: 0px;
   `;
 
   const Heading = styled.h1`
@@ -92,13 +93,13 @@ const BannerSlider: React.FC = () => {
     h3 {
       font-weight: 300;
       text-align: left;
-      line-height: 1.2; /* 줄 간격을 조절합니다. */
+      line-height: 1.2;
     }
 
     h2 {
       font-weight: 600;
       text-align: left;
-      line-height: 1.2; /* 줄 간격을 조절합니다. */
+      line-height: 1.2;
     }
   `;
 
