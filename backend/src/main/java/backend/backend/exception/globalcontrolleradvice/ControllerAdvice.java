@@ -33,7 +33,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(InvalidValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage invalidValueException(NotFoundException e) {
+    public ExceptionMessage invalidValueException(InvalidValueException e) {
         log.info("InvalidValueException: {}", e.getMessage(), e);
         return new ExceptionMessage(e.getMessage());
     }
