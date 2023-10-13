@@ -19,6 +19,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,31 @@ public class EmailService {
 
     public static final String ePw = createKey();
 
-    private MimeMessage createMessage(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+    private MimeMessage createReservationMessage(String targetEmail, String roomName) throws MessagingException, UnsupportedEncodingException {
+        System.out.println("보내는 대상 : "+ targetEmail);
+        MimeMessage message = emailSender.createMimeMessage();
+
+        message.addRecipients(RecipientType.TO, targetEmail); //보내는 대상
+        message.setSubject("예약 완료");//제목
+
+        String msgg="";
+        msgg+= "<div style='margin:20px;'>";
+        msgg+= "<h1> Team Achieve 입니다. </h1>";
+        msgg+= "<br>";
+        msgg+= "<p> 예약완료 되었습니다<p>";
+        msgg+= "<br>";
+        msgg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msgg+= "<h3 style='color:blue;'>예약완료 되었습니다</h3>";
+        msgg+= "<div style='font-size:130%'>";
+        msgg+= "예약한 방 : <strong>";
+        msgg+=  roomName +"</strong><div><br/> ";
+        msgg+= "</div>";
+        message.setText(msgg, "utf-8", "html");//내용
+        message.setFrom(new InternetAddress("academyschool7@gmail.com","Achieve"));//보내는 사람
+        return message;
+    }
+
+    private MimeMessage createVerificationMessage(String targetEmail) throws MessagingException, UnsupportedEncodingException {
         System.out.println("보내는 대상 : "+ targetEmail);
         System.out.println("인증 번호 : "+ePw);
         MimeMessage message = emailSender.createMimeMessage();
@@ -83,7 +108,7 @@ public class EmailService {
     }
 
     private String sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = createMessage(targetEmail);
+        MimeMessage message = createVerificationMessage(targetEmail);
         try{//예외처리
             emailSender.send(message);
         }catch(MailException es){
@@ -92,6 +117,19 @@ public class EmailService {
         }
         return ePw;
     }
+
+
+    // 에약용 메일 전송 메서드
+    public void sendReservationEmail(String targetEmail, String meetingRoomName) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = createReservationMessage(targetEmail, meetingRoomName);
+        try{//예외처리
+            emailSender.send(message);
+        }catch(MailException es){
+            es.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
 
     @Transactional
     public VerificationResponse verifyEmail(String email, String code) {
@@ -106,7 +144,7 @@ public class EmailService {
     public EmailSendResponse sendEmailIfNotExists(String email) throws Exception {
         if (userRepository.findUserByEmail(email) == null) {
             sendVerificationCodeEmail(email);
-            return new EmailSendResponse("이메일을 확인해주세요.");
+            return new EmailSendResponse("10분내로 인증번호를 입력해주세요.");
         }
         throw new IllegalStateException("이메일이 존재합니다.");
     }

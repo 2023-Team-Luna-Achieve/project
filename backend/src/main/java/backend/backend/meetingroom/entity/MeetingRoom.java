@@ -17,6 +17,8 @@ public class MeetingRoom {
     @Id @GeneratedValue
     private Long id;
 
+    String name;
+
     @OneToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
