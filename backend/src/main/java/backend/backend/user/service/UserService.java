@@ -20,8 +20,7 @@ public class UserService {
     private final RedisUtil redisUtil;
     private final HttpSession session;
 
-    @Transactional
-    public SignUpResponse create(User user) {
+    private SignUpResponse create(User user) {
         userRepository.save(user);
         return new SignUpResponse(201, true, "회원가입이 완료 되었습니다.", UserDto.of(user));
     }
@@ -39,11 +38,11 @@ public class UserService {
         throw new IllegalStateException("이미 사용중인 이메일입니다.");
     }
 
-    public User findUserByEmail(String email) {
+    private User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
-    public void bcryptingPassword(SignUpRequest signUpRequest) {
+    private void bcryptingPassword(SignUpRequest signUpRequest) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encode = encoder.encode(signUpRequest.getPassword());
         signUpRequest.setPassword(encode);
