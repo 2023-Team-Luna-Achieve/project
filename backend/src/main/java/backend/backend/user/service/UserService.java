@@ -3,6 +3,7 @@ package backend.backend.user.service;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.exception.AuthenticationException;
 import backend.backend.exception.EmailAlreadyInUseException;
+import backend.backend.exception.InvalidValueException;
 import backend.backend.exception.UnVerifiedAccountException;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -32,14 +33,14 @@ public class UserService {
     public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest) {
         if (findUserByEmail(signUpRequest.getEmail()) == null) {
             if (redisUtil.getData(signUpRequest.getEmail()) == null) {
-                throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
+                throw new UnVerifiedAccountException("이메일 인증이 완료되지 않았습니다.");
             } else if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
                 bcryptingPassword(signUpRequest);
                 User user = signUpRequest.toEntity();
                 return create(user);
             }
         }
-        throw new IllegalStateException("이미 사용중인 이메일입니다.");
+        throw new EmailAlreadyInUseException("이미 사용중인 이메일입니다.");
     }
 
     private User findUserByEmail(String email) {
@@ -58,6 +59,6 @@ public class UserService {
             session.setAttribute("userId", user.getId());
             return new SignInResponse(200, true,"로그인이 완료 되었습니다", UserDto.of(user));
         }
-        throw new IllegalStateException("아이디나 비빌번호를 다시 확인해주세요");
+        throw new InvalidValueException("아이디나 비빌번호를 다시 확인해주세요");
     }
 }

@@ -24,6 +24,13 @@ public class ControllerAdvice {
         return new ExceptionMessage(e.getMessage());
     }
 
+    @ExceptionHandler(InvalidVerificationCodeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionMessage invalidVerificationCodeException(InvalidVerificationCodeException e) {
+        log.info("InvalidVerificationCodeException: {}", e.getMessage(), e);
+        return new ExceptionMessage(e.getMessage());
+    }
+
     @ExceptionHandler(InvalidValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage invalidValueException(NotFoundException e) {

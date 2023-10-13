@@ -11,6 +11,8 @@ import javax.mail.internet.MimeMessage;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationResponse;
+import backend.backend.exception.EmailAlreadyInUseException;
+import backend.backend.exception.InvalidVerificationCodeException;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -138,7 +140,7 @@ public class EmailService {
             redisUtil.setDataAfterVerification(email, "verified", 10 * 60L);
             return new VerificationResponse("이메일 인증이 완료되었습니다.");
         }
-        throw new IllegalStateException("코드가 옳지 못합니다.");
+        throw new InvalidVerificationCodeException("코드가 옳지 못합니다.");
     }
 
     public EmailSendResponse sendEmailIfNotExists(String email) throws Exception {
@@ -146,6 +148,6 @@ public class EmailService {
             sendVerificationCodeEmail(email);
             return new EmailSendResponse("10분내로 인증번호를 입력해주세요.");
         }
-        throw new IllegalStateException("이메일이 존재합니다.");
+        throw new EmailAlreadyInUseException("이메일이 존재합니다.");
     }
 }
