@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class VerificationResponse {
     private String message;
 
-    @Builder
     public VerificationResponse(String message) {
         this.message = message;
     }

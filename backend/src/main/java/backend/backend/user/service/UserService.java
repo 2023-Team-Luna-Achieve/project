@@ -1,6 +1,9 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
+import backend.backend.exception.AuthenticationException;
+import backend.backend.exception.EmailAlreadyInUseException;
+import backend.backend.exception.UnVerifiedAccountException;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
@@ -28,12 +31,13 @@ public class UserService {
     @Transactional
     public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest) {
         if (findUserByEmail(signUpRequest.getEmail()) == null) {
-            if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
+            if (redisUtil.getData(signUpRequest.getEmail()) == null) {
+                throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
+            } else if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
                 bcryptingPassword(signUpRequest);
                 User user = signUpRequest.toEntity();
                 return create(user);
             }
-            throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
         }
         throw new IllegalStateException("이미 사용중인 이메일입니다.");
     }
