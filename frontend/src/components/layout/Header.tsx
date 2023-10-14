@@ -7,37 +7,41 @@ const StyledHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: #f6f6f6;
 `;
 
 const StyledNav = styled.nav`
   ul {
     list-style: none;
     display: flex;
+    justify-content: space-around; /* Adjust the justify-content property */
+    padding: 0;
 
     li {
-      margin-left: 30px;
-    }
+      margin: 0 10px;
 
-    li:first-child {
-      margin-left: 10px;
+      a {
+        color: black;
+        text-decoration: none;
+      }
     }
   }
 `;
 
-const Header: React.FC = () => {
+// Example usage in a component
+const Header = () => {
   return (
     <StyledHeader>
       <StyledNav>
         <ul>
           <li>
-            <Link to="/Main">HOME</Link>
-          </li>
-          <li>
-            <Link to="/Reservation">Reservation</Link>
+            <Link to="/Main">Home</Link>
           </li>
           <li>
             <Link to="/Notice">Notice</Link>
+          </li>
+          <li>
+            <Link to="/Community">Community</Link>
           </li>
           <li>
             <Link to="/Login">Login</Link>
