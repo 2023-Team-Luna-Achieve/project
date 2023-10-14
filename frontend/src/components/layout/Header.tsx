@@ -7,7 +7,8 @@ const StyledHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #f6f6f6;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dddddd; /* Add border to create a bottom border */
 `;
 
 const StyledNav = styled.nav`
@@ -28,7 +29,6 @@ const StyledNav = styled.nav`
   }
 `;
 
-// Example usage in a component
 const Header = () => {
   return (
     <StyledHeader>
