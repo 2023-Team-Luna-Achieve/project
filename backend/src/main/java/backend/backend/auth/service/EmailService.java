@@ -1,6 +1,7 @@
 package backend.backend.auth.service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.mail.Message.RecipientType;
@@ -11,9 +12,11 @@ import javax.mail.internet.MimeMessage;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationResponse;
+import backend.backend.exception.AlreadyVerifiedException;
 import backend.backend.exception.AuthenticationException;
 import backend.backend.exception.ErrorCode;
 import backend.backend.exception.InvalidVerificationCodeException;
+import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
@@ -23,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class EmailService {
     private final JavaMailSender emailSender;
     private final RedisUtil redisUtil;
@@ -53,6 +55,7 @@ public class EmailService {
         message.setFrom(new InternetAddress("academyschool7@gmail.com","Achieve"));//보내는 사람
         return message;
     }
+
 
     private MimeMessage createVerificationMessage(String targetEmail) throws MessagingException, UnsupportedEncodingException {
         String ePw = createKey();
@@ -133,13 +136,20 @@ public class EmailService {
     @Transactional
     public VerificationResponse verifyEmail(String email, String code) {
         String verificationCode = redisUtil.getData(email);
-        if (code.equals(verificationCode)) {
+        User user = userRepository.findUserByEmail(email);
+        if (verificationCode.equals("verified")) {
+            throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
+        }
+
+        if ( Objects.equals(code, verificationCode)) {
             redisUtil.setDataAfterVerification(email, "verified", 10 * 60L);
             return new VerificationResponse("이메일 인증이 완료되었습니다.");
         }
+
         throw new InvalidVerificationCodeException(ErrorCode.INVALID_CODE);
     }
 
+    @Transactional
     public EmailSendResponse sendEmailIfNotExists(String email) throws Exception {
         if (userRepository.findUserByEmail(email) == null) {
             sendVerificationCodeEmail(email);
