@@ -5,6 +5,7 @@ import Header from './components/layout/Header';
 import NoticePage from './pages/NoticePage';
 import LoginPage from './pages/LoginPage';
 import CommunityPage from './pages/CommunityPage';
+import AboutPage from './pages/AboutPage';
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
         <Header />
         <Routes>
           <Route path="Main" element={<MainPage />} />
+          <Route path="About" element={<AboutPage />} />
           <Route path="Notice" element={<NoticePage />} />
           <Route path="Login" element={<LoginPage />} />
           <Route path="Community" element={<CommunityPage />} />
