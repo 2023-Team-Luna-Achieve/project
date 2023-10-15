@@ -80,35 +80,7 @@ const BannerSlider: React.FC = () => {
     width: 700px;
     height: 194px;
     left: 20px;
-    top: 600px;
-    background: #ffffff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
-    border-radius: 40px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-
-    h3 {
-      font-weight: 300;
-      text-align: left;
-      line-height: 1.2;
-    }
-
-    h2 {
-      font-weight: 600;
-      text-align: left;
-      line-height: 1.2;
-    }
-  `;
-
-  const RoundedRectangle2 = styled.div`
-    position: absolute;
-    width: 700px;
-    height: 194px;
-    left: 740px;
-    top: 600px;
+    top: 540px;
     background: #ffffff;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
     border-radius: 40px;
@@ -122,13 +94,46 @@ const BannerSlider: React.FC = () => {
       font-weight: 300;
       text-align: left;
       margin-bottom: 5px;
-      margin-left: 40px;
+      margin-left: 60px;
+      margin-top: 10px;
     }
 
     h2 {
+      margin-top: 0px;
       font-weight: 600;
       text-align: left;
-      margin-left: 40px;
+      margin-left: 60px;
+    }
+  `;
+
+  const RoundedRectangle2 = styled.div`
+    position: absolute;
+    width: 700px;
+    height: 194px;
+    left: 740px;
+    top: 540px;
+    background: #ffffff;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    h3 {
+      font-weight: 300;
+      text-align: left;
+      margin-bottom: 5px;
+      margin-left: 60px;
+      margin-top: 10px;
+    }
+
+    h2 {
+      margin-top: 0px;
+      font-weight: 600;
+      text-align: left;
+      margin-left: 60px;
     }
   `;
 
