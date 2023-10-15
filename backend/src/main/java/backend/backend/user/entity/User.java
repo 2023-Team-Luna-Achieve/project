@@ -6,6 +6,7 @@ import backend.backend.reservation.entity.Reservation;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,13 +18,16 @@ public class User {
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
+
+    private String name;
     private String email;
     private String password;
+    private LocalDateTime created_at;
     @Enumerated(EnumType.STRING)
     private Auth auth;
 
     @Enumerated(EnumType.STRING)
-    private Organization organization;
+    private Affiliation affiliation;
 
     @OneToMany(mappedBy = "user")
     private List<NoticeBoard> noticeBoards;
