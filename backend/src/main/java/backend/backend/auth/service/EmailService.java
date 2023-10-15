@@ -11,15 +11,15 @@ import javax.mail.internet.MimeMessage;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationResponse;
+import backend.backend.exception.AuthenticationException;
+import backend.backend.exception.ErrorCode;
+import backend.backend.exception.InvalidVerificationCodeException;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,6 @@ public class EmailService {
     private final RedisUtil redisUtil;
     private final UserRepository userRepository;
 
-    public static final String ePw = createKey();
 
     private MimeMessage createReservationMessage(String targetEmail, String roomName) throws MessagingException, UnsupportedEncodingException {
         System.out.println("보내는 대상 : "+ targetEmail);
@@ -56,8 +55,9 @@ public class EmailService {
     }
 
     private MimeMessage createVerificationMessage(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+        String ePw = createKey();
         System.out.println("보내는 대상 : "+ targetEmail);
-        System.out.println("인증 번호 : "+ePw);
+        System.out.println("인증 번호 : "+ ePw);
         MimeMessage message = emailSender.createMimeMessage();
 
         message.addRecipients(RecipientType.TO, targetEmail); //보내는 대상
@@ -107,7 +107,7 @@ public class EmailService {
         return key.toString();
     }
 
-    private String sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+    private void sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = createVerificationMessage(targetEmail);
         try{//예외처리
             emailSender.send(message);
@@ -115,7 +115,6 @@ public class EmailService {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-        return ePw;
     }
 
 
@@ -138,7 +137,7 @@ public class EmailService {
             redisUtil.setDataAfterVerification(email, "verified", 10 * 60L);
             return new VerificationResponse("이메일 인증이 완료되었습니다.");
         }
-        throw new IllegalStateException("코드가 옳지 못합니다.");
+        throw new InvalidVerificationCodeException(ErrorCode.INVALID_CODE);
     }
 
     public EmailSendResponse sendEmailIfNotExists(String email) throws Exception {
@@ -146,6 +145,6 @@ public class EmailService {
             sendVerificationCodeEmail(email);
             return new EmailSendResponse("10분내로 인증번호를 입력해주세요.");
         }
-        throw new IllegalStateException("이메일이 존재합니다.");
+        throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
 }
