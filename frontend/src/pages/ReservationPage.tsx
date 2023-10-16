@@ -8,7 +8,8 @@ const StyledReservationPage = styled.div`
   background-image: url(${backgroundImageUrl});
   background-size: cover;
   background-position: center;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   color: #ffffff;
   overflow: hidden;
@@ -21,9 +22,10 @@ const WhiteBox = styled.div`
   background: #ffffff;
   box-shadow: 4.00406px 4.00406px 40.0406px rgba(0, 0, 0, 0.15);
   border-radius: 40.0406px;
-  margin-top: 180px;
-  margin-left: 100px;
+  margin-top: 200px;
+  margin-left: 140px;
   padding: 20px;
+  margin-bottom: 110px;
 `;
 
 const TitleText = styled.div`
@@ -49,8 +51,8 @@ const AdditionalText = styled.div`
 
 const ReserveText = styled.div`
   position: absolute;
-  top: 100px;
-  left: 100px;
+  top: 110px;
+  left: 140px;
   font-size: 28px;
   font-weight: 300;
 `;
