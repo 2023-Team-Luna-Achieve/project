@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -30,28 +29,22 @@ public class UserService {
     }
 
     @Transactional
-    public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest) {
+    public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
         if (findUserByEmail(signUpRequest.getEmail()) == null) {
             if (redisUtil.getData(signUpRequest.getEmail()) == null) {
                 throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
             } else if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
-                bcryptingPassword(signUpRequest);
+                signUpRequest = signUpRequest.encryptPassword(encoder);
                 User user = signUpRequest.toEntity();
                 return create(user);
             }
         }
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
-
     private User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
-    private void bcryptingPassword(SignUpRequest signUpRequest) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encode = encoder.encode(signUpRequest.getPassword());
-        signUpRequest.setPassword(encode);
-    }
 
     public SignInResponse processSignIn (SignInRequest signInRequest) {
         User user = findUserByEmail(signInRequest.getEmail());

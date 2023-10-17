@@ -4,14 +4,14 @@ import backend.backend.user.entity.Affiliation;
 import backend.backend.user.entity.Auth;
 import backend.backend.user.entity.User;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class SignUpRequest {
     @NotBlank(message = "이름은 공백일 수 없습니다.")
     private String name;
@@ -21,6 +21,13 @@ public class SignUpRequest {
     private String password;
 //    @NotBlank(message = "소속은 공백일 수 없습니다.")
     private Affiliation affiliation;
+
+    public SignUpRequest(String name, String email, String password, Affiliation affiliation) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.affiliation = affiliation;
+    }
 
     public User toEntity() {
         return User.builder()
@@ -32,4 +39,10 @@ public class SignUpRequest {
                 .created_at(LocalDateTime.now())
                 .build();
     }
+
+    public SignUpRequest encryptPassword(BCryptPasswordEncoder encoder) {
+        String encryptedPassword = encoder.encode(this.password);
+        return new SignUpRequest(this.name, this.email, encryptedPassword, this.affiliation);
+    }
+
 }

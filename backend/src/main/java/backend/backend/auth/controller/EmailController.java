@@ -7,6 +7,7 @@ import backend.backend.auth.service.EmailService;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,15 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
     private final EmailService emailService;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public EmailSendResponse emailVerificationRequest(@RequestParam String email) throws Exception {
-        return emailService.sendEmailIfNotExists(email);
+    @PostMapping("/request")
+    public ResponseEntity<EmailSendResponse> emailVerificationRequest(@RequestParam String email) throws Exception {
+        return ResponseEntity.ok().body(emailService.sendEmailIfNotExists(email));
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public VerificationResponse emailVerification(@RequestBody VerificationRequest verificationRequest) throws Exception {//        if (emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode())) {
-        return emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode());
+    @PostMapping("/confirm")
+    public ResponseEntity<VerificationResponse> emailVerification(@RequestBody VerificationRequest verificationRequest) throws Exception {//        if (emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode())) {
+        return ResponseEntity.ok().body(emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode()));
     }
 }
