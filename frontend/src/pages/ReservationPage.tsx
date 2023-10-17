@@ -1,74 +1,68 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const backgroundImageUrl = 'https://i.postimg.cc/TPRSF0MG/2023-10-15-8-26-50.png';
-
-const StyledReservationPage = styled.div`
-  position: relative;
-  background-image: url(${backgroundImageUrl});
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 100%;
+const ReservationPageWrapper = styled.div`
   display: flex;
-  color: #ffffff;
-  overflow: hidden;
+  align-items: center;
 `;
 
-const WhiteBox = styled.div`
-  position: relative;
-  width: 280px;
-  height: 400px;
-  background: #ffffff;
-  box-shadow: 4.00406px 4.00406px 40.0406px rgba(0, 0, 0, 0.15);
-  border-radius: 40.0406px;
-  margin-top: 200px;
-  margin-left: 140px;
-  padding: 20px;
-  margin-bottom: 110px;
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
 `;
 
-const TitleText = styled.div`
+const Title = styled.h1`
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
+  line-height: 29px;
   color: #000000;
-  margin-top: 30px;
-  margin-left: 20px;
+  margin-left: 40px;
+  margin-top: 40px;
 `;
 
-const AdditionalText = styled.div`
+const LoremText = styled.p`
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
-  color: #000000;
-  margin-top: 30px;
-  margin-left: 20px;
-  margin-right: 20px;
+  font-size: 16px;
+  line-height: 20px;
+  color: #c9c9c9;
+  margin-top: 10px;
+  margin-left: 200px;
 `;
 
-const ReserveText = styled.div`
-  position: absolute;
-  top: 110px;
-  left: 140px;
-  font-size: 28px;
-  font-weight: 300;
+const ProfileImageContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+`;
+
+const ProfileImage = styled.div`
+  width: 100px;
+  height: 100px;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 50%;
 `;
 
 const ReservationPage: React.FC = () => {
   return (
-    <StyledReservationPage>
-      <ReserveText>예약</ReserveText>
-      <WhiteBox>
-        <TitleText>Palo Alto</TitleText>
-        <AdditionalText>
-          실리콘밸리의 탄생지(Birthplace of Silicon Valley)로 불리는 미국 캘리포니아주 산타클라라 군에 속한 실리콘밸리
-          북부의 도시의 이름에서 따온 방입니다.
-        </AdditionalText>
-      </WhiteBox>
-    </StyledReservationPage>
+    <ReservationPageWrapper>
+      <ProfileImageContainer>
+        <ProfileImage />
+      </ProfileImageContainer>
+      <ContentWrapper>
+        <Title>Palo Alto</Title>
+        <LoremText>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, delectus! Sunt corrupti repellat iste amet
+          laboriosam non dolorum iusto laudantium quaerat alias. Quasi odio tenetur porro, nihil nulla facere accusamus
+          quibusdam ea voluptatem suscipit!
+        </LoremText>
+      </ContentWrapper>
+    </ReservationPageWrapper>
   );
 };
 
