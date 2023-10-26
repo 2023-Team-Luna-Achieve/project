@@ -44,5 +44,4 @@ public class SignUpRequest {
         String encryptedPassword = encoder.encode(this.password);
         return new SignUpRequest(this.name, this.email, encryptedPassword, this.affiliation);
     }
-
 }
