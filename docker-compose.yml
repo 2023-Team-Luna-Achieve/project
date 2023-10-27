@@ -32,7 +32,6 @@ services:
     depends_on:
       - mysql
       - redis
-
     command: ["java", "-jar", "/app.jar"]
     volumes:
       - ./backend:/app
