@@ -2,17 +2,34 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const FormContainer = styled.div`
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const FormGroup = styled.div`
   margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Label = styled.label`
-  display: block;
   font-weight: bold;
+  width: 150px;
+  text-align: right; /* Right-align the label text */
+  margin-left: 0px; /* Add left margin as needed */
 `;
 
 const Select = styled.select`
@@ -20,11 +37,22 @@ const Select = styled.select`
   padding: 0.5rem;
 `;
 
-const Option = styled.option``;
-
 const PasswordInput = styled.input`
   width: 100%;
   padding: 0.5rem;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  margin-top: -3px;
+`;
+
+const EmailInput = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  margin-top: -3px;
 `;
 
 const JoinPage: React.FC = () => {
@@ -51,18 +79,18 @@ const JoinPage: React.FC = () => {
 
   return (
     <FormContainer>
-      <form>
+      <Form>
         <FormGroup>
           <Label>소속</Label>
           <Select value={affiliation} onChange={handleAffiliationChange}>
-            <Option value="">선택하세요</Option>
-            <Option value="option1">Techeer</Option>
-            <Option value="option2">Techeer Partners</Option>
+            <option value="">선택하세요</option>
+            <option value="option1">Techeer</option>
+            <option value="option2">Techeer Partners</option>
           </Select>
         </FormGroup>
         <FormGroup>
           <Label>이메일</Label>
-          <input type="email" value={email} onChange={handleEmailChange} />
+          <EmailInput type="email" value={email} onChange={handleEmailChange} />
         </FormGroup>
         <FormGroup>
           <Label>비밀번호</Label>
@@ -72,8 +100,10 @@ const JoinPage: React.FC = () => {
           <Label>비밀번호 확인</Label>
           <PasswordInput type="password" value={passwordConfirm} onChange={handlePasswordConfirmChange} />
         </FormGroup>
-        <button type="submit">가입하기</button>
-      </form>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <button type="submit">가입하기</button>
+        </div>
+      </Form>
     </FormContainer>
   );
 };
