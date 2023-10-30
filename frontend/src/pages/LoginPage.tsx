@@ -28,26 +28,29 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-weight: bold;
   width: 150px;
-  margin-left: 10px; /* Add left margin as needed */
+  text-align: right; /* Right-align the label text */
+  margin-left: 0px; /* Add left margin as needed */
 `;
 
 const PasswordInput = styled.input`
   width: 100%;
   padding: 0.5rem;
   border: none;
-  border-bottom: 1px solid black; /* Add a black underline */
+  border-bottom: 1px solid black;
   outline: none;
+  margin-top: -3px;
 `;
 
 const EmailInput = styled.input`
   width: 100%;
   padding: 0.5rem;
   border: none;
-  border-bottom: 1px solid black; /* Add a black underline */
+  border-bottom: 1px solid black;
   outline: none;
+  margin-top: -3px;
 `;
 
-const JoinPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -71,11 +74,11 @@ const JoinPage: React.FC = () => {
           <PasswordInput type="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <button type="submit">Login</button>
+          <button type="submit">로그인</button>
         </div>
       </Form>
     </FormContainer>
   );
 };
 
-export default JoinPage;
+export default LoginPage;
