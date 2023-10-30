@@ -32,6 +32,11 @@ const Label = styled.label`
   margin-left: 0px; /* Add left margin as needed */
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 0.5rem;
+`;
+
 const PasswordInput = styled.input`
   width: 100%;
   padding: 0.5rem;
@@ -50,9 +55,15 @@ const EmailInput = styled.input`
   margin-top: -3px;
 `;
 
-const LoginPage: React.FC = () => {
+const JoinPage: React.FC = () => {
+  const [affiliation, setAffiliation] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  const handleAffiliationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setAffiliation(event.target.value);
+  };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -62,9 +73,21 @@ const LoginPage: React.FC = () => {
     setPassword(event.target.value);
   };
 
+  const handlePasswordConfirmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordConfirm(event.target.value);
+  };
+
   return (
     <FormContainer>
       <Form>
+        <FormGroup>
+          <Label>소속</Label>
+          <Select value={affiliation} onChange={handleAffiliationChange}>
+            <option value="">선택하세요</option>
+            <option value="option1">Techeer</option>
+            <option value="option2">Techeer Partners</option>
+          </Select>
+        </FormGroup>
         <FormGroup>
           <Label>이메일</Label>
           <EmailInput type="email" value={email} onChange={handleEmailChange} />
@@ -73,12 +96,16 @@ const LoginPage: React.FC = () => {
           <Label>비밀번호</Label>
           <PasswordInput type="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
+        <FormGroup>
+          <Label>비밀번호 확인</Label>
+          <PasswordInput type="password" value={passwordConfirm} onChange={handlePasswordConfirmChange} />
+        </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <button type="submit">로그인</button>
+          <button type="submit">가입하기</button>
         </div>
       </Form>
     </FormContainer>
   );
 };
 
-export default LoginPage;
+export default JoinPage;
