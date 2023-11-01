@@ -3,12 +3,13 @@ import styled from 'styled-components';
 
 const FormContainer = styled.div`
   max-width: 600px;
-  margin: 0 auto;
+  margin: 300px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 `;
 
 const Form = styled.form`
@@ -28,8 +29,8 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-weight: bold;
   width: 150px;
-  text-align: right; /* Right-align the label text */
-  margin-left: 0px; /* Add left margin as needed */
+  text-align: right;
+  margin-left: 0px;
 `;
 
 const PasswordInput = styled.input`
