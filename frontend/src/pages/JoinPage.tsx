@@ -56,6 +56,28 @@ const EmailInput = styled.input`
   margin-top: -3px;
 `;
 
+const JoinButton = styled.button`
+  background-color: #c0c0c0;
+  border: 2px solid #c0c0c0;
+  padding: 10px 40px;
+  margin-left: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+
+  &:hover {
+    background-color: #000000;
+    border-color: #000000;
+  }
+`;
+
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
   const [email, setEmail] = useState('');
@@ -102,7 +124,7 @@ const JoinPage: React.FC = () => {
           <PasswordInput type="password" value={passwordConfirm} onChange={handlePasswordConfirmChange} />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <button type="submit">가입하기</button>
+          <JoinButton type="submit">가입하기</JoinButton>
         </div>
       </Form>
     </FormContainer>

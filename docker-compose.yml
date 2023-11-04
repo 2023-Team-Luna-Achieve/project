@@ -45,5 +45,19 @@ services:
     ports:
       - 6380:6379
     restart: always
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./backend/nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    expose:
+      - '80'
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
 volumes:
   db_data:

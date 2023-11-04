@@ -4,9 +4,7 @@ import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationRequest;
 import backend.backend.auth.dto.VerificationResponse;
 import backend.backend.auth.service.EmailService;
-import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
