@@ -3,12 +3,13 @@ import styled from 'styled-components';
 
 const FormContainer = styled.div`
   max-width: 600px;
-  margin: 0 auto;
+  margin: 200px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
 `;
 
 const Form = styled.form`
@@ -28,8 +29,8 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-weight: bold;
   width: 150px;
-  text-align: right; /* Right-align the label text */
-  margin-left: 0px; /* Add left margin as needed */
+  text-align: right;
+  margin-left: 0px;
 `;
 
 const Select = styled.select`
@@ -53,6 +54,28 @@ const EmailInput = styled.input`
   border-bottom: 1px solid black;
   outline: none;
   margin-top: -3px;
+`;
+
+const JoinButton = styled.button`
+  background-color: #a5a5a5;
+  border: 2px solid #a5a5a5;
+  padding: 10px 40px;
+  margin-left: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+
+  &:hover {
+    background-color: #000000;
+    border-color: #000000;
+  }
 `;
 
 const JoinPage: React.FC = () => {
@@ -101,7 +124,7 @@ const JoinPage: React.FC = () => {
           <PasswordInput type="password" value={passwordConfirm} onChange={handlePasswordConfirmChange} />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <button type="submit">가입하기</button>
+          <JoinButton type="submit">가입하기</JoinButton>
         </div>
       </Form>
     </FormContainer>

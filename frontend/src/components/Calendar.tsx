@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -14,7 +14,11 @@ const CalendarComponent: React.FC = () => {
 
   return (
     <div>
-      <Calendar onChange={handleDateChange} value={selectedDate} />
+      <Calendar
+        onChange={handleDateChange}
+        value={selectedDate}
+        formatDay={(locale, date) => date.getDate().toString()} // "일" 텍스트를 제거
+      />
     </div>
   );
 };
