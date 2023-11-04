@@ -8,7 +8,6 @@ const CalendarComponent: React.FC = () => {
   const handleDateChange = (date: Date | Date[]) => {
     if (date instanceof Date) {
       setSelectedDate(date);
-      // 여기에 날짜 선택 시 실행할 코드를 추가할 수 있습니다.
     }
   };
 
@@ -17,7 +16,7 @@ const CalendarComponent: React.FC = () => {
       <Calendar
         onChange={handleDateChange}
         value={selectedDate}
-        formatDay={(locale, date) => date.getDate().toString()} // "일" 텍스트를 제거
+        formatDay={(locale, date) => date.getDate().toString()} // "일" 텍스트 제거
       />
     </div>
   );

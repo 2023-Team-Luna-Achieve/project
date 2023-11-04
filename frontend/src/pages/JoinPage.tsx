@@ -57,8 +57,8 @@ const EmailInput = styled.input`
 `;
 
 const JoinButton = styled.button`
-  background-color: #a5a5a5;
-  border: 2px solid #a5a5a5;
+  background-color: #c0c0c0;
+  border: 2px solid #c0c0c0;
   padding: 10px 40px;
   margin-left: 10px;
   color: #ffffff;

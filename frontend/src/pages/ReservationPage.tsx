@@ -20,8 +20,8 @@ const ContentWrapper = styled.div`
 
 const HeaderSection = styled.div`
   display: flex;
-  align-items: flex-start; /* 왼쪽 정렬로 변경 */
-  text-align: left; /* 왼쪽 정렬로 변경 */
+  align-items: flex-start;
+  text-align: left;
   margin-top: 10px;
 `;
 
