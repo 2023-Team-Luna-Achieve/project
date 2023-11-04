@@ -1,74 +1,152 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import CalendarComponent from '../components/Calendar';
+import TimeSelect from '../components/TimeSelect';
 
-const backgroundImageUrl = 'https://i.postimg.cc/TPRSF0MG/2023-10-15-8-26-50.png';
-
-const StyledReservationPage = styled.div`
-  position: relative;
-  background-image: url(${backgroundImageUrl});
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 100%;
+const ReservationPageWrapper = styled.div`
   display: flex;
-  color: #ffffff;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
   overflow: hidden;
 `;
 
-const WhiteBox = styled.div`
-  position: relative;
-  width: 280px;
-  height: 400px;
-  background: #ffffff;
-  box-shadow: 4.00406px 4.00406px 40.0406px rgba(0, 0, 0, 0.15);
-  border-radius: 40.0406px;
-  margin-top: 200px;
-  margin-left: 140px;
-  padding: 20px;
-  margin-bottom: 110px;
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 `;
 
-const TitleText = styled.div`
+const HeaderSection = styled.div`
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+  margin-top: 10px;
+`;
+
+const Title = styled.h1`
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 24px;
+  line-height: 29px;
   color: #000000;
-  margin-top: 30px;
-  margin-left: 20px;
+  margin-top: 40px;
 `;
 
-const AdditionalText = styled.div`
+const LoremText = styled.p`
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
-  color: #000000;
-  margin-top: 30px;
-  margin-left: 20px;
+  font-size: 16px;
+  line-height: 20px;
+  color: #c9c9c9;
+  margin-top: 10px;
+  margin-left: 30px;
+  text-align: left;
+`;
+
+const ProfileImage = styled.div`
+  width: 100px;
+  height: 100px;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 50%;
   margin-right: 20px;
 `;
 
-const ReserveText = styled.div`
-  position: absolute;
-  top: 110px;
-  left: 140px;
-  font-size: 28px;
-  font-weight: 300;
+const ProfileImageAndTitle = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-right: 1200px;
+  margin-top: 10px;
+`;
+
+const TimeSelectContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 250px;
+  margin-top: 20px;
+`;
+
+const Button = styled.button`
+  background-color: #a5a5a5;
+  border: 2px solid #a5a5a5;
+  padding: 10px 40px;
+  margin-left: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+
+  &:hover {
+    background-color: #000000;
+    border-color: #000000;
+  }
+`;
+const Separator = styled.span`
+  margin: 0 10px;
 `;
 
 const ReservationPage: React.FC = () => {
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
+  const handleReservation = () => {
+    if (startTime && endTime) {
+      fetch('https://your-backend-api.com/reservation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ startTime, endTime }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('Reservation successful');
+          } else {
+            console.error('Reservation failed');
+          }
+        })
+        .catch((error) => {
+          console.error('Reservation failed:', error);
+        });
+    }
+  };
+
   return (
-    <StyledReservationPage>
-      <ReserveText>예약</ReserveText>
-      <WhiteBox>
-        <TitleText>Palo Alto</TitleText>
-        <AdditionalText>
-          실리콘밸리의 탄생지(Birthplace of Silicon Valley)로 불리는 미국 캘리포니아주 산타클라라 군에 속한 실리콘밸리
-          북부의 도시의 이름에서 따온 방입니다.
-        </AdditionalText>
-      </WhiteBox>
-    </StyledReservationPage>
+    <ReservationPageWrapper>
+      <ContentWrapper>
+        <HeaderSection>
+          <ProfileImageAndTitle>
+            <ProfileImage />
+            <Title>Palo Alto</Title>
+          </ProfileImageAndTitle>
+        </HeaderSection>
+        <HeaderSection>
+          <LoremText>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, delectus! Sunt corrupti repellat iste amet
+            laboriosam non dolorum iusto laudantium quaerat alias. Quasi odio tenetur porro, nihil nulla facere
+            accusamus quibusdam ea voluptatem suscipit!
+          </LoremText>
+        </HeaderSection>
+        <CalendarComponent />
+        <TimeSelectContainer>
+          <TimeSelect value={startTime} onChange={(selectedTime) => setStartTime(selectedTime)} label="시작 시간" />
+          <Separator>~</Separator>
+          <TimeSelect value={endTime} onChange={(selectedTime) => setEndTime(selectedTime)} label="종료 시간" />
+        </TimeSelectContainer>
+        <Button onClick={handleReservation}>예약하기</Button>
+      </ContentWrapper>
+    </ReservationPageWrapper>
   );
 };
 

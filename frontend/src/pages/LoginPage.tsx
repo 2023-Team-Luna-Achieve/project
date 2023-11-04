@@ -3,12 +3,13 @@ import styled from 'styled-components';
 
 const FormContainer = styled.div`
   max-width: 600px;
-  margin: 0 auto;
+  margin: 300px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 `;
 
 const Form = styled.form`
@@ -28,8 +29,8 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-weight: bold;
   width: 150px;
-  text-align: right; /* Right-align the label text */
-  margin-left: 0px; /* Add left margin as needed */
+  text-align: right;
+  margin-left: 0px;
 `;
 
 const PasswordInput = styled.input`
@@ -48,6 +49,28 @@ const EmailInput = styled.input`
   border-bottom: 1px solid black;
   outline: none;
   margin-top: -3px;
+`;
+
+const LoginButton = styled.button`
+  background-color: #c0c0c0;
+  border: 2px solid #c0c0c0;
+  padding: 10px 40px;
+  margin-left: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+
+  &:hover {
+    background-color: #000000;
+    border-color: #000000;
+  }
 `;
 
 const LoginPage: React.FC = () => {
@@ -74,7 +97,7 @@ const LoginPage: React.FC = () => {
           <PasswordInput type="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <button type="submit">로그인</button>
+          <LoginButton type="submit">로그인</LoginButton>
         </div>
       </Form>
     </FormContainer>

@@ -20,6 +20,7 @@ const BannerSlider: React.FC = () => {
     height: 100%;
     overflow: visible;
     position: relative;
+    margin-top: 10px;
   `;
 
   const Background = styled.div`
