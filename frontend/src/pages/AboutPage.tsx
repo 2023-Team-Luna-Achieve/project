@@ -10,7 +10,12 @@ const IntroContainer = styled.div`
   padding: 20px;
 `;
 
-const IntroText = styled.div`
+interface IntroTextProps {
+  size?: string;
+  color?: string;
+}
+
+const IntroText = styled.div<IntroTextProps>`
   font-size: ${(props) => props.size || 'inherit'};
   text-align: left;
   margin: 10px;
