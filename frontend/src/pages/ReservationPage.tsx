@@ -97,8 +97,8 @@ const Separator = styled.span`
 `;
 
 const ReservationPage: React.FC = () => {
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState<string>(''); // 'startTime'를 문자열로 초기화
+  const [endTime, setEndTime] = useState<string>(''); // 'endTime'를 문자열로 초기화
 
   const handleReservation = () => {
     if (startTime && endTime) {
@@ -140,9 +140,13 @@ const ReservationPage: React.FC = () => {
         </HeaderSection>
         <CalendarComponent />
         <TimeSelectContainer>
-          <TimeSelect value={startTime} onChange={(selectedTime) => setStartTime(selectedTime)} label="시작 시간" />
+          <TimeSelect
+            value={startTime}
+            onChange={(selectedTime: string) => setStartTime(selectedTime)}
+            label="시작 시간"
+          />
           <Separator>~</Separator>
-          <TimeSelect value={endTime} onChange={(selectedTime) => setEndTime(selectedTime)} label="종료 시간" />
+          <TimeSelect value={endTime} onChange={(selectedTime: string) => setEndTime(selectedTime)} label="종료 시간" />
         </TimeSelectContainer>
         <Button onClick={handleReservation}>예약하기</Button>
       </ContentWrapper>

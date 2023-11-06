@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 interface TimeSelectProps {
-  label: string; // 시작 시간 또는 종료 시간을 나타내는 라벨
+  label: string;
+  value: string;
+  onChange: (selectedTime: string) => void;
 }
 
-const TimeSelect: React.FC<TimeSelectProps> = ({ label }) => {
-  const [selectedTime, setSelectedTime] = useState('');
+const TimeSelect: React.FC<TimeSelectProps> = ({ label, value, onChange }) => {
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(2);
   const slotsPerPage = 10;
@@ -22,7 +23,7 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ label }) => {
   }, []);
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTime(e.target.value);
+    onChange(e.target.value);
   };
 
   const getCurrentPageTimeSlots = () => {
@@ -47,7 +48,7 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ label }) => {
   return (
     <div>
       <label htmlFor="time-select">{label}</label>
-      <select id="time-select" value={selectedTime} onChange={handleTimeChange} aria-label={label}>
+      <select id="time-select" value={value} onChange={handleTimeChange} aria-label={label}>
         <option value="">Select a time</option>
         {getCurrentPageTimeSlots().map((time) => (
           <option key={time} value={time}>
