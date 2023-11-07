@@ -8,7 +8,7 @@ const BannerSlider: React.FC = () => {
   const settings = {
     centerMode: true,
     centerPadding: '60px',
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -80,7 +80,7 @@ const BannerSlider: React.FC = () => {
     width: 700px;
     height: 194px;
     left: 20px;
-    top: 540px;
+    top: 300px;
     background: #ffffff;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
     border-radius: 40px;
@@ -111,7 +111,7 @@ const BannerSlider: React.FC = () => {
     width: 700px;
     height: 194px;
     left: 740px;
-    top: 540px;
+    top: 300px;
     background: #ffffff;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
     border-radius: 40px;
