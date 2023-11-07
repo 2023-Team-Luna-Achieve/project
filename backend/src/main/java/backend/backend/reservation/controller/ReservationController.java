@@ -6,10 +6,7 @@ import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,5 +50,17 @@ public class ReservationController {
                 reservation.getMembers(),
                 reservation.getMeetingRoom()
         );
+    }
+
+    //예약 취소
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
+        boolean success = reservationService.cancelReservation(reservationId);
+
+        if (success) {
+            return ResponseEntity.ok("예약이 취소되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("예약을 찾을 수 없습니다.");
+        }
     }
 }

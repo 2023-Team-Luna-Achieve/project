@@ -38,4 +38,14 @@ public class ReservationService {
 
         return reservationRepository.findAll();
     }
+
+    public boolean cancelReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
+
+        if (reservation == null) {
+            return false;
+        }
+        reservationRepository.delete(reservation);
+        return true;
+    }
 }
