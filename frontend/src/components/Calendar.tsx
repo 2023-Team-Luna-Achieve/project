@@ -10,14 +10,14 @@ const CalendarComponent: React.FC = () => {
   };
 
   return (
-    <div>
-      <Calendar
-        // 오류로 인한 타입 형변환을 사용
-        onChange={handleDateChange as any}
-        value={selectedDate as any}
-        formatDay={(locale, date) => (date instanceof Date ? date.getDate().toString() : '')}
-      />
-    </div>
+      <div>
+          <Calendar
+              // 오류로 인한 타입 형변환을 사용
+              onChange={handleDateChange as any}
+              value={selectedDate as any}
+              formatDay={(_, date) => (date instanceof Date ? date.getDate().toString() : '')}
+          />
+      </div>
   );
 };
 
