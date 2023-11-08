@@ -1,3 +1,5 @@
 /.bsp
 /.idea
 /project
+/target
+backend/src/main/resources/email.properties
