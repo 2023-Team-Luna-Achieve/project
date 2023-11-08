@@ -48,7 +48,7 @@ services:
       - ./frontend:/frontend
       - /frontend/node_modules
       - ./frontend/.npm/_cacache:/frontend/.npm/_cacache
-      - frontend_build:/frontend/dist
+      - build_folder:/frontend/dist
     ports:
       - "5173:5173"
     tty: true
@@ -56,7 +56,6 @@ services:
       - npm_config_cache=/frontend/.npm/_cacache
     depends_on:
       - backend
-
 
   redis:
     hostname: redis
@@ -69,7 +68,7 @@ services:
   nginx:
     container_name: nginx
     build:
-      context: ./backend/nginx
+      context: devops/nginx
     restart: unless-stopped
     ports:
       - "80:80"
