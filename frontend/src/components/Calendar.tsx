@@ -15,7 +15,7 @@ const CalendarComponent: React.FC = () => {
         // 오류로 인한 타입 형변환을 사용
         onChange={handleDateChange as any}
         value={selectedDate as any}
-        formatDay={(locale, date) => (date instanceof Date ? date.getDate().toString() : '')}
+        formatDay={(_, date) => (date instanceof Date ? date.getDate().toString() : '')}
       />
     </div>
   );

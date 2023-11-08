@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -8,11 +7,11 @@ const StyledHeaderBorder = styled.div`
 
 const StyledHeader = styled.div`
   display: flex;
-  justify-content: center; /* 중앙 정렬 */
+  justify-content: center;
   align-items: center;
   background-color: #ffffff;
   font-size: 20px;
-  width: 100%; /* 헤더의 전체 너비를 사용하도록 설정 */
+  width: 100%;
 `;
 
 const StyledNav = styled.nav`
