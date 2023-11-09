@@ -43,4 +43,21 @@ public class NoticeBoard {
     private LocalDateTime deleted_at;
 
     private int viewCount;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
