@@ -57,7 +57,7 @@ const ReserveText = styled.div`
   font-weight: 300;
 `;
 
-const ReservationPage: React.FC = () => {
+const SelectPage: React.FC = () => {
   return (
     <StyledReservationPage>
       <ReserveText>예약</ReserveText>
@@ -72,4 +72,4 @@ const ReservationPage: React.FC = () => {
   );
 };
 
-export default ReservationPage;
+export default SelectPage;

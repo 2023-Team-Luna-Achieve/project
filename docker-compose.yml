@@ -9,7 +9,7 @@ services:
       MYSQL_DATABASE: achieve
       MYSQL_PASSWORD: 1234
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     command:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
@@ -32,11 +32,29 @@ services:
     depends_on:
       - mysql
       - redis
-
     command: ["java", "-jar", "/app.jar"]
     volumes:
       - ./backend:/app
       - ./backend/target/classes:/app/classes
+
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: dockerfile
+    command: [ "npm", "run", "dev" ]
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+      - ./frontend/.npm/_cacache:/frontend/.npm/_cacache
+      - build_folder:/frontend/dist
+    ports:
+      - "5173:5173"
+    tty: true
+    environment:
+      - npm_config_cache=/frontend/.npm/_cacache
+    depends_on:
+      - backend
 
   redis:
     hostname: redis
@@ -45,5 +63,25 @@ services:
     ports:
       - 6380:6379
     restart: always
+
+  nginx:
+    container_name: nginx
+    build:
+      context: devops/nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      #      - ./elk/logs/nginx_data:/var/log/nginx
+      - ./backend/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - build_folder:/var/www/frontend
+    depends_on:
+      - backend
+    expose:
+      - '80'
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+
 volumes:
-  db_data:
+  mysql_data:
+  build_folder:

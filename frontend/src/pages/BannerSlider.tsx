@@ -3,7 +3,6 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styled from 'styled-components';
-
 const BannerSlider: React.FC = () => {
   const settings = {
     centerMode: true,
@@ -14,14 +13,13 @@ const BannerSlider: React.FC = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
-
   const Banner = styled.div`
     width: 100%;
     height: 100%;
     overflow: visible;
     position: relative;
+    margin-top: 50px;
   `;
-
   const Background = styled.div`
     background-color: #ececec;
     width: 100%;
@@ -32,26 +30,22 @@ const BannerSlider: React.FC = () => {
     position: relative;
     margin-left: 0px;
   `;
-
   const Heading = styled.h1`
     margin: 0;
     margin-top: 60px;
     margin-bottom: 5px;
     margin-left: 34px;
   `;
-
   const Heading2 = styled.h1`
     margin: 0;
     margin-top: 0px;
     margin-bottom: 5px;
     margin-left: 34px;
   `;
-
   const Text = styled.p`
     margin-bottom: 30px;
     margin-left: 34px;
   `;
-
   const StudyLabel = styled.span`
     position: absolute;
     top: 34px;
@@ -62,7 +56,6 @@ const BannerSlider: React.FC = () => {
     border-radius: 5px;
     margin-left: 34px;
   `;
-
   const StyledSlider = styled(Slider)`
     height: 100%;
     .slick-list {
@@ -74,7 +67,6 @@ const BannerSlider: React.FC = () => {
       height: 100%;
     }
   `;
-
   const RoundedRectangle = styled.div`
     position: absolute;
     width: 700px;
@@ -85,11 +77,11 @@ const BannerSlider: React.FC = () => {
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
     border-radius: 40px;
     margin-bottom: 20px;
+    margin-left: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-
     h3 {
       font-weight: 300;
       text-align: left;
@@ -97,7 +89,6 @@ const BannerSlider: React.FC = () => {
       margin-left: 60px;
       margin-top: 10px;
     }
-
     h2 {
       margin-top: 0px;
       font-weight: 600;
@@ -105,7 +96,6 @@ const BannerSlider: React.FC = () => {
       margin-left: 60px;
     }
   `;
-
   const RoundedRectangle2 = styled.div`
     position: absolute;
     width: 700px;
@@ -116,11 +106,11 @@ const BannerSlider: React.FC = () => {
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.15);
     border-radius: 40px;
     margin-bottom: 20px;
+    margin-left: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-
     h3 {
       font-weight: 300;
       text-align: left;
@@ -128,7 +118,6 @@ const BannerSlider: React.FC = () => {
       margin-left: 60px;
       margin-top: 10px;
     }
-
     h2 {
       margin-top: 0px;
       font-weight: 600;
@@ -136,7 +125,6 @@ const BannerSlider: React.FC = () => {
       margin-left: 60px;
     }
   `;
-
   return (
     <Banner>
       <StyledSlider {...settings}>
@@ -170,5 +158,4 @@ const BannerSlider: React.FC = () => {
     </Banner>
   );
 };
-
 export default BannerSlider;
