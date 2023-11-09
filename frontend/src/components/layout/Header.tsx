@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -45,7 +44,7 @@ const Header = () => {
               <Link to="/About">About</Link>
             </li>
             <li>
-              <Link to="/Reservation">Reservation</Link>
+              <Link to="/Select">Reservation</Link>
             </li>
             <li>
               <Link to="/Notice">Notice</Link>
