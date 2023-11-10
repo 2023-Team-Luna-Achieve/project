@@ -25,4 +25,13 @@ public class MeetingRoom {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public MeetingRoom(String name, Status status) {
+        this.name = name;
+        this.status = status;
+    }
+
+    public void changeStatusToImpossible() {
+        this.status = Status.Impossible;
+    }
 }
