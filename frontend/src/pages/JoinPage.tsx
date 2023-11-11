@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -78,11 +79,41 @@ const JoinButton = styled.button`
   }
 `;
 
+const SendCodeButton = styled.button`
+  background-color: #008cba;
+  border: 2px solid #008cba;
+  padding: 1px 2px;
+  margin-left: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
+
+  &:hover {
+    background-color: #005f6b;
+    border-color: #005f6b;
+  }
+`;
+const AuthCodeInput = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  margin-top: -3px;
+`;
+
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [authCode, setAuthCode] = useState('');
 
   const handleAffiliationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setAffiliation(event.target.value);
@@ -99,6 +130,13 @@ const JoinPage: React.FC = () => {
   const handlePasswordConfirmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(event.target.value);
   };
+  const handleAuthCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAuthCode(event.target.value);
+  };
+
+  const sendCode = () => {
+    console.log(`Authentication code sent to: ${email}`);
+  };
 
   return (
     <FormContainer>
@@ -114,6 +152,11 @@ const JoinPage: React.FC = () => {
         <FormGroup>
           <Label>이메일</Label>
           <EmailInput type="email" value={email} onChange={handleEmailChange} />
+          <SendCodeButton onClick={sendCode}>인증</SendCodeButton>
+        </FormGroup>
+        <FormGroup>
+          <Label>인증코드</Label>
+          <AuthCodeInput type="text" value={authCode} onChange={handleAuthCodeChange} />
         </FormGroup>
         <FormGroup>
           <Label>비밀번호</Label>

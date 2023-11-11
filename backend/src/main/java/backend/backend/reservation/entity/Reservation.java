@@ -2,15 +2,13 @@ package backend.backend.reservation.entity;
 
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -23,6 +21,11 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    private int year;
+    private int month;
+    private int date;
+    private int members;
 
     private LocalDateTime reservationTime;
 
