@@ -4,6 +4,7 @@ import backend.backend.auth.service.EmailService;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.meetingroom.service.MeetingRoomService;
 import backend.backend.reservation.dto.ReservationRequest;
+import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.repository.ReservationRepository;
 import backend.backend.user.dto.SignUpResponse;
@@ -20,7 +21,9 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,11 @@ public class ReservationService {
     private final MeetingRoomService meetingRoomService;
     private final UserService userService;
     private final EmailService emailService;
+
+    public ReservationResponse createReservation(ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+        Reservation reservation = makeReservation(request);
+        return convertToResponse(reservation);
+    }
 
     @Transactional
     public Reservation makeReservation(ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
@@ -45,9 +53,36 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    public List<Reservation> getAllReservations() {
 
-        return reservationRepository.findAll();
+    public ReservationResponse convertToResponse(Reservation reservation) {
+        String startTimeAlert = startTimeMaker(reservation.getReservationStartTime());
+        String endTimeAlert = endTimeMaker(reservation.getReservationEndTime());
+        return new ReservationResponse(
+                reservation.getId(),
+                startTimeAlert,
+                endTimeAlert,
+                reservation.getMembers(),
+                reservation.getMeetingRoom()
+        );
+    }
+
+    private String startTimeMaker(LocalDateTime reservationStartTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm:ss");
+        return reservationStartTime.format(formatter);
+    }
+
+    private String endTimeMaker(LocalDateTime reservationEndTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm:ss");
+        return reservationEndTime.format(formatter);
+    }
+
+
+    public List<ReservationResponse> getAllReservations() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<ReservationResponse> responses = reservations.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+        return responses;
     }
 
     public boolean cancelReservation(Long reservationId) {

@@ -1,8 +1,11 @@
 package backend.backend.reservation.dto;
 
 import backend.backend.meetingroom.entity.MeetingRoom;
+import backend.backend.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter

@@ -19,9 +19,9 @@ public class MeetingRoom {
 
     String name;
 
-    @OneToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
+//    @OneToOne
+//    @JoinColumn(name = "reservation_id")
+//    private Reservation reservation;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -32,6 +32,6 @@ public class MeetingRoom {
     }
 
     public void changeStatusToImpossible() {
-        this.status = Status.Impossible;
+        this.status = Status.IMPOSSIBLE;
     }
 }

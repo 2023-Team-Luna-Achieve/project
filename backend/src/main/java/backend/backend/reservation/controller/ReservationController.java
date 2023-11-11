@@ -26,54 +26,14 @@ public class ReservationController {
     //예약 생성
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        Reservation reservation = reservationService.makeReservation(request);
-        ReservationResponse response = convertToResponse(reservation);
+        ReservationResponse response = reservationService.createReservation(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //예약 정보 가져오기
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
-
-        List<Reservation> reservations = reservationService.getAllReservations();
-        List<ReservationResponse> responses = reservations.stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
-
+        List<ReservationResponse> responses = reservationService.getAllReservations();
         return ResponseEntity.ok(responses);
-    }
-
-    private ReservationResponse convertToResponse(Reservation reservation) {
-        String startTimeAlert = startTimeMaker(reservation.getReservationStartTime());
-        String endTimeAlert = endTimeMaker(reservation.getReservationEndTime());
-        return new ReservationResponse(
-                reservation.getId(),
-                startTimeAlert,
-                endTimeAlert,
-                reservation.getMembers(),
-                reservation.getMeetingRoom()
-        );
-    }
-
-    private String startTimeMaker(LocalDateTime reservationStartTime) {
-        int year = reservationStartTime.getYear();
-        int month = reservationStartTime.getMonthValue();
-        int day = reservationStartTime.getDayOfMonth();
-
-        int hour = reservationStartTime.getHour();
-        int minute = reservationStartTime.getMinute();
-        int second = reservationStartTime.getSecond();
-        return year + "년 " + month + "월 " + day + "일 " +  hour + ":" + minute + ":"+ second;
-    }
-
-    private String endTimeMaker(LocalDateTime reservationEndTime) {
-        int year = reservationEndTime.getYear();
-        int month = reservationEndTime.getMonthValue();
-        int day = reservationEndTime.getDayOfMonth();
-
-        int hour = reservationEndTime.getHour();
-        int minute = reservationEndTime.getMinute();
-        int second = reservationEndTime.getSecond();
-        return year + "년 " + month + "월 " + day + "일 " +  hour + ":" + minute + ":"+ second;
     }
 
     //예약 취소
