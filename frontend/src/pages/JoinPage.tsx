@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import axios from 'axios';
 
 const FormContainer = styled.div`
@@ -13,60 +15,20 @@ const FormContainer = styled.div`
   overflow: hidden;
 `;
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+const StyledForm = styled.form``;
 
-const FormGroup = styled.div`
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
+const FormGroup = styled.div``;
 
-const Label = styled.label`
-  font-weight: bold;
-  width: 150px;
-  text-align: right;
-  margin-left: 0px;
-`;
+const Select = styled.select``;
 
-const Select = styled.select`
-  width: 100%;
-  padding: 0.5rem;
-`;
+const Input = styled.input``;
 
-const PasswordInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  margin-top: -3px;
-`;
-
-const EmailInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  margin-top: -3px;
-`;
+const PasswordInput = styled(Input).attrs({ type: 'password' })``;
 
 const JoinButton = styled.button`
   background-color: #c0c0c0;
-  border: 2px solid #c0c0c0;
-  padding: 10px 40px;
-  margin-left: 10px;
   color: #ffffff;
-  font-weight: 600;
   font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
   border-radius: 5px;
   transition:
     background-color 0.3s,
@@ -79,34 +41,42 @@ const JoinButton = styled.button`
   }
 `;
 
-const SendCodeButton = styled.button`
+const SendCodeButton = styled(JoinButton)`
   background-color: #008cba;
   border: 2px solid #008cba;
-  padding: 1px 2px;
-  margin-left: 10px;
-  color: #ffffff;
-  font-weight: 600;
   font-size: 15px;
-  margin-top: 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition:
-    background-color 0.3s,
-    border-color 0.3s;
 
   &:hover {
     background-color: #005f6b;
     border-color: #005f6b;
   }
 `;
-const AuthCodeInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  margin-top: -3px;
-`;
+
+const ConfirmAuthButton = styled(SendCodeButton)``;
+
+const AuthCodeInput = styled(Input)``;
+
+const EmailInput = styled(Input).attrs({ type: 'email' })``;
+
+const validationSchema = Yup.object().shape({
+  affiliation: Yup.string().required('소속을 선택하세요'),
+  name: Yup.string().required('이름을 입력하세요'),
+  email: Yup.string().email('올바른 이메일 형식이 아닙니다').required('이메일을 입력하세요'),
+  authCode: Yup.string().required('인증코드를 입력하세요'),
+  password: Yup.string().required('비밀번호를 입력하세요'),
+  passwordConfirm: Yup.string()
+    .oneOf([Yup.ref('password'), null], '비밀번호가 일치하지 않습니다')
+    .required('비밀번호 확인을 입력하세요'),
+});
+
+const initialValues = {
+  affiliation: '',
+  name: '',
+  email: '',
+  authCode: '',
+  password: '',
+  passwordConfirm: '',
+};
 
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
@@ -114,64 +84,86 @@ const JoinPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [authCode, setAuthCode] = useState('');
+  const [name, setName] = useState('');
 
-  const handleAffiliationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setAffiliation(event.target.value);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      await axios.post('http://localhost:8080/api/email/verification/request', {
+        email: values.email,
+      });
+
+      console.log(`인증 이메일이 전송되었습니다: ${values.email}`);
+    } catch (error) {
+      console.error('데이터 제출 중 에러:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const handlePasswordConfirmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordConfirm(event.target.value);
-  };
-  const handleAuthCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthCode(event.target.value);
+  const handleInputChange = (setter) => (event) => {
+    setter(event.target.value);
   };
 
   const sendCode = () => {
-    console.log(`Authentication code sent to: ${email}`);
+    console.log(`메일을 보냈습니다: ${email}`);
   };
 
   return (
-    <FormContainer>
-      <Form>
-        <FormGroup>
-          <Label>소속</Label>
-          <Select value={affiliation} onChange={handleAffiliationChange}>
-            <option value="">선택하세요</option>
-            <option value="option1">Techeer</option>
-            <option value="option2">Techeer Partners</option>
-          </Select>
-        </FormGroup>
-        <FormGroup>
-          <Label>이메일</Label>
-          <EmailInput type="email" value={email} onChange={handleEmailChange} />
-          <SendCodeButton onClick={sendCode}>인증</SendCodeButton>
-        </FormGroup>
-        <FormGroup>
-          <Label>인증코드</Label>
-          <AuthCodeInput type="text" value={authCode} onChange={handleAuthCodeChange} />
-        </FormGroup>
-        <FormGroup>
-          <Label>비밀번호</Label>
-          <PasswordInput type="password" value={password} onChange={handlePasswordChange} />
-        </FormGroup>
-        <FormGroup>
-          <Label>비밀번호 확인</Label>
-          <PasswordInput type="password" value={passwordConfirm} onChange={handlePasswordConfirmChange} />
-        </FormGroup>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <JoinButton type="submit">가입하기</JoinButton>
-        </div>
-      </Form>
-    </FormContainer>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+      {({ isSubmitting }) => (
+        <FormContainer>
+          <StyledForm>
+            <FormGroup>
+              <label htmlFor="affiliation">소속</label>
+              <Select
+                id="affiliation"
+                name="affiliation"
+                value={affiliation}
+                onChange={handleInputChange(setAffiliation)}
+              >
+                <option value="">선택하세요</option>
+                <option value="option1">Techeer</option>
+                <option value="option2">Techeer Partners</option>
+              </Select>
+            </FormGroup>
+            <FormGroup>
+              <label htmlFor="name">이름</label>
+              <Input type="text" id="name" name="name" value={name} onChange={handleInputChange(setName)} />
+            </FormGroup>
+            <FormGroup>
+              <label htmlFor="email">이메일</label>
+              <EmailInput id="email" name="email" value={email} onChange={handleInputChange(setEmail)} />
+              <SendCodeButton onClick={sendCode} disabled={isSubmitting}>
+                {isSubmitting ? '전송 중...' : '인증'}
+              </SendCodeButton>
+            </FormGroup>
+            <FormGroup>
+              <label htmlFor="authCode">인증코드</label>
+              <AuthCodeInput id="authCode" name="authCode" value={authCode} onChange={handleInputChange(setAuthCode)} />
+              <ConfirmAuthButton disabled={isSubmitting}>{isSubmitting ? '확인 중...' : '인증확인'}</ConfirmAuthButton>
+            </FormGroup>
+            <FormGroup>
+              <label htmlFor="password">비밀번호</label>
+              <PasswordInput id="password" name="password" value={password} onChange={handleInputChange(setPassword)} />
+            </FormGroup>
+            <FormGroup>
+              <label htmlFor="passwordConfirm">비밀번호 확인</label>
+              <PasswordInput
+                id="passwordConfirm"
+                name="passwordConfirm"
+                value={passwordConfirm}
+                onChange={handleInputChange(setPasswordConfirm)}
+              />
+            </FormGroup>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+              <JoinButton type="submit" disabled={isSubmitting}>
+                {isSubmitting ? '가입 중...' : '가입하기'}
+              </JoinButton>
+            </div>
+          </StyledForm>
+        </FormContainer>
+      )}
+    </Formik>
   );
 };
-
 export default JoinPage;
