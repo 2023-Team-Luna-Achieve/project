@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
@@ -65,7 +65,7 @@ const validationSchema = Yup.object().shape({
   authCode: Yup.string().required('인증코드를 입력하세요'),
   password: Yup.string().required('비밀번호를 입력하세요'),
   passwordConfirm: Yup.string()
-    .oneOf([Yup.ref('password'), null], '비밀번호가 일치하지 않습니다')
+    .oneOf([Yup.ref('password')], '비밀번호가 일치하지 않습니다')
     .required('비밀번호 확인을 입력하세요'),
 });
 
@@ -78,6 +78,15 @@ const initialValues = {
   passwordConfirm: '',
 };
 
+type YourFormValuesType = {
+  affiliation: string;
+  name: string;
+  email: string;
+  authCode: string;
+  password: string;
+  passwordConfirm: string;
+};
+
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
   const [email, setEmail] = useState('');
@@ -86,13 +95,20 @@ const JoinPage: React.FC = () => {
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values: YourFormValuesType, { setSubmitting }: FormikHelpers<YourFormValuesType>) => {
     try {
       await axios.post('http://localhost:8080/api/email/verification/request', {
         email: values.email,
       });
 
       console.log(`인증 이메일이 전송되었습니다: ${values.email}`);
+
+      await axios.post('http://localhost:8080/api/email/verification/confirm', {
+        email: values.email,
+        code: values.authCode,
+      });
+
+      console.log(`이메일 인증이 성공적으로 확인되었습니다: ${values.email}`);
     } catch (error) {
       console.error('데이터 제출 중 에러:', error);
     } finally {
@@ -100,8 +116,10 @@ const JoinPage: React.FC = () => {
     }
   };
 
-  const handleInputChange = (setter) => (event) => {
-    setter(event.target.value);
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => {
+    return (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      setter(event.target.value);
+    };
   };
 
   const sendCode = () => {
