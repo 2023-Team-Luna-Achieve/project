@@ -1,6 +1,6 @@
 package backend.backend.noticeboard.entity;
 
-import backend.backend.comment.entity.Comment;
+import backend.backend.noticeboardcomment.entity.Comment;
 import backend.backend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
