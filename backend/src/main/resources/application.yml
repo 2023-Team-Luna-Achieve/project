@@ -3,7 +3,7 @@ Spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/achieve?serverTimezone=Asia/Seoul&autoReconnect=true&createDatabaseIfNotExist=true
     username: root
-    password: dina4998
+    password: 1105
   redis:
     host: localhost
     port: 6379
