@@ -3,20 +3,20 @@ package backend.backend.noticeboard.controller;
 import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.noticeboard.service.NoticeBoardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/board")
 public class NoticeBoardController {
 
     private final NoticeBoardService noticeBoardService;
 
-    public NoticeBoardController(NoticeBoardService noticeBoardService) {
-        this.noticeBoardService = noticeBoardService;
-    }
+    private final HttpSession httpSession;
 
     @GetMapping("/notice")
     public List<NoticeBoardResponseDto> getAllNoticeBoards() {

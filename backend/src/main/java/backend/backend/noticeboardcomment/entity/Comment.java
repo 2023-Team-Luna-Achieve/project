@@ -1,4 +1,4 @@
-package backend.backend.comment.entity;
+package backend.backend.noticeboardcomment.entity;
 
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.user.entity.User;
