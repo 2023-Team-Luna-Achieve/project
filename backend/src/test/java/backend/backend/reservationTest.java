@@ -44,7 +44,7 @@ public class reservationTest {
     @Test
     public void testCreateReservation() throws Exception {
         // 예약 요청 데이터 설정
-        ReservationRequest request = new ReservationRequest(2023, 10, 27, LocalDateTime.now(), 4, new MeetingRoom());
+        ReservationRequest request = new ReservationRequest(LocalDateTime.now(), 4, 1L);
 
         // 예약 서비스 Mock 설정
         when(reservationService.makeReservation(request)).thenReturn(new Reservation());
