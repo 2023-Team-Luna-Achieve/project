@@ -17,8 +17,6 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
-//    private final BCryptPasswordEncoder encoder;
-
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public SignUpResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
