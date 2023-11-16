@@ -1,7 +1,6 @@
 package backend.backend.reservation.dto;
 
 import backend.backend.meetingroom.entity.MeetingRoom;
-import backend.backend.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +17,7 @@ public class ReservationResponse {
     private MeetingRoom meetingRoom;
 
     public ReservationResponse(Long id, String startTime, String endTime, int members, MeetingRoom meetingRoom) {
+
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;

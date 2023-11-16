@@ -7,13 +7,9 @@ import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.repository.ReservationRepository;
-import backend.backend.user.dto.SignUpResponse;
-import backend.backend.user.dto.UserDto;
 import backend.backend.user.entity.User;
-import backend.backend.user.repository.UserRepository;
 import backend.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,13 +72,16 @@ public class ReservationService {
         return reservationEndTime.format(formatter);
     }
 
+    public List<ReservationResponse> getReservationsByUserId(Long userId) {
+        List<Reservation> userReservations = reservationRepository.findByUserId(userId);
 
-    public List<ReservationResponse> getAllReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        List<ReservationResponse> responses = reservations.stream()
+        if(userReservations.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return userReservations.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
-        return responses;
     }
 
     public boolean cancelReservation(Long reservationId) {

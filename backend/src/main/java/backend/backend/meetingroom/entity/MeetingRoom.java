@@ -1,6 +1,5 @@
 package backend.backend.meetingroom.entity;
 
-import backend.backend.reservation.entity.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,10 +17,6 @@ public class MeetingRoom {
     private Long id;
 
     String name;
-
-//    @OneToOne
-//    @JoinColumn(name = "reservation_id")
-//    private Reservation reservation;
 
     public MeetingRoom(String name) {
         this.name = name;
