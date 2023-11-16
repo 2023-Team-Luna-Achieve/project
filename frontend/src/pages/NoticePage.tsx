@@ -1,122 +1,97 @@
 import React from 'react';
 import styled from 'styled-components';
-
-const PageWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-`;
-
-const NoticeText = styled.div`
-  position: absolute;
-  width: 210px;
-  height: 70px;
-  left: 680px;
-  top: 100px;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 200;
-  font-size: 60px;
-  line-height: 80px;
-  color: #000000;
-`;
-
-const BlackLine = styled.div`
-  position: absolute;
-  width: 1320px;
-  height: 2px;
-  left: 60px;
-  top: 200px;
-  background: #000000;
-`;
-
-const Title = styled.h1`
-  position: absolute;
-  width: 513px;
-  height: 42px;
-  left: 670px;
-  top: 220px;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 34px;
-  line-height: 41px;
-  color: #000000;
-`;
-
-const MetaInfoWrapper = styled.div`
-  position: absolute;
-  width: 697px;
-  height: 42px;
-  left: 940px;
-  top: 270px;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-size: 24px;
-  line-height: 41px;
-  color: #e4e4e4;
-`;
-
-const Content = styled.p`
-  position: absolute;
-  width: 1797px;
-  height: 368px;
-  left: 63px;
-  top: 300px;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 40px;
-  color: #575757;
-`;
-
-const BackButton = styled.button`
-  position: absolute;
-  width: 110px;
-  height: 50px;
-  left: 1250px;
-  top: 650px;
-  background: #1c1c1c;
-  border-radius: 40px;
+const PageContainer = styled.div`
+  background-color: #ececec;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
 `;
-
-const BackButtonText = styled.span`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-size: 28px;
-  line-height: 34px;
-  color: #ffffff;
+const Box = styled.div`
+  width: calc(20%);
+  height: 180px;
+  background-color: #ffffff;
+  border: 1px solid #e4e4e4;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
 `;
-
+const Title = styled.div`
+  font-weight: bold;
+  color: #000000;
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-align: left;
+  margin-top: 10px;
+  margin-left: 10px;
+`;
+const Content = styled.div`
+  color: #575757;
+  font-size: 14px;
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+`;
 const NoticePage: React.FC = () => {
   return (
-    <PageWrapper>
-      <NoticeText>공지</NoticeText>
-      <BlackLine />
-      <Title>공지 제목</Title>
-      <MetaInfoWrapper>작성자 안나경 | 조회수 100 | 게시일 2023.11.7</MetaInfoWrapper>
-      <Content>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, delectus! Sunt corrupti repellat iste amet
-        laboriosam non dolorum iusto laudantium quaerat alias. Quasi odio tenetur porro, nihil nulla facere accusamus
-        quibusdam ea voluptatem suscipit! Perferendis, maiores. Esse ratione molestiae a deleniti tenetur. Facilis atque
-        quae culpa nulla fuga totam aliquid cumque nisi maxime repellendus. Dolorum, natus iusto facilis velit incidunt
-        nisi. Facilis atque quae culpa nulla fuga totam aliquid cumque nisi maxime repellendus. Dolorum, natus iusto
-        facilis velit incidunt nisi. Facilis atque quae culpa nulla fuga totam aliquid cumque nisi maxime repellendus.
-        Dolorum, natus iusto facilis velit incidunt nisi.
-      </Content>
-      <BackButton>
-        <BackButtonText>목록</BackButtonText>
-      </BackButton>
-    </PageWrapper>
+    <PageContainer>
+      <Box>
+        <Title>Achieve 프로젝트 팀 공지</Title>
+        <Content>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, delectus! Sunt corrupti repellat iste amet
+          laboriosam non dolorum iusto
+        </Content>
+      </Box>
+      <Box>
+        <Title>공지 2</Title>
+        <Content>내용 2</Content>
+      </Box>
+      <Box>
+        <Title>공지 3</Title>
+        <Content>내용 3</Content>
+      </Box>
+      <Box>
+        <Title>공지 4</Title>
+        <Content>내용 4</Content>
+      </Box>
+      <Box>
+        <Title>공지 5</Title>
+        <Content>내용 5</Content>
+      </Box>
+      <Box>
+        <Title>공지 6</Title>
+        <Content>내용 6</Content>
+      </Box>
+      <Box>
+        <Title>공지 7</Title>
+        <Content>내용 7</Content>
+      </Box>
+      <Box>
+        <Title>공지 8</Title>
+        <Content>내용 8</Content>
+      </Box>
+      <Box>
+        <Title>공지 9</Title>
+        <Content>내용 9</Content>
+      </Box>
+      <Box>
+        <Title>공지 10</Title>
+        <Content>내용 10</Content>
+      </Box>
+      <Box>
+        <Title>공지 11</Title>
+        <Content>내용 11</Content>
+      </Box>
+      <Box>
+        <Title>공지 12</Title>
+        <Content>내용 12</Content>
+      </Box>
+    </PageContainer>
   );
 };
-
 export default NoticePage;
