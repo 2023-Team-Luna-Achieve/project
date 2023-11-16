@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Formik, FormikHelpers } from 'formik';
-import * as Yup from 'yup';
 import axios from 'axios';
+import { AxiosError } from 'axios';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -22,8 +21,6 @@ const FormGroup = styled.div``;
 const Select = styled.select``;
 
 const Input = styled.input``;
-
-const PasswordInput = styled(Input).attrs({ type: 'password' })``;
 
 const JoinButton = styled.button`
   background-color: #c0c0c0;
@@ -54,38 +51,11 @@ const SendCodeButton = styled(JoinButton)`
 
 const ConfirmAuthButton = styled(SendCodeButton)``;
 
-const AuthCodeInput = styled(Input)``;
+const EmailInput = styled(Input).attrs({ type: 'email', autoComplete: 'email' })``;
 
-const EmailInput = styled(Input).attrs({ type: 'email' })``;
+const AuthCodeInput = styled(Input).attrs({ autoComplete: 'off' })``;
 
-const validationSchema = Yup.object().shape({
-  affiliation: Yup.string().required('소속을 선택하세요'),
-  name: Yup.string().required('이름을 입력하세요'),
-  email: Yup.string().email('올바른 이메일 형식이 아닙니다').required('이메일을 입력하세요'),
-  authCode: Yup.string().required('인증코드를 입력하세요'),
-  password: Yup.string().required('비밀번호를 입력하세요'),
-  passwordConfirm: Yup.string()
-    .oneOf([Yup.ref('password')], '비밀번호가 일치하지 않습니다')
-    .required('비밀번호 확인을 입력하세요'),
-});
-
-const initialValues = {
-  affiliation: '',
-  name: '',
-  email: '',
-  authCode: '',
-  password: '',
-  passwordConfirm: '',
-};
-
-type YourFormValuesType = {
-  affiliation: string;
-  name: string;
-  email: string;
-  authCode: string;
-  password: string;
-  passwordConfirm: string;
-};
+const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new-password' })``;
 
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
@@ -95,93 +65,109 @@ const JoinPage: React.FC = () => {
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
 
-  const handleSubmit = async (values: YourFormValuesType, { setSubmitting }: FormikHelpers<YourFormValuesType>) => {
+  const sendCode = async () => {
     try {
+      // 여기에서는 주로 API 호출과 같은 비동기 작업을 수행할 수 있습니다.
+      // 예를 들어, 코드를 보내는 API 호출을 수행하는 경우:
       await axios.post('http://localhost:8080/api/email/verification/request', {
-        email: values.email,
+        email: email,
       });
 
-      console.log(`인증 이메일이 전송되었습니다: ${values.email}`);
-
-      await axios.post('http://localhost:8080/api/email/verification/confirm', {
-        email: values.email,
-        code: values.authCode,
-      });
-
-      console.log(`이메일 인증이 성공적으로 확인되었습니다: ${values.email}`);
+      console.log(`코드가 성공적으로 전송되었습니다: ${email}`);
     } catch (error) {
-      console.error('데이터 제출 중 에러:', error);
-    } finally {
-      setSubmitting(false);
+      if (axios.isAxiosError(error)) {
+        // Axios 에러인 경우
+        console.error('코드 전송 중 에러:', (error as AxiosError).message);
+      } else {
+        // 그 외의 에러인 경우
+        console.error('코드 전송 중 에러:', error);
+      }
     }
   };
 
-  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => {
-    return (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setter(event.target.value);
-    };
+  const handleSendCodeClick: React.MouseEventHandler<HTMLButtonElement> = async () => {
+    try {
+      // SendCodeButton이 클릭될 때 email 값을 설정하고 sendCode 함수 호출
+      await sendCode();
+    } catch (error) {
+      console.error('handleSendCodeClick 오류:', (error as AxiosError).message);
+    }
   };
 
-  const sendCode = () => {
-    console.log(`메일을 보냈습니다: ${email}`);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // 여기에서는 주로 데이터를 백엔드로 전송하는 로직을 구현할 수 있습니다.
+
+    console.log('가입 정보:', {
+      affiliation,
+      name,
+      email,
+      authCode,
+      password,
+      passwordConfirm,
+    });
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-      {({ isSubmitting }) => (
-        <FormContainer>
-          <StyledForm>
-            <FormGroup>
-              <label htmlFor="affiliation">소속</label>
-              <Select
-                id="affiliation"
-                name="affiliation"
-                value={affiliation}
-                onChange={handleInputChange(setAffiliation)}
-              >
-                <option value="">선택하세요</option>
-                <option value="option1">Techeer</option>
-                <option value="option2">Techeer Partners</option>
-              </Select>
-            </FormGroup>
-            <FormGroup>
-              <label htmlFor="name">이름</label>
-              <Input type="text" id="name" name="name" value={name} onChange={handleInputChange(setName)} />
-            </FormGroup>
-            <FormGroup>
-              <label htmlFor="email">이메일</label>
-              <EmailInput id="email" name="email" value={email} onChange={handleInputChange(setEmail)} />
-              <SendCodeButton onClick={sendCode} disabled={isSubmitting}>
-                {isSubmitting ? '전송 중...' : '인증'}
-              </SendCodeButton>
-            </FormGroup>
-            <FormGroup>
-              <label htmlFor="authCode">인증코드</label>
-              <AuthCodeInput id="authCode" name="authCode" value={authCode} onChange={handleInputChange(setAuthCode)} />
-              <ConfirmAuthButton disabled={isSubmitting}>{isSubmitting ? '확인 중...' : '인증확인'}</ConfirmAuthButton>
-            </FormGroup>
-            <FormGroup>
-              <label htmlFor="password">비밀번호</label>
-              <PasswordInput id="password" name="password" value={password} onChange={handleInputChange(setPassword)} />
-            </FormGroup>
-            <FormGroup>
-              <label htmlFor="passwordConfirm">비밀번호 확인</label>
-              <PasswordInput
-                id="passwordConfirm"
-                name="passwordConfirm"
-                value={passwordConfirm}
-                onChange={handleInputChange(setPasswordConfirm)}
-              />
-            </FormGroup>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-              <JoinButton type="submit" disabled={isSubmitting}>
-                {isSubmitting ? '가입 중...' : '가입하기'}
-              </JoinButton>
-            </div>
-          </StyledForm>
-        </FormContainer>
-      )}
-    </Formik>
+    <FormContainer>
+      <StyledForm onSubmit={handleSubmit}>
+        <FormGroup>
+          <label htmlFor="affiliation">소속</label>
+          <Select
+            id="affiliation"
+            name="affiliation"
+            value={affiliation}
+            onChange={(event) => setAffiliation(event.target.value)}
+          >
+            <option value="">선택하세요</option>
+            <option value="option1">Techeer</option>
+            <option value="option2">Techeer Partners</option>
+          </Select>
+        </FormGroup>
+        <FormGroup>
+          <label htmlFor="name">이름</label>
+          <Input type="text" id="name" name="name" value={name} onChange={(event) => setName(event.target.value)} />
+        </FormGroup>
+        <FormGroup>
+          <label htmlFor="email">이메일</label>
+          <EmailInput id="email" name="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+          <SendCodeButton onClick={handleSendCodeClick}>{'인증'}</SendCodeButton>
+        </FormGroup>
+        <FormGroup>
+          <label htmlFor="authCode">인증코드</label>
+          <AuthCodeInput
+            id="authCode"
+            name="authCode"
+            value={authCode}
+            onChange={(event) => setAuthCode(event.target.value)}
+          />
+          <ConfirmAuthButton>{'인증확인'}</ConfirmAuthButton>
+        </FormGroup>
+        <FormGroup>
+          <label htmlFor="password">비밀번호</label>
+          <PasswordInput
+            id="password"
+            name="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <label htmlFor="passwordConfirm">비밀번호 확인</label>
+          <PasswordInput
+            id="passwordConfirm"
+            name="passwordConfirm"
+            value={passwordConfirm}
+            onChange={(event) => setPasswordConfirm(event.target.value)}
+          />
+        </FormGroup>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <JoinButton type="submit">{'가입하기'}</JoinButton>
+        </div>
+      </StyledForm>
+    </FormContainer>
   );
 };
+
 export default JoinPage;
