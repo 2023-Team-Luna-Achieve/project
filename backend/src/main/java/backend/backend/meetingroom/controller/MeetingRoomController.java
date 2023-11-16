@@ -16,7 +16,7 @@ public class MeetingRoomController {
     private final MeetingRoomService meetingRoomService;
     @PostMapping
     public void create(@RequestBody MeetingRoomRequestDto meetingRoomRequestDto) {
-        MeetingRoom meetingRoom = new MeetingRoom(meetingRoomRequestDto.getName(), meetingRoomRequestDto.getStatus());
+        MeetingRoom meetingRoom = new MeetingRoom(meetingRoomRequestDto.getName());
         meetingRoomService.save(meetingRoom);
     }
 

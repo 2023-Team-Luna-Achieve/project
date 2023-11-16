@@ -46,7 +46,6 @@ public class ReservationService {
         User user = userService.findById(userId);
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
                 .orElse(new MeetingRoom());
-        meetingRoom.changeStatusToImpossible();
         Reservation reservation = request.toEntity(user, meetingRoom);
 
         emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
