@@ -64,11 +64,11 @@ const JoinPage: React.FC = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
+  const [verificationMessage, setVerificationMessage] = useState<string>('');
+  const [isPasswordMatch] = useState(false);
 
   const sendCode = async () => {
     try {
-      // 여기에서는 주로 API 호출과 같은 비동기 작업을 수행할 수 있습니다.
-      // 예를 들어, 코드를 보내는 API 호출을 수행하는 경우:
       await axios.post('http://localhost:8080/api/email/verification/request', {
         email: email,
       });
@@ -94,19 +94,50 @@ const JoinPage: React.FC = () => {
     }
   };
 
+  const handleConfirmAuthClick = async () => {
+    try {
+      // 클라이언트에서 서버로 코드 확인 요청을 보냄
+      const response = await axios.post('http://localhost:8080/api/email/verification/confirm', {
+        email,
+        code: authCode,
+      });
+
+      setVerificationMessage(response.data.message);
+    } catch (error) {
+      console.error('인증 확인 중 에러:', (error as AxiosError).message);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log('양식 제출 중...');
 
-    // 여기에서는 주로 데이터를 백엔드로 전송하는 로직을 구현할 수 있습니다.
+    // 이메일이 검증되었고 비밀번호가 일치하는지 확인
+    {
+      console.log('가입 정보:', {
+        affiliation,
+        name,
+        email,
+        password,
+      });
 
-    console.log('가입 정보:', {
-      affiliation,
-      name,
-      email,
-      authCode,
-      password,
-      passwordConfirm,
-    });
+      try {
+        console.log('axios.post 이전');
+        const response = await axios.post('http://localhost:8080/api/users/signup', {
+          affiliation,
+          name,
+          email,
+          password,
+        });
+
+        console.log('서버 응답:', response.data);
+      } catch (error) {
+        console.error('서버로의 데이터 전송 중 에러:', error);
+      }
+    }
+    if (!isPasswordMatch) {
+      console.error('비밀번호가 일치하지 않습니다.');
+    }
   };
 
   return (
@@ -121,8 +152,8 @@ const JoinPage: React.FC = () => {
             onChange={(event) => setAffiliation(event.target.value)}
           >
             <option value="">선택하세요</option>
-            <option value="option1">Techeer</option>
-            <option value="option2">Techeer Partners</option>
+            <option value="Techeer">Techeer</option>
+            <option value="TecheerPartners">Techeer Partners</option>
           </Select>
         </FormGroup>
         <FormGroup>
@@ -142,7 +173,8 @@ const JoinPage: React.FC = () => {
             value={authCode}
             onChange={(event) => setAuthCode(event.target.value)}
           />
-          <ConfirmAuthButton>{'인증확인'}</ConfirmAuthButton>
+          <ConfirmAuthButton onClick={handleConfirmAuthClick}>{'인증확인'}</ConfirmAuthButton>
+          <div>{verificationMessage}</div>
         </FormGroup>
         <FormGroup>
           <label htmlFor="password">비밀번호</label>
@@ -163,7 +195,9 @@ const JoinPage: React.FC = () => {
           />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <JoinButton type="submit">{'가입하기'}</JoinButton>
+          <JoinButton type="submit" onClick={() => console.log('가입하기 버튼이 클릭되었습니다.')}>
+            {'가입하기'}
+          </JoinButton>
         </div>
       </StyledForm>
     </FormContainer>
