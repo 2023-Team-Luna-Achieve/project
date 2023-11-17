@@ -64,11 +64,10 @@ const JoinPage: React.FC = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
+  const [verificationMessage, setVerificationMessage] = useState<string>('');
 
   const sendCode = async () => {
     try {
-      // 여기에서는 주로 API 호출과 같은 비동기 작업을 수행할 수 있습니다.
-      // 예를 들어, 코드를 보내는 API 호출을 수행하는 경우:
       await axios.post('http://localhost:8080/api/email/verification/request', {
         email: email,
       });
@@ -94,10 +93,22 @@ const JoinPage: React.FC = () => {
     }
   };
 
+  const handleConfirmAuthClick = async () => {
+    try {
+      // 클라이언트에서 서버로 코드 확인 요청을 보냄
+      const response = await axios.post('http://localhost:8080/api/email/verification/confirm', {
+        email,
+        code: authCode,
+      });
+
+      setVerificationMessage(response.data.message);
+    } catch (error) {
+      console.error('인증 확인 중 에러:', (error as AxiosError).message);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // 여기에서는 주로 데이터를 백엔드로 전송하는 로직을 구현할 수 있습니다.
 
     console.log('가입 정보:', {
       affiliation,
@@ -142,7 +153,8 @@ const JoinPage: React.FC = () => {
             value={authCode}
             onChange={(event) => setAuthCode(event.target.value)}
           />
-          <ConfirmAuthButton>{'인증확인'}</ConfirmAuthButton>
+          <ConfirmAuthButton onClick={handleConfirmAuthClick}>{'인증확인'}</ConfirmAuthButton>
+          <div>{verificationMessage}</div>
         </FormGroup>
         <FormGroup>
           <label htmlFor="password">비밀번호</label>
