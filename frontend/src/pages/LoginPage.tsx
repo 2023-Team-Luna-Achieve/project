@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -85,9 +86,27 @@ const LoginPage: React.FC = () => {
     setPassword(event.target.value);
   };
 
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      // signin 엔드포인트로 API 호출
+      const response = await axios.post('http://localhost:8080/api/users/signin', {
+        email,
+        password,
+      });
+
+      // 응답을 처리하고, 예를 들어 성공 시 새로운 페이지로 리다이렉트
+      console.log('로그인 성공:', response.data);
+    } catch (error) {
+      // 에러 처리
+      console.error('로그인 실패:', error);
+    }
+  };
+
   return (
     <FormContainer>
-      <Form>
+      <Form onSubmit={handleLogin}>
         <FormGroup>
           <Label>이메일</Label>
           <EmailInput type="email" value={email} onChange={handleEmailChange} />
