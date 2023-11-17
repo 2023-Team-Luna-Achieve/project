@@ -65,6 +65,7 @@ const JoinPage: React.FC = () => {
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
   const [verificationMessage, setVerificationMessage] = useState<string>('');
+  const [isPasswordMatch] = useState(false);
 
   const sendCode = async () => {
     try {
@@ -109,15 +110,34 @@ const JoinPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log('양식 제출 중...');
 
-    console.log('가입 정보:', {
-      affiliation,
-      name,
-      email,
-      authCode,
-      password,
-      passwordConfirm,
-    });
+    // 이메일이 검증되었고 비밀번호가 일치하는지 확인
+    {
+      console.log('가입 정보:', {
+        affiliation,
+        name,
+        email,
+        password,
+      });
+
+      try {
+        console.log('axios.post 이전');
+        const response = await axios.post('http://localhost:8080/api/users/signup', {
+          affiliation,
+          name,
+          email,
+          password,
+        });
+
+        console.log('서버 응답:', response.data);
+      } catch (error) {
+        console.error('서버로의 데이터 전송 중 에러:', error);
+      }
+    }
+    if (!isPasswordMatch) {
+      console.error('비밀번호가 일치하지 않습니다.');
+    }
   };
 
   return (
@@ -132,8 +152,8 @@ const JoinPage: React.FC = () => {
             onChange={(event) => setAffiliation(event.target.value)}
           >
             <option value="">선택하세요</option>
-            <option value="option1">Techeer</option>
-            <option value="option2">Techeer Partners</option>
+            <option value="Techeer">Techeer</option>
+            <option value="TecheerPartners">Techeer Partners</option>
           </Select>
         </FormGroup>
         <FormGroup>
@@ -175,7 +195,9 @@ const JoinPage: React.FC = () => {
           />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <JoinButton type="submit">{'가입하기'}</JoinButton>
+          <JoinButton type="submit" onClick={() => console.log('가입하기 버튼이 클릭되었습니다.')}>
+            {'가입하기'}
+          </JoinButton>
         </div>
       </StyledForm>
     </FormContainer>
