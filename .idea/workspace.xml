@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14c7dc85-2d09-4d61-86d5-0a979d062c2c" name="Changes" comment="" />
+    <list default="true" id="14c7dc85-2d09-4d61-86d5-0a979d062c2c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/repository/SuggestionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/entity/SuggestionComment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/suggestionboard/controller/SuggestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/controller/SuggestionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/suggestionboard/entity/Suggestion.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/entity/Suggestion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/suggestionboard/mapper/SuggestionMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/suggestionboard/repository/SuggestionRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/suggestionboard/service/SuggestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/suggestionboard/service/SuggestionService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,7 +38,19 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -40,9 +63,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/Users/sanga/Desktop/project"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="backend.backend.noticeboard.entity" />
+      <recent name="backend.backend.noticeboard.controller" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
