@@ -91,10 +91,14 @@ const LoginPage: React.FC = () => {
 
     try {
       // signin 엔드포인트로 API 호출
-      const response = await axios.post('http://localhost:8080/api/users/signin', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost:8080/api/users/signin',
+        {
+          email,
+          password,
+        },
+        { withCredentials: true },
+      ); // withCredentials 설정 추가
 
       // 응답을 처리하고, 예를 들어 성공 시 새로운 페이지로 리다이렉트
       console.log('로그인 성공:', response.data);

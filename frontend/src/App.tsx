@@ -9,7 +9,6 @@ import CommunityPage from './pages/CommunityPage';
 import AboutPage from './pages/AboutPage';
 import Reservationpage from './pages/ReservationPage';
 import SelectPage from './pages/SelectPage';
-import ReservationPage from './pages/ReservationPage';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +16,8 @@ const App: React.FC = () => {
       <div>
         <Header />
         <Routes>
-          <Route path="Main" element={<MainPage />} />
+          <Route path="" element={<MainPage />} /> {/* 루트에 대한 라우트 추가 */}
+          <Route path="Main" element={<MainPage />} /> {/* 루트에 대한 라우트 추가 */}
           <Route path="About" element={<AboutPage />} />
           <Route path="Reservation" element={<Reservationpage />} />
           <Route path="Select" element={<SelectPage />} />
