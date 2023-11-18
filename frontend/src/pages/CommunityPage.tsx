@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import NoticePagePage from './CommunityPage';
 
 const PageWrapper = styled.div`
   position: relative;
