@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const backgroundImageUrl = 'https://i.postimg.cc/TPRSF0MG/2023-10-15-8-26-50.png';
 
@@ -61,13 +62,15 @@ const SelectPage: React.FC = () => {
   return (
     <StyledReservationPage>
       <ReserveText>예약</ReserveText>
-      <WhiteBox>
-        <TitleText>Palo Alto</TitleText>
-        <AdditionalText>
-          실리콘밸리의 탄생지(Birthplace of Silicon Valley)로 불리는 미국 캘리포니아주 산타클라라 군에 속한 실리콘밸리
-          북부의 도시의 이름에서 따온 방입니다.
-        </AdditionalText>
-      </WhiteBox>
+      <Link to="/reservation">
+        <WhiteBox>
+          <TitleText>Palo Alto</TitleText>
+          <AdditionalText>
+            실리콘밸리의 탄생지(Birthplace of Silicon Valley)로 불리는 미국 캘리포니아주 산타클라라 군에 속한 실리콘밸리
+            북부의 도시의 이름에서 따온 방입니다.
+          </AdditionalText>
+        </WhiteBox>
+      </Link>
     </StyledReservationPage>
   );
 };

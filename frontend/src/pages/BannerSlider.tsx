@@ -3,6 +3,8 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+
 const BannerSlider: React.FC = () => {
   const settings = {
     centerMode: true,
@@ -125,6 +127,13 @@ const BannerSlider: React.FC = () => {
       margin-left: 60px;
     }
   `;
+
+  const ReservationLink = styled(Link)`
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  `;
+
   return (
     <Banner>
       <StyledSlider {...settings}>
@@ -147,10 +156,12 @@ const BannerSlider: React.FC = () => {
           <Text>Next.js</Text>
         </Background>
       </StyledSlider>
-      <RoundedRectangle>
-        <h3>스마트하게</h3>
-        <h2>동아리방 예약</h2>
-      </RoundedRectangle>
+      <ReservationLink to="/select">
+        <RoundedRectangle>
+          <h3>스마트하게</h3>
+          <h2>동아리방 예약</h2>
+        </RoundedRectangle>
+      </ReservationLink>
       <RoundedRectangle2>
         <h3>관리자와</h3>
         <h2>실시간 채팅</h2>
