@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import Calendar from 'react-calendar'; // react-calendar 라이브러리 추가
+import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
-import CalendarComponent from '../components/Calendar';
 import TimeSelect from '../components/TimeSelect';
 import axios from 'axios';
 
@@ -98,22 +99,27 @@ const Separator = styled.span`
 `;
 
 const ReservationPage: React.FC = () => {
-  const [selectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 초기 상태를 Date | null로 수정
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
   const [members, setMembers] = useState<number>(0);
 
-  console.log('selectedDate:', selectedDate);
-  console.log('startTime:', startTime);
-  console.log('endTime:', endTime);
-  console.log('members:', members);
+  const handleDateChange = (date: Date | Date[] | null) => {
+    setSelectedDate(date as Date | null);
+  };
 
   const handleReservation = async () => {
-    if (selectedDate && startTime && endTime && members > 0) {
-      const formattedDate = selectedDate.toISOString().split('T')[0];
+    console.log('selectedDate:', selectedDate);
+    console.log('startTime:', startTime);
+    console.log('endTime:', endTime);
+    console.log('members:', members);
 
-      const reservationStartTime = new Date(`${formattedDate}T${startTime}:00`);
-      const reservationEndTime = new Date(`${formattedDate}T${endTime}:00`);
+    if (selectedDate && startTime && endTime && members > 0) {
+      const reservationStartTime = new Date(selectedDate);
+      reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]));
+
+      const reservationEndTime = new Date(selectedDate);
+      reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
 
       try {
         // axios를 사용하여 API 호출
@@ -153,7 +159,13 @@ const ReservationPage: React.FC = () => {
             accusamus quibusdam ea voluptatem suscipit!
           </LoremText>
         </HeaderSection>
-        <CalendarComponent />
+        <div>
+          <Calendar
+            onChange={handleDateChange}
+            value={selectedDate}
+            formatDay={(_, date) => (date instanceof Date ? date.getDate().toString() : '')}
+          />
+        </div>
         <TimeSelectContainer>
           <TimeSelect
             value={startTime}

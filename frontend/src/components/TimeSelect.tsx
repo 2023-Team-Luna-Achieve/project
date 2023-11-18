@@ -23,16 +23,14 @@ interface TimeSelectProps {
 }
 
 const TimeSelect: React.FC<TimeSelectProps> = ({ value, onChange, label }) => {
-  const handleChange = (selectedOption: any) => {
-    const selectedTime = selectedOption?.value as string;
-    console.log(`Selected ${label}:`, selectedTime);
-    onChange(selectedTime);
-  };
-
   return (
     <div>
       <label>{label}</label>
-      <Select options={options} value={{ label: value, value }} onChange={handleChange} />
+      <Select
+        options={options}
+        value={{ label: value, value }}
+        onChange={(selectedOption) => onChange(selectedOption?.value as string)}
+      />
     </div>
   );
 };
