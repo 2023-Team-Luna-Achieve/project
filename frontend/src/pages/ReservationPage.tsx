@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar'; // react-calendar 라이브러리 추가
+import Calendar from 'react-calendar'; // 예약 페이지에서 관리
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
@@ -121,8 +121,17 @@ const ReservationPage: React.FC = () => {
       const reservationEndTime = new Date(selectedDate);
       reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
 
-      console.log('reservationStartTime:', reservationStartTime.toISOString());
-      console.log('reservationEndTime:', reservationEndTime.toISOString());
+      // 한국 시간으로 변환
+      const koreanTimeZoneOffset = 9 * 60; // 한국 시간은 UTC+9
+      reservationStartTime.setMinutes(reservationStartTime.getMinutes() + koreanTimeZoneOffset);
+      reservationEndTime.setMinutes(reservationEndTime.getMinutes() + koreanTimeZoneOffset);
+
+      // ISO 문자열 생성 후 .000Z 제거
+      const isoStartTime = reservationStartTime.toISOString().replace(/\.000Z$/, '');
+      const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
+
+      console.log('reservationStartTime:', isoStartTime);
+      console.log('reservationEndTime:', isoEndTime);
 
       try {
         // axios를 사용하여 API 호출
