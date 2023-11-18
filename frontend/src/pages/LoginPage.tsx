@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const FormContainer = styled.div`
   max-width: 600px;
-  margin: 0 auto;
+  margin: 300px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 `;
 
 const Form = styled.form`
@@ -28,8 +30,8 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-weight: bold;
   width: 150px;
-  text-align: right; /* Right-align the label text */
-  margin-left: 0px; /* Add left margin as needed */
+  text-align: right;
+  margin-left: 0px;
 `;
 
 const PasswordInput = styled.input`
@@ -50,6 +52,28 @@ const EmailInput = styled.input`
   margin-top: -3px;
 `;
 
+const LoginButton = styled.button`
+  background-color: #c0c0c0;
+  border: 2px solid #c0c0c0;
+  padding: 10px 40px;
+  margin-left: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+
+  &:hover {
+    background-color: #000000;
+    border-color: #000000;
+  }
+`;
+
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,9 +86,27 @@ const LoginPage: React.FC = () => {
     setPassword(event.target.value);
   };
 
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      // signin 엔드포인트로 API 호출
+      const response = await axios.post('http://localhost:8080/api/users/signin', {
+        email,
+        password,
+      });
+
+      // 응답을 처리하고, 예를 들어 성공 시 새로운 페이지로 리다이렉트
+      console.log('로그인 성공:', response.data);
+    } catch (error) {
+      // 에러 처리
+      console.error('로그인 실패:', error);
+    }
+  };
+
   return (
     <FormContainer>
-      <Form>
+      <Form onSubmit={handleLogin}>
         <FormGroup>
           <Label>이메일</Label>
           <EmailInput type="email" value={email} onChange={handleEmailChange} />
@@ -74,7 +116,7 @@ const LoginPage: React.FC = () => {
           <PasswordInput type="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <button type="submit">로그인</button>
+          <LoginButton type="submit">로그인</LoginButton>
         </div>
       </Form>
     </FormContainer>

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +58,10 @@ public class UserService {
         }
 
         throw new InvalidValueException(ErrorCode.BAD_LOGIN);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
     }
 }

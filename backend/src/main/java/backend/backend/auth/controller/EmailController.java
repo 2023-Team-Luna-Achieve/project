@@ -1,5 +1,6 @@
 package backend.backend.auth.controller;
 
+import backend.backend.auth.dto.EmailRequest;
 import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationRequest;
 import backend.backend.auth.dto.VerificationResponse;
@@ -15,8 +16,8 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/request")
-    public ResponseEntity<EmailSendResponse> emailVerificationRequest(@RequestParam String email) throws Exception {
-        return ResponseEntity.ok().body(emailService.sendEmailIfNotExists(email));
+    public ResponseEntity<EmailSendResponse> emailVerificationRequest(@RequestBody EmailRequest emailRequest) throws Exception {
+        return ResponseEntity.ok().body(emailService.sendEmailIfNotExists(emailRequest.getEmail()));
     }
 
     @PostMapping("/confirm")

@@ -40,6 +40,10 @@ public class EmailService {
         message.setSubject("예약 완료");//제목
 
         String msgg="";
+        msgg+="<img " +
+                "src='https://miro.medium.com/v2/resize:fit:1200/1*lL3lJHoc96tbsPw8BKd27g.jpeg' " +
+                "style='display: block; width: 900px; height: 300px' " +
+                ">";
         msgg+= "<div style='margin:20px;'>";
         msgg+= "<h1> Team Achieve 입니다. </h1>";
         msgg+= "<br>";
@@ -51,6 +55,13 @@ public class EmailService {
         msgg+= "예약한 방 : <strong>";
         msgg+=  roomName +"</strong><div><br/> ";
         msgg+= "</div>";
+        msgg+= "</div>";
+        msgg+= "</div>";
+        msgg+= "<br>";
+        msgg+= "<br>";
+        msgg+= "<br>";
+        msgg+= "<br>";
+        msgg+= "<br>";
         message.setText(msgg, "utf-8", "html");//내용
         message.setFrom(new InternetAddress("academyschool7@gmail.com","Achieve"));//보내는 사람
         return message;
