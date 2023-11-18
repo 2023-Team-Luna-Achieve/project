@@ -85,12 +85,25 @@ public class ReservationService {
     }
 
     public boolean cancelReservation(Long reservationId) {
+        Long userId = (long) session.getAttribute("userId");
+        User user = userService.findById(userId);
+
         Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
 
-        if (reservation == null) {
+        if (reservation == null || !reservation.getUser().getId().equals(userId)) {
             return false;
         }
         reservationRepository.delete(reservation);
         return true;
     }
+
+//    public boolean cancelReservation(Long reservationId) {
+//        Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
+//
+//        if (reservation == null) {
+//            return false;
+//        }
+//        reservationRepository.delete(reservation);
+//        return true;
+//    }
 }

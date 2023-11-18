@@ -22,7 +22,6 @@ public class ReservationController {
     //예약 생성
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-
         ReservationResponse response = reservationService.createReservation(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -37,7 +36,6 @@ public class ReservationController {
     //예약 취소
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
-
         boolean success = reservationService.cancelReservation(reservationId);
 
         if (success) {
