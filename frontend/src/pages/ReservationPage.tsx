@@ -121,13 +121,16 @@ const ReservationPage: React.FC = () => {
       const reservationEndTime = new Date(selectedDate);
       reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
 
+      console.log('reservationStartTime:', reservationStartTime.toISOString());
+      console.log('reservationEndTime:', reservationEndTime.toISOString());
+
       try {
         // axios를 사용하여 API 호출
         const response = await axios.post('http://localhost:8080/api/reservation', {
           reservationStartTime: reservationStartTime.toISOString(),
           reservationEndTime: reservationEndTime.toISOString(),
           members,
-          meetingRoomId: 2,
+          meetingRoomId: 1,
         });
 
         if (response.status === 200) {
