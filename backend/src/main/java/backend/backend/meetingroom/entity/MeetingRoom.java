@@ -1,6 +1,5 @@
 package backend.backend.meetingroom.entity;
 
-import backend.backend.reservation.entity.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,22 +15,9 @@ import javax.persistence.*;
 public class MeetingRoom {
     @Id @GeneratedValue
     private Long id;
-
     String name;
 
-//    @OneToOne
-//    @JoinColumn(name = "reservation_id")
-//    private Reservation reservation;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    public MeetingRoom(String name, Status status) {
+    public MeetingRoom(String name) {
         this.name = name;
-        this.status = status;
-    }
-
-    public void changeStatusToImpossible() {
-        this.status = Status.IMPOSSIBLE;
     }
 }
