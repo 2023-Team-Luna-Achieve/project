@@ -1,10 +1,7 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
-import backend.backend.exception.AuthenticationException;
-import backend.backend.exception.ErrorCode;
-import backend.backend.exception.InvalidValueException;
-import backend.backend.exception.UnVerifiedAccountException;
+import backend.backend.exception.*;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
@@ -49,9 +46,12 @@ public class UserService {
 
     public SignInResponse processSignIn (SignInRequest signInRequest) {
         User user = findUserByEmail(signInRequest.getEmail());
+        System.out.println("id: " + session.getId());
         if (user != null) {
             if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword())) {
                 session.setAttribute("userId", user.getId());
+                Long userId = (long) session.getAttribute("userId");
+                System.out.println(userId + " : 에잇 시팔");
                 return new SignInResponse(200, true, "로그인이 완료 되었습니다", UserDto.of(user));
             }
             throw new InvalidValueException(ErrorCode.BAD_LOGIN);
@@ -63,5 +63,13 @@ public class UserService {
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
+    }
+
+    public long loginConfirm() {
+        if (session.getAttribute("userId") == null) {
+            throw new NotLoginException(ErrorCode.NEED_LOGIN);
+        }
+
+        return (long) session.getAttribute("userId");
     }
 }
