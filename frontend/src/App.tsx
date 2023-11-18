@@ -16,7 +16,8 @@ const App: React.FC = () => {
       <div>
         <Header />
         <Routes>
-          <Route path="Main" element={<MainPage />} />
+          <Route path="" element={<MainPage />} /> {/* 루트에 대한 라우트 추가 */}
+          <Route path="Main" element={<MainPage />} /> {/* 루트에 대한 라우트 추가 */}
           <Route path="About" element={<AboutPage />} />
           <Route path="Reservation" element={<Reservationpage />} />
           <Route path="Select" element={<SelectPage />} />
