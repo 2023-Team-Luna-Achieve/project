@@ -26,7 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin() // 로그인 폼 활성화
                 .and()
-                .logout(); // 로그아웃 활성화
+                .logout()
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+//                    .logoutSuccessUrl("/")  // 로그아웃 활성화
+                    .permitAll();
     }
 
     @Bean
@@ -36,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedOrigin("*"); // 모든 Origin 허용
         config.addAllowedMethod("*"); // 모든 HTTP Method 허용
         config.addAllowedHeader("*"); // 모든 Header 허용
+        config.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
