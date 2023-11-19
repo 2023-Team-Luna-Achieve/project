@@ -9,7 +9,6 @@ import CommunityPage from './pages/CommunityPage';
 import AboutPage from './pages/AboutPage';
 import Reservationpage from './pages/ReservationPage';
 import SelectPage from './pages/SelectPage';
-import ReservationPage from './pages/ReservationPage';
 
 const App: React.FC = () => {
   return (

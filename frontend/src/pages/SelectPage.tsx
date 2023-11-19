@@ -58,11 +58,6 @@ const ReserveText = styled.div`
   font-weight: 300;
 `;
 
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
-`;
-
 const SelectPage: React.FC = () => {
   return (
     <StyledReservationPage>
