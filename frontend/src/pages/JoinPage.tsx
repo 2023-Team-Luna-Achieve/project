@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from '../util/axiosConfig';
 import { AxiosError } from 'axios';
 
 const FormContainer = styled.div`
@@ -75,7 +75,7 @@ const JoinPage: React.FC = () => {
 
       console.log(`코드가 성공적으로 전송되었습니다: ${email}`);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if ((error as AxiosError).isAxiosError) {
         // Axios 에러인 경우
         console.error('코드 전송 중 에러:', (error as AxiosError).message);
       } else {
