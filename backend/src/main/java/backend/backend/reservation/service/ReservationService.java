@@ -96,14 +96,4 @@ public class ReservationService {
         reservationRepository.delete(reservation);
         return true;
     }
-
-//    public boolean cancelReservation(Long reservationId) {
-//        Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
-//
-//        if (reservation == null) {
-//            return false;
-//        }
-//        reservationRepository.delete(reservation);
-//        return true;
-//    }
 }
