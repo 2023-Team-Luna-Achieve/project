@@ -3,7 +3,7 @@ import Calendar from 'react-calendar'; // 예약 페이지에서 관리
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
-import axios from 'axios';
+import axios from '../util/axiosConfig';
 
 const ReservationPageWrapper = styled.div`
   display: flex;
@@ -142,7 +142,7 @@ const ReservationPage: React.FC = () => {
           meetingRoomId: 1,
         });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           console.log('Reservation successful');
         } else {
           console.error('Reservation failed');
