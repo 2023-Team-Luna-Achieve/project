@@ -22,7 +22,6 @@ import java.util.NoSuchElementException;
 public class UserService {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
-//    private final HttpSession session;
 
     private SignUpResponse create(User user) {
         userRepository.save(user);
@@ -49,17 +48,23 @@ public class UserService {
 
     public SignInResponse processSignIn (SignInRequest signInRequest, HttpSession session) {
         User user = findUserByEmail(signInRequest.getEmail());
-        System.out.println("id: " + session.getId());
         if (user != null) {
             if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword())) {
                 session.setAttribute("userId", user.getId());
-                Long userId = (long) session.getAttribute("userId");
-                return new SignInResponse(200, true, "로그인이 완료 되었습니다", UserDto.of(user));
+                return new SignInResponse("로그인이 완료 되었습니다", UserDto.of(user));
             }
             throw new InvalidValueException(ErrorCode.BAD_LOGIN);
         }
-
         throw new InvalidValueException(ErrorCode.BAD_LOGIN);
+    }
+
+    public String processSignOut(HttpSession session) {
+        System.out.println("뭔데 : " + session.getAttribute("userId"));
+        if (session.getAttribute("userId") == null) {
+            throw new NotLoginException(ErrorCode.NOT_LOGIN);
+        }
+        session.invalidate();
+        return "로그아웃 완료되었습니다.";
     }
 
     public User findById(Long id) {
@@ -67,12 +72,10 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
     }
 
-    public long loginConfirm(HttpSession session) {
-        System.out.println("id: " + session.getId());
+    public String loginConfirm(HttpSession session) {
         if (session.getAttribute("userId") == null) {
             throw new NotLoginException(ErrorCode.NEED_LOGIN);
         }
-
-        return (long) session.getAttribute("userId");
+        return "로그인 상태입니다";
     }
 }

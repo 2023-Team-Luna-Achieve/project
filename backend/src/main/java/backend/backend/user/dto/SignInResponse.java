@@ -7,14 +7,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SignInResponse {
-    private int status;
-    private boolean success;
     private String message;
     private UserDto user;
 
-    public SignInResponse(int status, boolean success, String message, UserDto user) {
-        this.status = status;
-        this.success = success;
+    public SignInResponse(String message, UserDto user) {
         this.message = message;
         this.user = user;
     }

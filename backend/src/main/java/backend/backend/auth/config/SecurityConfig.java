@@ -22,7 +22,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable() // CSRF 보호를 무시할 경로 패턴
                 .authorizeRequests()
-//                .antMatchers("/public/**").permitAll() // '/public/' 경로로 시작하는 요청은 모두 허용
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated() // 그 외의 요청은 인증이 필요
                 .and()
@@ -31,19 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
-//                    .logoutSuccessUrl("/")  // 로그아웃 활성화
                     .permitAll();
     }
 }
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.addAllowedOriginPattern("*"); // 모든 Origin 허용
-//        config.
-//        config.setAllowCredentials(true);
-//
-//        source.registerCorsConfiguration("/**", config);
-//        return new CorsFilter(source);
-//    }
-
