@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
 
@@ -19,7 +22,7 @@ import java.util.NoSuchElementException;
 public class UserService {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
-    private final HttpSession session;
+//    private final HttpSession session;
 
     private SignUpResponse create(User user) {
         userRepository.save(user);
@@ -44,14 +47,13 @@ public class UserService {
     }
 
 
-    public SignInResponse processSignIn (SignInRequest signInRequest) {
+    public SignInResponse processSignIn (SignInRequest signInRequest, HttpSession session) {
         User user = findUserByEmail(signInRequest.getEmail());
         System.out.println("id: " + session.getId());
         if (user != null) {
             if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword())) {
                 session.setAttribute("userId", user.getId());
                 Long userId = (long) session.getAttribute("userId");
-                System.out.println(userId + " : 에잇 시팔");
                 return new SignInResponse(200, true, "로그인이 완료 되었습니다", UserDto.of(user));
             }
             throw new InvalidValueException(ErrorCode.BAD_LOGIN);
@@ -65,7 +67,8 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
     }
 
-    public long loginConfirm() {
+    public long loginConfirm(HttpSession session) {
+        System.out.println("id: " + session.getId());
         if (session.getAttribute("userId") == null) {
             throw new NotLoginException(ErrorCode.NEED_LOGIN);
         }
