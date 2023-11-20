@@ -15,7 +15,6 @@ import javax.persistence.*;
 public class MeetingRoom {
     @Id @GeneratedValue
     private Long id;
-
     String name;
 
     public MeetingRoom(String name) {
