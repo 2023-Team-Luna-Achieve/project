@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -16,6 +18,8 @@ import javax.validation.Valid;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final HttpSession session;
+
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -26,11 +30,11 @@ public class UserController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<SignInResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) {
-        return ResponseEntity.ok().body(userService.processSignIn(signInRequest));
+        return ResponseEntity.ok().body(userService.processSignIn(signInRequest, session));
     }
 
     @GetMapping("/login-confirm")
     public ResponseEntity<Long> confirm() {
-        return ResponseEntity.ok().body(userService.loginConfirm());
+        return ResponseEntity.ok().body(userService.loginConfirm(session));
     }
 }
