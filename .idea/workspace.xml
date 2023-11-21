@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="14c7dc85-2d09-4d61-86d5-0a979d062c2c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/repository/SuggestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/repository/SuggestionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,12 +55,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/Users/sanga/Desktop/project"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sanga/Desktop/project&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="backend.backend.noticeboard.entity" />

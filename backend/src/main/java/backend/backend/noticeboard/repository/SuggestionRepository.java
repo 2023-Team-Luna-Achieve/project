@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface SuggestionRepository extends JpaRepository<Suggestion, Long> {
     Optional<Suggestion> findById(Long id);
-    Page<Suggestion> findByUserId(Long userId, Pageable pageable);
+//    Page<Suggestion> findByUserId(Long userId, Pageable pageable);
 
 }

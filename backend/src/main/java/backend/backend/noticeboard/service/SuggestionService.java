@@ -5,7 +5,7 @@ import backend.backend.noticeboard.dto.SuggestionResponseDto;
 
 import java.util.List;
 
-public abstract class SuggestionService {
+public interface SuggestionService {
     public abstract List<SuggestionResponseDto> getAllSuggestion();
 
     public abstract SuggestionResponseDto getSuggestionById(Long id);

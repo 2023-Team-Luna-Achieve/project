@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class SuggestionServiceImpl implements SuggestionService {
-    //왜 implements를 extends로 바꾸라고 뜰까요?
 
     private final SuggestionRepository suggestionRepository;
 
