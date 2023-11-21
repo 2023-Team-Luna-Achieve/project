@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommentRequestDto {
-    private Long noticeBoardId;
+public class SuggestionCommentRequestDto {
+    private Long suggestionId;
     private Long userId;
     private String context;
-}w
+}
