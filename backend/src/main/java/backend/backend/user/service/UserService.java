@@ -59,7 +59,6 @@ public class UserService {
     }
 
     public String processSignOut(HttpSession session) {
-        System.out.println("뭔데 : " + session.getAttribute("userId"));
         if (session.getAttribute("userId") == null) {
             throw new NotLoginException(ErrorCode.NOT_LOGIN);
         }
@@ -72,10 +71,10 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
     }
 
-    public String loginConfirm(HttpSession session) {
+    public LoginConfirmResponse loginConfirm(HttpSession session) {
         if (session.getAttribute("userId") == null) {
-            throw new NotLoginException(ErrorCode.NEED_LOGIN);
+            return new LoginConfirmResponse("로그인이 필요합니다", false);
         }
-        return "로그인 상태입니다";
+        return new LoginConfirmResponse("로그인이 되어있습니다", true);
     }
 }
