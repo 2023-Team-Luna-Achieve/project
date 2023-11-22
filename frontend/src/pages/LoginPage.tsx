@@ -96,7 +96,7 @@ const LoginPage: React.FC = () => {
         password,
       }); // withCredentials 설정 추가
 
-      // 응답을 처리하고, 예를 들어 성공 시 새로운 페이지로 리다이렉트
+      // 응답을 처리하고, 예를 들어 성공 시 새로운 페이지로 리다이렉트 + 전역적으로 로그인 상태 확인중인지 받기
       console.log('로그인 성공:', response.data);
 
       await handleLoginVerification();
@@ -105,7 +105,6 @@ const LoginPage: React.FC = () => {
       console.error('로그인 실패:', error);
     }
   };
-
   const handleLoginVerification = async () => {
     try {
       // 로그인 검증을 위한 요청
