@@ -9,7 +9,6 @@ import CommunityPage from './pages/CommunityPage';
 import AboutPage from './pages/AboutPage';
 import Reservationpage from './pages/ReservationPage';
 import SelectPage from './pages/SelectPage';
-import MyPage from './pages/MyPage';
 
 const App: React.FC = () => {
   return (
@@ -26,7 +25,6 @@ const App: React.FC = () => {
           <Route path="Login" element={<LoginPage />} />
           <Route path="Join" element={<JoinPage />} />
           <Route path="Community" element={<CommunityPage />} />
-          <Route path="MyPage" element={<MyPage />} />
         </Routes>
       </div>
     </Router>
