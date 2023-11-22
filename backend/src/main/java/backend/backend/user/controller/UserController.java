@@ -37,7 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/login-confirm")
-    public ResponseEntity<String> confirm() {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<LoginConfirmResponse> confirm() {
         return ResponseEntity.ok().body(userService.loginConfirm(session));
     }
 }
