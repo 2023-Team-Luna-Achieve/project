@@ -43,12 +43,24 @@ public class ReservationService {
         User user = userService.findById(userId);
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
                 .orElse(new MeetingRoom());
+
+        // 이미 예약된 시간인지 확인
+        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime(), request.getReservationEndTime())) {
+            throw new RuntimeException("이미 예약된 시간입니다.");
+        }
         Reservation reservation = request.toEntity(user, meetingRoom);
 
         emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
         return reservationRepository.save(reservation);
     }
 
+    private boolean isTimeSlotAlreadyReserved(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime) {
+        // 주어진 회의실과 시간 범위에 대해 이미 예약된 예약이 있는지 확인
+        List<Reservation> existingReservations = reservationRepository.findByMeetingRoomIdAndReservationStartTimeBetweenOrReservationEndTimeBetween(
+                meetingRoomId, startTime, endTime, startTime, endTime
+        );
+        return !existingReservations.isEmpty();
+    }
 
     public ReservationResponse convertToResponse(Reservation reservation) {
         String startTimeAlert = startTimeMaker(reservation.getReservationStartTime());
@@ -96,14 +108,4 @@ public class ReservationService {
         reservationRepository.delete(reservation);
         return true;
     }
-
-//    public boolean cancelReservation(Long reservationId) {
-//        Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
-//
-//        if (reservation == null) {
-//            return false;
-//        }
-//        reservationRepository.delete(reservation);
-//        return true;
-//    }
 }
