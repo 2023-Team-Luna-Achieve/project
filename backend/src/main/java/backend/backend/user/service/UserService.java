@@ -58,12 +58,12 @@ public class UserService {
         throw new InvalidValueException(ErrorCode.BAD_LOGIN);
     }
 
-    public String processSignOut(HttpSession session) {
+    public SignOutResponse processSignOut(HttpSession session) {
         if (session.getAttribute("userId") == null) {
             throw new NotLoginException(ErrorCode.NOT_LOGIN);
         }
         session.invalidate();
-        return "로그아웃 완료되었습니다.";
+        return new SignOutResponse("로그아웃 완료되었습니다.");
     }
 
     public User findById(Long id) {
