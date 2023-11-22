@@ -11,6 +11,5 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     List<Reservation> findByUserId(Long userId);
-
     List<Reservation> findByMeetingRoomIdAndReservationStartTimeBetweenOrReservationEndTimeBetween(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime startTime1, LocalDateTime endTime1);
 }
