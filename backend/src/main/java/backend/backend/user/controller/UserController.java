@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/signout")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> signOut() {
+    public ResponseEntity<SignOutResponse> signOut() {
         return ResponseEntity.ok().body(userService.processSignOut(session));
     }
 
