@@ -50,19 +50,31 @@ services:
   nginx:
     container_name: nginx
     build:
-      context: devops/nginx
+      context: devops/nginx/prod
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./devops/nginx/nginx_develop.conf:/etc/nginx/nginx.conf
+      - ./devops/nginx/prod/nginx_develop.conf:/etc/nginx/nginx.conf
+      - ./devops/certbot/conf:/etc/letsencrypt
+      - ./devops/certbot/www:/var/www/certbot
       - build_folder:/var/www/frontend
     depends_on:
       - backend
-    expose:
-      - '80'
+#    expose:
+#      - '80'
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./devops/certbot/conf:/etc/letsencrypt
+      - ./devops/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - nginx
 
 volumes:
   mysql_data:
