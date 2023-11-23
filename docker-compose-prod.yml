@@ -1,4 +1,4 @@
-version: '3'
+version: "3.8"
 
 services:
   backend:
@@ -57,21 +57,22 @@ services:
       - "443:443"
     volumes:
       - ./devops/nginx/prod/nginx_develop.conf:/etc/nginx/nginx.conf
-      - ./devops/certbot/conf:/etc/letsencrypt
-      - ./devops/certbot/www:/var/www/certbot
+      - ./devops/nginx/certbot/conf:/etc/letsencrypt
+      - ./devops/nginx/certbot/www:/var/www/certbot
       - build_folder:/var/www/frontend
     depends_on:
       - backend
-#    expose:
-#      - '80'
+    expose:
+      - '80'
+      - '443'
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   certbot:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./devops/certbot/conf:/etc/letsencrypt
-      - ./devops/certbot/www:/var/www/certbot
+      - ./devops/nginx/certbot/conf:/etc/letsencrypt
+      - ./devops/nginx/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     depends_on:
       - nginx
