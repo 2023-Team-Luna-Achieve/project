@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import Calendar from 'react-calendar'; // 예약 페이지에서 관리
+import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
-import CalendarComponent from '../components/Calendar';
 import TimeSelect from '../components/TimeSelect';
+import axios from '../util/axiosConfig';
 
 const ReservationPageWrapper = styled.div`
   display: flex;
@@ -97,28 +99,59 @@ const Separator = styled.span`
 `;
 
 const ReservationPage: React.FC = () => {
-  const [startTime, setStartTime] = useState<string>(''); // 'startTime'를 문자열로 초기화
-  const [endTime, setEndTime] = useState<string>(''); // 'endTime'를 문자열로 초기화
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 초기 상태를 Date | null로 수정
+  const [startTime, setStartTime] = useState<string>('');
+  const [endTime, setEndTime] = useState<string>('');
+  const [members, setMembers] = useState<number>(0);
 
-  const handleReservation = () => {
-    if (startTime && endTime) {
-      fetch('https://your-backend-api.com/reservation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ startTime, endTime }),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('Reservation successful');
-          } else {
-            console.error('Reservation failed');
-          }
-        })
-        .catch((error) => {
-          console.error('Reservation failed:', error);
+  const handleDateChange = (date: Date | Date[] | null) => {
+    setSelectedDate(date as Date | null);
+  };
+
+  const handleReservation = async () => {
+    console.log('selectedDate:', selectedDate);
+    console.log('startTime:', startTime);
+    console.log('endTime:', endTime);
+    console.log('members:', members);
+
+    if (selectedDate && startTime && endTime && members > 0) {
+      const reservationStartTime = new Date(selectedDate);
+      reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]));
+
+      const reservationEndTime = new Date(selectedDate);
+      reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
+
+      // 한국 시간으로 변환
+      const koreanTimeZoneOffset = 9 * 60; // 한국 시간은 UTC+9
+      reservationStartTime.setMinutes(reservationStartTime.getMinutes() + koreanTimeZoneOffset);
+      reservationEndTime.setMinutes(reservationEndTime.getMinutes() + koreanTimeZoneOffset);
+
+      // ISO 문자열 생성 후 .000Z 제거
+      const isoStartTime = reservationStartTime.toISOString().replace(/\.000Z$/, '');
+      const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
+
+      console.log('reservationStartTime:', isoStartTime);
+      console.log('reservationEndTime:', isoEndTime);
+
+      try {
+        // axios를 사용하여 API 호출
+        const response = await axios.post('http://localhost:8080/api/reservation', {
+          reservationStartTime: reservationStartTime.toISOString(),
+          reservationEndTime: reservationEndTime.toISOString(),
+          members,
+          meetingRoomId: 1,
         });
+
+        if (response.status === 201) {
+          console.log('Reservation successful');
+        } else {
+          console.error('Reservation failed');
+        }
+      } catch (error) {
+        console.error('Reservation failed:', error);
+      }
+    } else {
+      console.error('Please fill in all fields');
     }
   };
 
@@ -138,7 +171,13 @@ const ReservationPage: React.FC = () => {
             accusamus quibusdam ea voluptatem suscipit!
           </LoremText>
         </HeaderSection>
-        <CalendarComponent />
+        <div>
+          <Calendar
+            onChange={handleDateChange}
+            value={selectedDate}
+            formatDay={(_, date) => (date instanceof Date ? date.getDate().toString() : '')}
+          />
+        </div>
         <TimeSelectContainer>
           <TimeSelect
             value={startTime}
@@ -148,6 +187,16 @@ const ReservationPage: React.FC = () => {
           <Separator>~</Separator>
           <TimeSelect value={endTime} onChange={(selectedTime: string) => setEndTime(selectedTime)} label="종료 시간" />
         </TimeSelectContainer>
+        <div>
+          <label>인원</label>
+          <input
+            type="number"
+            value={members}
+            onChange={(e) => setMembers(parseInt(e.target.value, 10))}
+            min={1}
+            max={10}
+          />
+        </div>
         <Button onClick={handleReservation}>예약하기</Button>
       </ContentWrapper>
     </ReservationPageWrapper>

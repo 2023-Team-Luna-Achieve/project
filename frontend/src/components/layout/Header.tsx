@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from '../../util/axiosConfig';
 
 const StyledHeaderBorder = styled.div`
   border-bottom: 1px solid #dddddd;
@@ -46,6 +46,7 @@ const Header = () => {
         setIsLoggedIn(false);
       });
   }, [isLoggedIn]);
+
   return (
     <StyledHeaderBorder>
       <StyledHeader>
