@@ -109,9 +109,6 @@ const ReservationPage: React.FC = () => {
   };
 
   const handleReservation = async () => {
-    console.log('selectedDate:', selectedDate);
-    console.log('startTime:', startTime);
-    console.log('endTime:', endTime);
     console.log('members:', members);
 
     if (selectedDate && startTime && endTime && members > 0) {

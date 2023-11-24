@@ -185,8 +185,8 @@ const JoinPage: React.FC = () => {
 
   return (
     <>
-      <JoinText className="Gaib">가입하기</JoinText>
-      <LoginText className="imi">
+      <JoinText className="join">가입하기</JoinText>
+      <LoginText className="already">
         이미 계정이 있습니까?{' '}
         <LoginLink to="/login" className="login">
           로그인
