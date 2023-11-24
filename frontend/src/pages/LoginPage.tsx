@@ -30,6 +30,11 @@ const Input = styled.input`
   width: 400px;
 `;
 
+const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new-password' })`
+  margin-bottom: 0px;
+  border-radius: 0;
+`;
+
 const StyledForm = styled.form``;
 const FormGroup = styled.div`
   display: flex;
@@ -108,7 +113,7 @@ const LoginPage: React.FC = () => {
         </FormGroup>
         <FormGroup>
           <label htmlFor="password">비밀번호</label>
-          <Input id="password" name="password" value={password} onChange={handlePasswordChange} />
+          <PasswordInput id="password" name="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
         <div>
           <LoginButton type="submit">로그인</LoginButton>
