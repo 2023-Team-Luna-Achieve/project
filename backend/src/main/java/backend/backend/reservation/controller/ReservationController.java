@@ -42,9 +42,9 @@ public class ReservationController {
         boolean success = reservationService.cancelReservation(reservationId);
 
         if (success) {
-            return ResponseEntity.ok("예약이 취소되었습니다");
+            return ResponseEntity.ok("예약이 취소되었습니다.");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("예약을 찾을 수 없습니다");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("예약을 찾을 수 없습니다.");
         }
     }
 }
