@@ -1,4 +1,4 @@
-version: '3'
+version: "3.8"
 
 services:
   mysql:
@@ -72,6 +72,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./devops/nginx/dev/nginx_develop.conf:/etc/nginx/nginx.conf
       - build_folder:/var/www/frontend
@@ -79,6 +80,7 @@ services:
       - backend
     expose:
       - '80'
+      - '443'
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   certbot: # certbot 서비스 추가
