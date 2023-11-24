@@ -19,7 +19,7 @@ services:
     volumes:
       - ./backend:/app
       - ./backend/target/classes:/app/classes
-
+  
   frontend:
     container_name: frontend
     build:
@@ -38,7 +38,7 @@ services:
       - npm_config_cache=/frontend/.npm/_cacache
     depends_on:
       - backend
-
+    
   redis:
     hostname: redis
     container_name: redis
