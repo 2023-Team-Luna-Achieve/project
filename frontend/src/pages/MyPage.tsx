@@ -49,7 +49,7 @@ const MyPage: React.FC = () => {
             <p>시작 시간: {reservation.startTime}</p>
             <p>종료 시간: {reservation.endTime}</p>
             <p>인원: {reservation.members}</p>
-            <p>회의실: {reservation.meetingRoom.name}</p>
+            <p>방 이름: {reservation.meetingRoom.name}</p>
           </li>
         ))}
       </ul>
