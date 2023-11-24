@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from '../util/axiosConfig';
+import axios from '../util/axiosConfig';
 
 const FormContainer = styled.div`
   max-width: 600px;
