@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from '../util/axiosConfig';
+import axios from '../util/axios.Config';
+import { useNavigate } from 'react-router-dom';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -67,6 +68,7 @@ const LoginButton = styled.button`
   }
 `;
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +99,10 @@ const LoginPage: React.FC = () => {
     try {
       // 로그인 검증을 위한 요청
       const confirmResponse = await axios.get('http://localhost:8080/api/users/login-confirm');
+
+      const redirectPath = '/main';
+
+      navigate(redirectPath);
 
       // 로그인 검증 응답을 확인하고 필요에 따라 처리
       console.log('로그인 검증 성공:', confirmResponse.data);

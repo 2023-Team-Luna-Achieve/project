@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar'; // 예약 페이지에서 관리
+import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
-import axios from '../util/axiosConfig';
+import axios from '../util/axios.Config';
 
 const ReservationPageWrapper = styled.div`
   display: flex;
