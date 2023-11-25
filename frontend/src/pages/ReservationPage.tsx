@@ -5,97 +5,59 @@ import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
 import axios from '../util/axiosConfig';
 
-const ReservationPageWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-  overflow: hidden;
-`;
+const ReservationPageWrapper = styled.div``;
 
 const ContentWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: center;
 `;
 
-const HeaderSection = styled.div`
-  display: flex;
-  align-items: flex-start;
-  text-align: left;
-  margin-top: 10px;
-`;
+const HeaderSection = styled.div``;
 
 const Title = styled.h1`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 29px;
-  color: #000000;
-  margin-top: 40px;
+  font-size: 50px;
+  font-weight: bold;
+  color: #3a3a3a;
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 0px;
 `;
 
-const LoremText = styled.p`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 20px;
-  color: #c9c9c9;
-  margin-top: 10px;
-  margin-left: 30px;
-  text-align: left;
+const CalendarSelectContainer = styled.div`
+  margin-top: 50px;
 `;
 
-const ProfileImage = styled.div`
-  width: 100px;
-  height: 100px;
-  background: #ffffff;
-  border: 1px solid #cccccc;
-  border-radius: 50%;
-  margin-right: 20px;
-`;
+const MemberSelect = styled.div``;
 
-const ProfileImageAndTitle = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
-  align-items: flex-start;
-  margin-right: 1200px;
-  margin-top: 10px;
+  justify-content: center;
+  margin-top: 20px; /* 버튼과 상단 간격 조절 */
 `;
 
 const TimeSelectContainer = styled.div`
   display: flex;
+  flex-direction: column; /* 수직으로 정렬하도록 추가 */
   justify-content: space-between;
   align-items: center;
-  width: 250px;
+  width: 25%;
   margin-top: 20px;
 `;
 
 const Button = styled.button`
-  background-color: #a5a5a5;
-  border: 2px solid #a5a5a5;
-  padding: 10px 40px;
-  margin-left: 10px;
+  border: none;
+  background-color: #c0c0c0;
   color: #ffffff;
-  font-weight: 600;
   font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
-  border-radius: 5px;
+  height: 26px;
+  width: 49%;
   transition:
     background-color 0.3s,
-    border-color 0.3s,
     color 0.3s;
-
   &:hover {
     background-color: #000000;
-    border-color: #000000;
   }
-`;
-const Separator = styled.span`
-  margin: 0 10px;
 `;
 
 const ReservationPage: React.FC = () => {
@@ -154,48 +116,43 @@ const ReservationPage: React.FC = () => {
 
   return (
     <ReservationPageWrapper>
+      <HeaderSection>
+        <Title>Palo Alto 예약하기</Title>
+      </HeaderSection>
       <ContentWrapper>
-        <HeaderSection>
-          <ProfileImageAndTitle>
-            <ProfileImage />
-            <Title>Palo Alto</Title>
-          </ProfileImageAndTitle>
-        </HeaderSection>
-        <HeaderSection>
-          <LoremText>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, delectus! Sunt corrupti repellat iste amet
-            laboriosam non dolorum iusto laudantium quaerat alias. Quasi odio tenetur porro, nihil nulla facere
-            accusamus quibusdam ea voluptatem suscipit!
-          </LoremText>
-        </HeaderSection>
-        <div>
+        <CalendarSelectContainer>
           <Calendar
             onChange={handleDateChange}
             value={selectedDate}
             formatDay={(_, date) => (date instanceof Date ? date.getDate().toString() : '')}
           />
-        </div>
+        </CalendarSelectContainer>
         <TimeSelectContainer>
           <TimeSelect
             value={startTime}
             onChange={(selectedTime: string) => setStartTime(selectedTime)}
-            label="시작 시간"
+            label="예약 시작 시간을 선택하세요."
           />
-          <Separator>~</Separator>
-          <TimeSelect value={endTime} onChange={(selectedTime: string) => setEndTime(selectedTime)} label="종료 시간" />
+          <TimeSelect
+            value={endTime}
+            onChange={(selectedTime: string) => setEndTime(selectedTime)}
+            label="예약 종료 시간을 선택하세요."
+          />
+          <MemberSelect>
+            <label>인원을 선택하세요. (최대 10명)</label>
+            <input
+              type="number"
+              value={members}
+              onChange={(e) => setMembers(parseInt(e.target.value, 10))}
+              min={1}
+              max={10}
+            />
+          </MemberSelect>
         </TimeSelectContainer>
-        <div>
-          <label>인원</label>
-          <input
-            type="number"
-            value={members}
-            onChange={(e) => setMembers(parseInt(e.target.value, 10))}
-            min={1}
-            max={10}
-          />
-        </div>
-        <Button onClick={handleReservation}>예약하기</Button>
       </ContentWrapper>
+      <ButtonContainer>
+        <Button onClick={handleReservation}>예약하기</Button>
+      </ButtonContainer>
     </ReservationPageWrapper>
   );
 };
