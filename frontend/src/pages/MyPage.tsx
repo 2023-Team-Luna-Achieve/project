@@ -1,5 +1,6 @@
 import React from 'react';
-import axios from '../util/axios.Config';
+import axios from '../util/axiosConfig';
+
 const MyPage: React.FC = () => {
   const handleLogout = async () => {
     try {

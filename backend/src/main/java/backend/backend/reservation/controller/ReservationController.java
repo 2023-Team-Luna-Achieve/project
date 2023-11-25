@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final HttpSession httpSession;
 
     //예약 생성
     @PostMapping
@@ -27,8 +29,9 @@ public class ReservationController {
     }
 
     //예약 내역 조회
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@PathVariable Long userId) {
+    @GetMapping("/check")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId() {
+        Long userId = (long) httpSession.getAttribute("userId");
         List<ReservationResponse> reservations = reservationService.getReservationsByUserId(userId);
         return ResponseEntity.ok(reservations);
     }

@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
-import axios from '../util/axios.Config';
+import axios from '../util/axiosConfig';
 
 const ReservationPageWrapper = styled.div`
   display: flex;
