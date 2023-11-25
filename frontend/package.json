@@ -14,7 +14,10 @@
     "@types/react-slick": "^0.23.10",
     "@vitejs/plugin-react": "^4.0.3",
     "axios": "^1.6.2",
+<<<<<<< HEAD
     "formik": "^2.4.5",
+=======
+>>>>>>> 2ad855a526988788bf8f86470cbc6fb15959f79f
     "react": "^18.2.0",
     "react-calendar": "^4.6.1",
     "react-dom": "^18.2.0",
