@@ -33,7 +33,7 @@ const AboutPage: React.FC = () => {
         이 서비스에 대하여
       </IntroText>{' '}
       <IntroText size="20px">
-        이 서비스는 테커 팀루나 프로젝트팀 Achieve에서 만든 테커 스터디룸 예약 시스템 입니다.
+        이 서비스는 테커 팀루나 프로젝트팀 Achieve에서 만든 테커 동아리방 예약 시스템 입니다.
       </IntroText>
     </IntroContainer>
   );

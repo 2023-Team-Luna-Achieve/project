@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
 import axios from '../util/axiosConfig';
+import Select from 'react-select';
 
 const ReservationPageWrapper = styled.div``;
 
@@ -28,12 +29,20 @@ const CalendarSelectContainer = styled.div`
   margin-top: 50px;
 `;
 
-const MemberSelect = styled.div``;
+const MemberSelect = styled.div`
+  margin-top: 10px;
+`;
+
+const Notice = styled.div`
+  margin-top: 15px;
+  color: #7b7b7b;
+  font-size: 14px;
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 20px; /* 버튼과 상단 간격 조절 */
+  margin-top: 30px; /* 버튼과 상단 간격 조절 */
 `;
 
 const TimeSelectContainer = styled.div`
@@ -41,17 +50,17 @@ const TimeSelectContainer = styled.div`
   flex-direction: column; /* 수직으로 정렬하도록 추가 */
   justify-content: space-between;
   align-items: center;
-  width: 25%;
-  margin-top: 20px;
+  width: 20%;
+  margin-top: 40px;
 `;
 
 const Button = styled.button`
   border: none;
   background-color: #c0c0c0;
   color: #ffffff;
-  font-size: 16px;
-  height: 26px;
-  width: 49%;
+  font-size: 20px;
+  height: 40px;
+  width: 10%;
   transition:
     background-color 0.3s,
     color 0.3s;
@@ -64,16 +73,21 @@ const ReservationPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 초기 상태를 Date | null로 수정
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
-  const [members, setMembers] = useState<number>(0);
+  const [selectedMembers, setSelectedMembers] = useState<{ value: number; label: string } | null>({
+    value: 0,
+    label: '0명',
+  });
+
+  const membersOptions = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `${i + 1}명` }));
 
   const handleDateChange = (date: Date | Date[] | null) => {
     setSelectedDate(date as Date | null);
   };
 
   const handleReservation = async () => {
-    console.log('members:', members);
+    console.log('members:', selectedMembers?.value);
 
-    if (selectedDate && startTime && endTime && members > 0) {
+    if (selectedDate && startTime && endTime && selectedMembers?.value !== undefined) {
       const reservationStartTime = new Date(selectedDate);
       reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]));
 
@@ -97,7 +111,7 @@ const ReservationPage: React.FC = () => {
         const response = await axios.post('http://localhost:8080/api/reservation', {
           reservationStartTime: reservationStartTime.toISOString(),
           reservationEndTime: reservationEndTime.toISOString(),
-          members,
+          members: selectedMembers.value,
           meetingRoomId: 1,
         });
 
@@ -128,6 +142,7 @@ const ReservationPage: React.FC = () => {
           />
         </CalendarSelectContainer>
         <TimeSelectContainer>
+          <Notice>* 캘린더에서 날짜를 먼저 선택해주세요.</Notice>
           <TimeSelect
             value={startTime}
             onChange={(selectedTime: string) => setStartTime(selectedTime)}
@@ -139,13 +154,11 @@ const ReservationPage: React.FC = () => {
             label="예약 종료 시간을 선택하세요."
           />
           <MemberSelect>
-            <label>인원을 선택하세요. (최대 10명)</label>
-            <input
-              type="number"
-              value={members}
-              onChange={(e) => setMembers(parseInt(e.target.value, 10))}
-              min={1}
-              max={10}
+            <label>인원을 선택하세요.</label>
+            <Select
+              options={membersOptions}
+              value={selectedMembers}
+              onChange={(selectedOption) => setSelectedMembers(selectedOption)}
             />
           </MemberSelect>
         </TimeSelectContainer>

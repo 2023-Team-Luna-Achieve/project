@@ -24,7 +24,7 @@ interface TimeSelectProps {
 
 const TimeSelect: React.FC<TimeSelectProps> = ({ value, onChange, label }) => {
   return (
-    <div>
+    <div style={{ margin: '10px 0' }}>
       <label>{label}</label>
       <Select
         options={options}
