@@ -31,21 +31,18 @@ const StyledNav = styled.nav`
 `;
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     axios
       .get('http://localhost:8080/api/users/login-confirm')
       .then((response) => {
-        if (response.data.loggedIn) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
+        setIsLoggedIn(response.data.loggedIn);
       })
       .catch((error) => {
         console.error('로그인 상태 확인 중 에러:', error);
         setIsLoggedIn(false);
       });
-  }, [isLoggedIn]);
+  }, []);
 
   return (
     <StyledHeaderBorder>
@@ -68,9 +65,11 @@ const Header = () => {
               <Link to="/Community">Community</Link>
             </li>
             {isLoggedIn ? (
-              <li>
-                <Link to="/Mypage">Mypage</Link>
-              </li>
+              <>
+                <li>
+                  <Link to="/Mypage">Mypage</Link>
+                </li>
+              </>
             ) : (
               <>
                 <li>
@@ -87,4 +86,7 @@ const Header = () => {
     </StyledHeaderBorder>
   );
 };
+
 export default Header;
+
+export {};

@@ -99,7 +99,6 @@ const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new
   margin-bottom: 0px;
   border-radius: 0;
 `;
-
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
   const [email, setEmail] = useState('');
@@ -109,13 +108,11 @@ const JoinPage: React.FC = () => {
   const [name, setName] = useState('');
   const [verificationMessage, setVerificationMessage] = useState<string>('');
   const [isPasswordMatch] = useState(false);
-
   const sendCode = async () => {
     try {
       await axios.post('http://localhost:8080/api/email/verification/request', {
         email: email,
       });
-
       console.log(`코드가 성공적으로 전송되었습니다: ${email}`);
     } catch (error) {
       if ((error as AxiosError).isAxiosError) {
@@ -127,7 +124,6 @@ const JoinPage: React.FC = () => {
       }
     }
   };
-
   const handleSendCodeClick: React.MouseEventHandler<HTMLButtonElement> = async () => {
     try {
       // SendCodeButton이 클릭될 때 email 값을 설정하고 sendCode 함수 호출
@@ -136,7 +132,6 @@ const JoinPage: React.FC = () => {
       console.error('handleSendCodeClick 오류:', (error as AxiosError).message);
     }
   };
-
   const handleConfirmAuthClick = async () => {
     try {
       // 클라이언트에서 서버로 코드 확인 요청을 보냄
@@ -144,17 +139,14 @@ const JoinPage: React.FC = () => {
         email,
         code: authCode,
       });
-
       setVerificationMessage(response.data.message);
     } catch (error) {
       console.error('인증 확인 중 에러:', (error as AxiosError).message);
     }
   };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log('양식 제출 중...');
-
     // 이메일이 검증되었고 비밀번호가 일치하는지 확인
     {
       console.log('가입 정보:', {
@@ -163,7 +155,6 @@ const JoinPage: React.FC = () => {
         email,
         password,
       });
-
       try {
         console.log('axios.post 이전');
         const response = await axios.post('http://localhost:8080/api/users/signup', {
@@ -172,7 +163,6 @@ const JoinPage: React.FC = () => {
           email,
           password,
         });
-
         console.log('서버 응답:', response.data);
       } catch (error) {
         console.error('서버로의 데이터 전송 중 에러:', error);
@@ -182,7 +172,6 @@ const JoinPage: React.FC = () => {
       console.error('비밀번호가 일치하지 않습니다.');
     }
   };
-
   return (
     <>
       <JoinText className="join">가입하기</JoinText>
@@ -256,5 +245,4 @@ const JoinPage: React.FC = () => {
     </>
   );
 };
-
 export default JoinPage;
