@@ -9,6 +9,7 @@ const Title = styled.h1`
   text-align: center;
   margin-top: 60px;
 `;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -44,6 +45,18 @@ const ReservationItem = styled.li`
   border: 1px solid #ccc;
   padding: 10px;
   margin: 10px;
+  position: relative;
+`;
+
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #ff0000;
+  color: #ffffff;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
 `;
 
 type MeetingRoomType = {
@@ -84,6 +97,16 @@ const MyPage: React.FC = () => {
     }
   };
 
+  const handleDeleteReservation = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/reservation/${id}`);
+      setReservations((prevReservations) => prevReservations.filter((reservation) => reservation.id !== id));
+      console.log('예약 삭제 성공');
+    } catch (error) {
+      console.error('예약 삭제 실패', error);
+    }
+  };
+
   return (
     <div>
       <Title>예약 정보</Title>
@@ -95,6 +118,7 @@ const MyPage: React.FC = () => {
             <p>종료 시간: {reservation.endTime}</p>
             <p>인원: {reservation.members}</p>
             <p>방 이름: {reservation.meetingRoom.name}</p>
+            <DeleteButton onClick={() => handleDeleteReservation(reservation.id)}>삭제</DeleteButton>
           </ReservationItem>
         ))}
       </ReservationList>
