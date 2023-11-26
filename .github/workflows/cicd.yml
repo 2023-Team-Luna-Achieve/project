@@ -28,15 +28,12 @@ jobs:
       - name: Make aws RDS env file
         run: echo "${{ secrets.AWS_RDS }}" > ./.env
 
-      - name: Change to backend directory
-        run: cd backend
-
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ./backend/gradlew
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./backend/gradlew build -x test
         shell: bash
 
       - name: Make zip file
