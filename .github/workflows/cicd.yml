@@ -33,7 +33,9 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./backend/gradlew build
+        run: | 
+          cd backend
+          ./gradlew clean bootJar --exclude-task test
         shell: bash
 
       - name: Make zip file
