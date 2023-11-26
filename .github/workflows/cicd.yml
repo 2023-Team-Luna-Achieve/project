@@ -25,6 +25,9 @@ jobs:
       - name: Make application.yml
         run: echo "${{ secrets.APPLICATION_PROD }}" > ./backend/src/main/resources/application-prod.yml
 
+      - name: Remove existing file
+        run: rm -f /opt/achieve/project/devops/nginx/prod/dockerfile
+
       - name: Make aws RDS env file
         run: echo "${{ secrets.AWS_RDS }}" > ./.env
 
