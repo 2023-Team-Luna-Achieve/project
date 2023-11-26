@@ -2,7 +2,7 @@ on:
   push:
     branches: ["feature"]
 
-name: Deploy Spring boot to Amazon EC2
+name: Deploy achieve project to Amazon EC2
 env:
   PROJECT_NAME: achieve
   BUCKET_NAME: ec2-s3-deploy-bucket
