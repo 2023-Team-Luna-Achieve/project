@@ -4,6 +4,7 @@ os: linux
 files:
   - source: /
     destination: /opt/achieve/project
+file_exists_behavior: OVERWRITE
 permissions:
   - object: /opt/achieve/project
     owner: ubuntu
