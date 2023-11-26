@@ -1,9 +1,8 @@
 on:
   push:
-    branches:
-      - feature
+    branches: ["feature"]
 
-name: Deploy String boot to Amazon EC2
+name: Deploy Spring boot to Amazon EC2
 env:
   PROJECT_NAME: achieve
   BUCKET_NAME: ec2-s3-deploy-bucket
