@@ -2,7 +2,7 @@
 
 REPOSITORY=/opt/achieve/project
 #ZIP_FILE=/home/ec2-user/memory_capsule.zip
-COMPOSE_FILE=docker-compose-deploy.yml
+COMPOSE_FILE=docker-compose-prod.yml
 # Decompress the zip file to the repository directory
 #unzip -o $ZIP_FILE -d $REPOSITORY
 
