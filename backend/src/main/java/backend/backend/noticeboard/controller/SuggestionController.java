@@ -50,18 +50,19 @@ public class SuggestionController {
     }
 
     // 특정 글 조회 - 수정중
-//    @GetMapping("/{suggestion_id}")
-//    public ResponseEntity getSuggestion(HttpServletRequest request, @PathVariable("suggestion_id") Long suggestionId) {
-//        Suggestion suggestion = suggestionService.findSuggestion(request, suggestionId);
-//        return new ResponseEntity<>(suggestionMapper.toSuggestionResponseDto(suggestion), HttpStatus.OK);
-//    }
+    @GetMapping("/{suggestion_id}")
+    public ResponseEntity<SuggestionResponseDto> getSuggestionById(@PathVariable Long id) {
+        SuggestionResponseDto suggestionDto = suggestionService.getSuggestionById(id);
+        return ResponseEntity.ok(suggestionDto);
+    }
 
     // 글 수정 - 수정중
-//    @PatchMapping("/{suggestion_id}")
-//    public ResponseEntity patchSuggestion(@PathVariable("suggestion_id") Long suggestionId, @Valid @RequestBody SuggestionPatchDto suggestionPatchDto) {
-//        Suggestion suggestion = suggestionService.updateSuggestion(suggestionMapper.toSuggestion(suggestionPatchDto), suggestionId);
-//        return new ResponseEntity<>(suggestionMapper.toSuggestionResponseDto(suggestion), HttpStatus.CREATED);
-//    }
+    @PatchMapping("/{suggestion_id}")
+    public ResponseEntity<SuggestionResponseDto> updateSuggestion(
+            @PathVariable Long suggestion_id, @RequestBody SuggestionResponseDto suggestionDto) {
+        SuggestionResponseDto updatedSuggestion = suggestionService.updateSuggestion(suggestion_id, suggestionDto);
+        return ResponseEntity.ok(updatedSuggestion);
+    }
 
     // 건의사항 글 삭제 - 수정완료
     @DeleteMapping("/{suggestion_id}")

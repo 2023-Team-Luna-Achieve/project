@@ -14,7 +14,7 @@ public interface SuggestionService {
 
     public abstract SuggestionResponseDto createSuggestion(SuggestionRequestDto suggestionRequestDto);
 
-    public abstract SuggestionResponseDto updateSuggestion(Long id, SuggestionResponseDto suggestionDto);
+    public abstract SuggestionResponseDto updateSuggestion(Long suggestion_id, SuggestionResponseDto suggestionDto);
 
     void deleteSuggestion(Long id);
 }
