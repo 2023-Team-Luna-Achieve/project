@@ -2,6 +2,7 @@ package backend.backend.noticeboard.controller;
 
 import backend.backend.noticeboard.dto.SuggestionRequestDto;
 import backend.backend.noticeboard.dto.SuggestionResponseDto;
+import backend.backend.noticeboard.entity.Suggestion;
 import backend.backend.noticeboard.service.SuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,22 @@ public class SuggestionController {
 
     //모든 건의사항 글 목록 조회 - 수정완료
     @GetMapping("/suggestion")
-    public List<SuggestionResponseDto> getAllSuggestion() {
-        return suggestionService.getAllSuggestion();
+    public List<SuggestionResponseDto> getSuggestionsByPage(@RequestParam(defaultValue = "0") int page) {
+        return suggestionService.getSuggestionsByPage(page);
+    }
+
+    // 특정 ID 이후의 Suggestion을 가져오는 엔드포인트 (페이지네이션)
+    @GetMapping("/after/{id}")
+    public ResponseEntity<List<SuggestionResponseDto>> getSuggestionsAfterId(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
+        List<SuggestionResponseDto> suggestions = suggestionService.getSuggestionsAfterId(id, page);
+        return ResponseEntity.ok(suggestions);
+    }
+
+    //특정 ID 이전의 Suggestion을 가져오는 엔드포인트 (페이지네이션)
+    @GetMapping("/before/{id}")
+    public ResponseEntity<List<SuggestionResponseDto>> getSuggestionsBeforeId(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
+        List<SuggestionResponseDto> suggestions = suggestionService.getSuggestionsBeforeId(id, page);
+        return ResponseEntity.ok(suggestions);
     }
 
     // 특정 글 조회 - 수정중

@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="14c7dc85-2d09-4d61-86d5-0a979d062c2c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/controller/SuggestionCommentController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/dto/SuggestionCommentRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/dto/SuggestionCommentResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/repository/SuggestionCommentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/service/SuggestionCommentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/service/SuggestionCommentServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/controller/NoticeBoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/controller/NoticeBoardController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/controller/SuggestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/controller/SuggestionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/entity/Suggestion.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/entity/Suggestion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/repository/SuggestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/repository/SuggestionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboard/service/SuggestionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/dto/CommentRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/dto/CommentRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/repository/SuggestionCommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/repository/SuggestionCommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/service/SuggestionCommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/service/SuggestionCommentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/service/SuggestionCommentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/backend/noticeboardcomment/service/SuggestionCommentServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +55,9 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2XwMdlpRU8sVFSdH6Mvdlp2Sf8f" />
   <component name="ProjectViewState">

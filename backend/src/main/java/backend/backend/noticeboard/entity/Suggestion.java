@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Suggestion {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "suggestion_id")
     private Long id;
 

@@ -6,7 +6,9 @@ import backend.backend.noticeboard.dto.SuggestionResponseDto;
 import java.util.List;
 
 public interface SuggestionService {
-    public abstract List<SuggestionResponseDto> getAllSuggestion();
+    public abstract List<SuggestionResponseDto> getSuggestionsByPage(int page);
+    public abstract List<SuggestionResponseDto> getSuggestionsAfterId(Long id, int page);
+    public abstract List<SuggestionResponseDto> getSuggestionsBeforeId(Long id, int page);
 
     public abstract SuggestionResponseDto getSuggestionById(Long id);
 

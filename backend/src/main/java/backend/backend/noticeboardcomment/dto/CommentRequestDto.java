@@ -9,4 +9,4 @@ public class CommentRequestDto {
     private Long noticeBoardId;
     private Long userId;
     private String context;
-}w
+}

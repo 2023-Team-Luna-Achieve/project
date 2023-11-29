@@ -5,6 +5,9 @@ import backend.backend.noticeboard.dto.SuggestionResponseDto;
 import backend.backend.noticeboard.entity.Suggestion;
 import backend.backend.noticeboard.repository.SuggestionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,14 +16,30 @@ import java.util.stream.Collectors;
 public class SuggestionServiceImpl implements SuggestionService {
 
     private final SuggestionRepository suggestionRepository;
+    private static final int PAGE_SIZE = 10; //페이지네이션
 
     public SuggestionServiceImpl(SuggestionRepository suggestionRepository) {
         this.suggestionRepository = suggestionRepository;
     }
 
-    @Override
-    public List<SuggestionResponseDto> getAllSuggestion() {
-        return suggestionRepository.findAll().stream()
+    @Override //게시글목록조회 페이지네이션
+    public List<SuggestionResponseDto> getSuggestionsByPage(int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return suggestionRepository.findAll(pageable).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<SuggestionResponseDto> getSuggestionsAfterId(Long id, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return suggestionRepository.findSuggestionsByIdGreaterThan(id, pageable).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<SuggestionResponseDto> getSuggestionsBeforeId(Long id, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return suggestionRepository.findSuggestionsByIdLessThan(id, pageable).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -51,6 +70,9 @@ public class SuggestionServiceImpl implements SuggestionService {
         suggestionRepository.save(existingSuggestion);
         return convertToDto(existingSuggestion);
     }
+
+    @Override
+    public void deleteSuggestion(Long id) { suggestionRepository.deleteById(id); }
 
 
     private SuggestionResponseDto convertToDto(Suggestion suggestion) {
