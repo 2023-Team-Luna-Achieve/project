@@ -19,6 +19,7 @@ const LogoutButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 100px;
   border: none;
   background-color: #c0c0c0;
   color: #ffffff;
@@ -113,7 +114,6 @@ const MyPage: React.FC = () => {
       <ReservationList>
         {reservations.map((reservation) => (
           <ReservationItem key={reservation.id}>
-            <p>예약 ID: {reservation.id}</p>
             <p>시작 시간: {reservation.startTime}</p>
             <p>종료 시간: {reservation.endTime}</p>
             <p>인원: {reservation.members}</p>

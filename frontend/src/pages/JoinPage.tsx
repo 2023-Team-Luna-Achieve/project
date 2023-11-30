@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from '../util/axiosConfig';
 import { AxiosError } from 'axios';
 import { Link } from 'react-router-dom';
+import Modal from '../components/Modal';
 
 const JoinText = styled.div`
   font-size: 70px;
@@ -107,8 +108,10 @@ const JoinPage: React.FC = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
-  const [verificationMessage, setVerificationMessage] = useState<string>('');
+  const [verificationMessage] = useState<string>('');
   const [isPasswordMatch] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
 
   const sendCode = async () => {
     try {
@@ -116,13 +119,14 @@ const JoinPage: React.FC = () => {
         email: email,
       });
 
-      console.log(`코드가 성공적으로 전송되었습니다: ${email}`);
+      // 모달 열기
+      setIsModalOpen(true);
+      setModalContent('이메일로 인증번호가 전송되었습니다.');
     } catch (error) {
+      // 에러 처리
       if ((error as AxiosError).isAxiosError) {
-        // Axios 에러인 경우
         console.error('코드 전송 중 에러:', (error as AxiosError).message);
       } else {
-        // 그 외의 에러인 경우
         console.error('코드 전송 중 에러:', error);
       }
     }
@@ -145,7 +149,11 @@ const JoinPage: React.FC = () => {
         code: authCode,
       });
 
-      setVerificationMessage(response.data.message);
+      // 모달 열기
+      setIsModalOpen(true);
+
+      // 서버 응답 메시지를 모달 내용으로 설정
+      setModalContent(response.data.message);
     } catch (error) {
       console.error('인증 확인 중 에러:', (error as AxiosError).message);
     }
@@ -173,6 +181,12 @@ const JoinPage: React.FC = () => {
           password,
         });
 
+        // 모달 열기
+        setIsModalOpen(true);
+
+        // 서버 응답 메시지를 모달 내용으로 설정
+        setModalContent('회원가입이 완료되었습니다.');
+
         console.log('서버 응답:', response.data);
       } catch (error) {
         console.error('서버로의 데이터 전송 중 에러:', error);
@@ -185,6 +199,15 @@ const JoinPage: React.FC = () => {
 
   return (
     <>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {modalContent}
+      </Modal>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {modalContent}
+      </Modal>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {modalContent}
+      </Modal>
       <JoinText className="join">가입하기</JoinText>
       <LoginText className="already">
         이미 계정이 있습니까?{' '}
