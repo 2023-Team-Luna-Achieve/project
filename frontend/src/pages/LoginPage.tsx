@@ -14,7 +14,6 @@ const FormContainer = styled.div`
   overflow: hidden;
   color: #585858;
 `;
-
 const LoginText = styled.div`
   font-size: 70px;
   font-weight: bold;
@@ -23,26 +22,22 @@ const LoginText = styled.div`
   margin-top: 60px;
   margin-bottom: 0px;
 `;
-
 const Input = styled.input`
   border-radius: 0;
   border: 0.7px solid #c0c0c0;
   height: 26px;
   width: 400px;
 `;
-
 const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new-password' })`
   margin-bottom: 0px;
   border-radius: 0;
 `;
-
 const StyledForm = styled.form``;
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
 `;
-
 const LoginButton = styled.button`
   border: none;
   background-color: #c0c0c0;
@@ -57,7 +52,6 @@ const LoginButton = styled.button`
     background-color: #000000;
   }
 `;
-
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,14 +60,11 @@ const LoginPage: React.FC = () => {
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
-
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
       const response = await axios.post('https://achieve-project.store/api/users/signin', {
         email,
@@ -81,7 +72,6 @@ const LoginPage: React.FC = () => {
       });
 
       console.log('로그인 성공:', response.data);
-
       await handleLoginVerification();
       setIsModalOpen(true);
     } catch (error) {
@@ -124,5 +114,4 @@ const LoginPage: React.FC = () => {
     </FormContainer>
   );
 };
-
 export default LoginPage;

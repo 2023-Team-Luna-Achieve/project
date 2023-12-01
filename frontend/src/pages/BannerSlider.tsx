@@ -4,6 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import axios from '../util/axiosConfig';
 
 const BannerSlider: React.FC = () => {
   const settings = {
@@ -134,6 +135,22 @@ const BannerSlider: React.FC = () => {
     color: inherit;
   `;
 
+  const handleReservationClick = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/users/login-confirm');
+      const isLoggedIn = response.data.loggedIn;
+
+      if (!isLoggedIn) {
+        window.location.href = '/login';
+      } else {
+        window.location.href = '/select';
+      }
+    } catch (error) {
+      console.error('로그인 상태 확인 중 에러:', error);
+      window.location.href = '/login';
+    }
+  };
+
   return (
     <Banner>
       <StyledSlider {...settings}>
@@ -150,7 +167,7 @@ const BannerSlider: React.FC = () => {
           <Text>SF5</Text>
         </Background>
       </StyledSlider>
-      <ReservationLink to="/select">
+      <ReservationLink to="/select" onClick={handleReservationClick}>
         <RoundedRectangle>
           <h3>스마트하게</h3>
           <h2>동아리방 예약</h2>
