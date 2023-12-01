@@ -137,7 +137,7 @@ const BannerSlider: React.FC = () => {
 
   const handleReservationClick = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/users/login-confirm');
+      const response = await axios.get('https://achieve-project.store/api/users/login-confirm');
       const isLoggedIn = response.data.loggedIn;
 
       if (!isLoggedIn) {
