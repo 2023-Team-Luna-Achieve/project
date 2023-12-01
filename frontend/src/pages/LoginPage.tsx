@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from '../util/axiosConfig';
 import Modal from '../components/Modal';
-        
+
 const FormContainer = styled.div`
   max-width: 600px;
   margin: 50px auto;
@@ -17,14 +17,14 @@ const FormContainer = styled.div`
 const LoginText = styled.div`
   font-size: 70px;
   font-weight: bold;
-  color: #3A3A3A;
+  color: #3a3a3a;
   text-align: center;
   margin-top: 60px;
   margin-bottom: 0px;
 `;
 const Input = styled.input`
   border-radius: 0;
-  border: 0.7px solid #C0C0C0;
+  border: 0.7px solid #c0c0c0;
   height: 26px;
   width: 400px;
 `;
@@ -40,8 +40,8 @@ const FormGroup = styled.div`
 `;
 const LoginButton = styled.button`
   border: none;
-  background-color: #C0C0C0;
-  color: #FFFFFF;
+  background-color: #c0c0c0;
+  color: #ffffff;
   font-size: 16px;
   height: 26px;
   width: 100%;
@@ -66,9 +66,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://achieve-project.store/api/users/signin', {
-
-        feature
+      const response = await axios.post('https://achieve-project.store/api/users/signin', {
         email,
         password,
       });
@@ -83,7 +81,8 @@ const LoginPage: React.FC = () => {
 
   const handleLoginVerification = async () => {
     try {
-      const confirmResponse = await axios.get('http://achieve-project.store/api/users/login-confirm');
+      const confirmResponse = await axios.get('https://achieve-project.store/api/users/login-confirm');
+
       console.log('로그인 검증 성공:', confirmResponse.data);
     } catch (error) {
       console.error('로그인 검증 실패:', error);

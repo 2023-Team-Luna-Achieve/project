@@ -138,18 +138,15 @@ const BannerSlider: React.FC = () => {
   const handleReservationClick = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/users/login-confirm');
-      const isLoggedIn = response.data.loggedIn; // API에서 받은 로그인 상태
+      const isLoggedIn = response.data.loggedIn;
 
       if (!isLoggedIn) {
-        // 로그인되어 있지 않으면 로그인 페이지로 이동
         window.location.href = '/login';
       } else {
-        // 로그인되어 있을 때 예약 페이지로 이동
         window.location.href = '/select';
       }
     } catch (error) {
       console.error('로그인 상태 확인 중 에러:', error);
-      // 에러 발생 시 로그인 페이지로 이동
       window.location.href = '/login';
     }
   };
