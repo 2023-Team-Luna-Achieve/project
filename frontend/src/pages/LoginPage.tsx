@@ -66,16 +66,15 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      const response = await axios.post('http://achieve-project.store/api/users/signin', {
 
-      const response = await axios.post('http://localhost:8080/api/users/signin', {
+        feature
         email,
         password,
       });
 
       console.log('로그인 성공:', response.data);
       await handleLoginVerification();
-
-      // Open the modal after successful login
       setIsModalOpen(true);
     } catch (error) {
       console.error('로그인 실패:', error);
@@ -84,7 +83,7 @@ const LoginPage: React.FC = () => {
 
   const handleLoginVerification = async () => {
     try {
-      const confirmResponse = await axios.get('http://localhost:8080/api/users/login-confirm');
+      const confirmResponse = await axios.get('http://achieve-project.store/api/users/login-confirm');
       console.log('로그인 검증 성공:', confirmResponse.data);
     } catch (error) {
       console.error('로그인 검증 실패:', error);
