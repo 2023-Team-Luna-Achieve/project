@@ -4,8 +4,6 @@ import backend.backend.meetingroom.entity.MeetingRoom;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 public class ReservationResponse {

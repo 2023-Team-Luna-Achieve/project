@@ -100,7 +100,6 @@ const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new
   margin-bottom: 0px;
   border-radius: 0;
 `;
-
 const JoinPage: React.FC = () => {
   const [affiliation, setAffiliation] = useState('');
   const [email, setEmail] = useState('');
@@ -129,7 +128,6 @@ const JoinPage: React.FC = () => {
       }
     }
   };
-
   const handleSendCodeClick: React.MouseEventHandler<HTMLButtonElement> = async () => {
     try {
       await sendCode();
@@ -137,7 +135,6 @@ const JoinPage: React.FC = () => {
       console.error('handleSendCodeClick 오류:', (error as AxiosError).message);
     }
   };
-
   const handleConfirmAuthClick = async () => {
     try {
       const response = await axios.post('http://achieve-project.store/api/email/verification/confirm', {
@@ -152,7 +149,6 @@ const JoinPage: React.FC = () => {
       console.error('인증 확인 중 에러:', (error as AxiosError).message);
     }
   };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -168,7 +164,6 @@ const JoinPage: React.FC = () => {
         setIsModalOpen(true);
 
         setModalContent('회원가입이 완료되었습니다.');
-
         console.log('서버 응답:', response.data);
       } catch (error) {
         console.error('서버로의 데이터 전송 중 에러:', error);
@@ -178,7 +173,6 @@ const JoinPage: React.FC = () => {
       console.error('비밀번호가 일치하지 않습니다.');
     }
   };
-
   return (
     <>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -253,5 +247,4 @@ const JoinPage: React.FC = () => {
     </>
   );
 };
-
 export default JoinPage;
