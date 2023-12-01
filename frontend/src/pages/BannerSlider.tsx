@@ -138,22 +138,16 @@ const BannerSlider: React.FC = () => {
     <Banner>
       <StyledSlider {...settings}>
         <Background>
-          <StudyLabel>study</StudyLabel>
-          <Heading>프론트엔드 스터디 SF5팀</Heading>
-          <Heading2>드림코딩 강의 수강중</Heading2>
-          <Text>Next.js</Text>
+          <StudyLabel>project</StudyLabel>
+          <Heading>테커 동아리방 예약 시스템</Heading>
+          <Heading2>예약과 취소를 간편하게!</Heading2>
+          <Text>Achieve</Text>
         </Background>
         <Background>
           <StudyLabel>study</StudyLabel>
-          <Heading>프론트엔드 스터디 SF5팀</Heading>
-          <Heading2>드림코딩 강의 수강중</Heading2>
-          <Text>Next.js</Text>
-        </Background>
-        <Background>
-          <StudyLabel>study</StudyLabel>
-          <Heading>프론트엔드 스터디 SF5팀</Heading>
-          <Heading2>드림코딩 강의 수강중</Heading2>
-          <Text>Next.js</Text>
+          <Heading>프론트엔드 스터디</Heading>
+          <Heading2>드림코딩 Next.js 강의 수강중</Heading2>
+          <Text>SF5</Text>
         </Background>
       </StyledSlider>
       <ReservationLink to="/select">
