@@ -75,7 +75,7 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://achieve-project.store/api/users/signin', {
+      const response = await axios.post('https://achieve-project.store/api/users/signin', {
         email,
         password,
       });
@@ -91,7 +91,7 @@ const LoginPage: React.FC = () => {
 
   const handleLoginVerification = async () => {
     try {
-      const confirmResponse = await axios.get('http://achieve-project.store/api/users/login-confirm');
+      const confirmResponse = await axios.get('https://achieve-project.store/api/users/login-confirm');
 
       console.log('로그인 검증 성공:', confirmResponse.data);
     } catch (error) {

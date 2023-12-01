@@ -115,7 +115,7 @@ const JoinPage: React.FC = () => {
 
   const sendCode = async () => {
     try {
-      await axios.post('http://achieve-project.store/api/email/verification/request', {
+      await axios.post('https://achieve-project.store/api/email/verification/request', {
         email: email,
       });
 
@@ -140,7 +140,7 @@ const JoinPage: React.FC = () => {
 
   const handleConfirmAuthClick = async () => {
     try {
-      const response = await axios.post('http://achieve-project.store/api/email/verification/confirm', {
+      const response = await axios.post('https://achieve-project.store/api/email/verification/confirm', {
         email,
         code: authCode,
       });
@@ -158,7 +158,7 @@ const JoinPage: React.FC = () => {
 
     {
       try {
-        const response = await axios.post('http://achieve-project.store/api/users/signup', {
+        const response = await axios.post('https://achieve-project.store/api/users/signup', {
           affiliation,
           name,
           email,
