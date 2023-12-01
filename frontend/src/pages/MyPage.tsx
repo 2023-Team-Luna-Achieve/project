@@ -82,7 +82,7 @@ const MyPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/reservation/check');
+        const response = await axios.get('http://achieve-project.store/api/reservation/check');
         setReservations(response.data as YourReservationType[]);
       } catch (error) {
         console.error('예약 정보를 가져오는 중 에러 발생:', error);
@@ -94,7 +94,7 @@ const MyPage: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8080/api/users/signout');
+      await axios.post('http://achieve-project.store/api/users/signout');
       console.log('로그아웃 성공');
       setIsModalOpen(true);
       setModalContent('로그아웃이 완료 되었습니다.');
@@ -105,7 +105,7 @@ const MyPage: React.FC = () => {
 
   const handleDeleteReservation = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:8080/api/reservation/${id}`);
+      await axios.delete(`http://achieve-project.store/api/reservation/${id}`);
       setReservations((prevReservations) => prevReservations.filter((reservation) => reservation.id !== id));
       console.log('예약 삭제 성공');
       setIsModalOpen(true);
