@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar'; // 예약 페이지에서 관리
+import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
@@ -43,12 +43,12 @@ const Notice = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 30px; /* 버튼과 상단 간격 조절 */
+  margin-top: 30px;
 `;
 
 const TimeSelectContainer = styled.div`
   display: flex;
-  flex-direction: column; /* 수직으로 정렬하도록 추가 */
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 20%;
@@ -97,7 +97,7 @@ const ReservationPage: React.FC = () => {
       reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
 
       // 한국 시간으로 변환
-      const koreanTimeZoneOffset = 9 * 60; // 한국 시간은 UTC+9
+      const koreanTimeZoneOffset = 9 * 60;
       reservationStartTime.setMinutes(reservationStartTime.getMinutes() + koreanTimeZoneOffset);
       reservationEndTime.setMinutes(reservationEndTime.getMinutes() + koreanTimeZoneOffset);
 
@@ -109,7 +109,6 @@ const ReservationPage: React.FC = () => {
       console.log('reservationEndTime:', isoEndTime);
 
       try {
-        // axios를 사용하여 API 호출
         const response = await axios.post('http://localhost:8080/api/reservation', {
           reservationStartTime: reservationStartTime.toISOString(),
           reservationEndTime: reservationEndTime.toISOString(),
@@ -135,7 +134,7 @@ const ReservationPage: React.FC = () => {
     <ReservationPageWrapper>
       <Modal isOpen={isReservationModalOpen} onClose={() => setReservationModalOpen(false)}>
         <div>
-          <p>예약에 성공 했습니다.</p>
+          <p>예약이 완료 되었습니다.</p>
         </div>
       </Modal>
       <HeaderSection>
