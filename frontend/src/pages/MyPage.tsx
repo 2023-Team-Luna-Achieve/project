@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../util/axiosConfig';
 import styled from 'styled-components';
+import Modal from '../components/Modal';
+
 const Title = styled.h1`
   font-size: 50px;
   font-weight: bold;
@@ -66,6 +68,9 @@ type YourReservationType = {
 };
 const MyPage: React.FC = () => {
   const [reservations, setReservations] = useState<YourReservationType[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,6 +86,8 @@ const MyPage: React.FC = () => {
     try {
       await axios.post('http://localhost:8080/api/users/signout');
       console.log('로그아웃 성공');
+      setIsModalOpen(true);
+      setModalContent('로그아웃이 완료 되었습니다.');
     } catch (error) {
       console.error('로그아웃 실패', error);
     }
@@ -90,22 +97,27 @@ const MyPage: React.FC = () => {
       await axios.delete(`http://localhost:8080/api/reservation/${id}`);
       setReservations((prevReservations) => prevReservations.filter((reservation) => reservation.id !== id));
       console.log('예약 삭제 성공');
+      setIsModalOpen(true);
+      setModalContent('예약이 취소 되었습니다.');
     } catch (error) {
       console.error('예약 삭제 실패', error);
     }
   };
   return (
     <div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {modalContent}
+      </Modal>
       <Title>예약 정보</Title>
       <ReservationList>
         {reservations.map((reservation) => (
           <ReservationItem key={reservation.id}>
-            <p>예약 ID: {reservation.id}</p>
-            <p>시작 시간: {reservation.startTime}</p>
-            <p>종료 시간: {reservation.endTime}</p>
-            <p>인원: {reservation.members}</p>
-            <p>방 이름: {reservation.meetingRoom.name}</p>
-            <DeleteButton onClick={() => handleDeleteReservation(reservation.id)}>삭제</DeleteButton>
+            <br />
+            <p>시작 시간 : {reservation.startTime}</p>
+            <p>종료 시간 : {reservation.endTime}</p>
+            <p>인원 : {reservation.members}명</p>
+            <p>방 이름 : {reservation.meetingRoom.name}</p>
+            <DeleteButton onClick={() => handleDeleteReservation(reservation.id)}>취소</DeleteButton>
           </ReservationItem>
         ))}
       </ReservationList>

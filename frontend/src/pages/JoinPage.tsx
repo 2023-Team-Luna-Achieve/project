@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from '../util/axiosConfig';
 import { AxiosError } from 'axios';
 import { Link } from 'react-router-dom';
+import Modal from '../components/Modal';
 
 const JoinText = styled.div`
   font-size: 70px;
@@ -106,27 +107,29 @@ const JoinPage: React.FC = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [name, setName] = useState('');
-  const [verificationMessage, setVerificationMessage] = useState<string>('');
+  const [verificationMessage] = useState<string>('');
   const [isPasswordMatch] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
+
   const sendCode = async () => {
     try {
       await axios.post('http://localhost:8080/api/email/verification/request', {
         email: email,
       });
-      console.log(`코드가 성공적으로 전송되었습니다: ${email}`);
+
+      setIsModalOpen(true);
+      setModalContent('이메일로 인증번호가 전송되었습니다.');
     } catch (error) {
       if ((error as AxiosError).isAxiosError) {
-        // Axios 에러인 경우
         console.error('코드 전송 중 에러:', (error as AxiosError).message);
       } else {
-        // 그 외의 에러인 경우
         console.error('코드 전송 중 에러:', error);
       }
     }
   };
   const handleSendCodeClick: React.MouseEventHandler<HTMLButtonElement> = async () => {
     try {
-      // SendCodeButton이 클릭될 때 email 값을 설정하고 sendCode 함수 호출
       await sendCode();
     } catch (error) {
       console.error('handleSendCodeClick 오류:', (error as AxiosError).message);
@@ -134,35 +137,33 @@ const JoinPage: React.FC = () => {
   };
   const handleConfirmAuthClick = async () => {
     try {
-      // 클라이언트에서 서버로 코드 확인 요청을 보냄
       const response = await axios.post('http://localhost:8080/api/email/verification/confirm', {
         email,
         code: authCode,
       });
-      setVerificationMessage(response.data.message);
+
+      setIsModalOpen(true);
+
+      setModalContent(response.data.message);
     } catch (error) {
       console.error('인증 확인 중 에러:', (error as AxiosError).message);
     }
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('양식 제출 중...');
-    // 이메일이 검증되었고 비밀번호가 일치하는지 확인
+
     {
-      console.log('가입 정보:', {
-        affiliation,
-        name,
-        email,
-        password,
-      });
       try {
-        console.log('axios.post 이전');
         const response = await axios.post('http://localhost:8080/api/users/signup', {
           affiliation,
           name,
           email,
           password,
         });
+
+        setIsModalOpen(true);
+
+        setModalContent('회원가입이 완료되었습니다.');
         console.log('서버 응답:', response.data);
       } catch (error) {
         console.error('서버로의 데이터 전송 중 에러:', error);
@@ -174,6 +175,9 @@ const JoinPage: React.FC = () => {
   };
   return (
     <>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {modalContent}
+      </Modal>
       <JoinText className="join">가입하기</JoinText>
       <LoginText className="already">
         이미 계정이 있습니까?{' '}
@@ -236,9 +240,7 @@ const JoinPage: React.FC = () => {
             />
           </FormGroup>
           <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-            <JoinButton type="submit" onClick={() => console.log('가입하기 버튼이 클릭되었습니다.')}>
-              {'가입하기'}
-            </JoinButton>
+            <JoinButton>{'가입하기'}</JoinButton>
           </div>
         </StyledForm>
       </FormContainer>

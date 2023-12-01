@@ -7,7 +7,7 @@ import LoginPage from './pages/LoginPage';
 import JoinPage from './pages/JoinPage';
 import CommunityPage from './pages/CommunityPage';
 import AboutPage from './pages/AboutPage';
-import Reservationpage from './pages/ReservationPage';
+import ReservationPage from './pages/ReservationPage';
 import SelectPage from './pages/SelectPage';
 import MyPage from './pages/MyPage';
 
@@ -20,7 +20,7 @@ const App: React.FC = () => {
           <Route path="" element={<MainPage />} />
           <Route path="Main" element={<MainPage />} />
           <Route path="About" element={<AboutPage />} />
-          <Route path="Reservation" element={<Reservationpage />} />
+          <Route path="Reservation" element={<ReservationPage />} />
           <Route path="Select" element={<SelectPage />} />
           <Route path="Notice" element={<NoticePage />} />
           <Route path="Login" element={<LoginPage />} />
