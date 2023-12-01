@@ -36,6 +36,13 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
+    //전체 예약 내역 조회
+    @GetMapping("/all")
+    public ResponseEntity<List<ReservationResponse>> getAllReservations() {
+        List<ReservationResponse> allReservations = reservationService.getAllReservations();
+        return ResponseEntity.ok(allReservations);
+    }
+
     //예약 취소
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
