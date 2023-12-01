@@ -158,7 +158,6 @@ const JoinPage: React.FC = () => {
 
     {
       try {
-        console.log('axios.post 이전');
         const response = await axios.post('http://localhost:8080/api/users/signup', {
           affiliation,
           name,
