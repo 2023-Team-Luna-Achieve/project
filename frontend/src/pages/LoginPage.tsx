@@ -116,7 +116,7 @@ const LoginPage: React.FC = () => {
   return (
     <FormContainer>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <p>로그인이 완료되었습니다.</p>
+        <p>로그인이 완료 되었습니다.</p>
       </Modal>
       <LoginText className="login">로그인</LoginText>
       <StyledForm onSubmit={handleLogin}>
