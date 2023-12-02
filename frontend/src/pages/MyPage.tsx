@@ -76,7 +76,8 @@ type YourReservationType = {
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
   const [reservations, setReservations] = useState<YourReservationType[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
 
   useEffect(() => {
@@ -94,9 +95,8 @@ const MyPage: React.FC = () => {
     try {
       await axios.post('http://localhost:8080/api/users/signout');
       console.log('로그아웃 성공');
-      setIsModalOpen(true);
+      setIsLogoutModalOpen(true);
       setModalContent('로그아웃이 완료 되었습니다.');
-      navigate('/main');
     } catch (error) {
       console.error('로그아웃 실패', error);
     }
@@ -106,16 +106,25 @@ const MyPage: React.FC = () => {
       await axios.delete(`http://localhost:8080/api/reservation/${id}`);
       setReservations((prevReservations) => prevReservations.filter((reservation) => reservation.id !== id));
       console.log('예약 삭제 성공');
-      setIsModalOpen(true);
+      setIsCancelModalOpen(true);
       setModalContent('예약이 취소 되었습니다.');
     } catch (error) {
       console.error('예약 삭제 실패', error);
     }
   };
+
+  const closeModalAndRedirect = () => {
+    setIsLogoutModalOpen(false);
+    navigate('/main');
+  };
+
   return (
     <div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={isCancelModalOpen} onClose={() => setIsCancelModalOpen(false)}>
         {modalContent}
+      </Modal>
+      <Modal isOpen={isLogoutModalOpen} onClose={closeModalAndRedirect}>
+        <p>로그아웃이 완료 되었습니다.</p>
       </Modal>
       <Title>예약 정보</Title>
       <ReservationList>

@@ -76,8 +76,6 @@ const LoginPage: React.FC = () => {
       console.log('로그인 성공:', response.data);
       await handleLoginVerification();
       setIsModalOpen(true);
-
-      navigate('/main');
     } catch (error) {
       console.error('로그인 실패:', error);
     }
@@ -92,13 +90,14 @@ const LoginPage: React.FC = () => {
       console.error('로그인 검증 실패:', error);
     }
   };
-  const closeModal = () => {
+  const closeModalAndRedirect = () => {
     setIsModalOpen(false);
+    navigate('/main');
   };
 
   return (
     <FormContainer>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <Modal isOpen={isModalOpen} onClose={closeModalAndRedirect}>
         <p>로그인이 완료 되었습니다.</p>
       </Modal>
       <LoginText className="login">로그인</LoginText>
