@@ -33,7 +33,7 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     axios
-      .get('http://achieve-project.store/api/users/login-confirm')
+      .get('https://localhost:8080/api/users/login-confirm')
       .then((response) => {
         if (response.data.loggedIn) {
           setIsLoggedIn(true);
