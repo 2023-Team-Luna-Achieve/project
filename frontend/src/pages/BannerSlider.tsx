@@ -137,7 +137,7 @@ const BannerSlider: React.FC = () => {
 
   const handleReservationClick = async () => {
     try {
-      const response = await axios.get('https://achieve-project.store/api/users/login-confirm');
+      const response = await axios.get('http://achieve-project.store/api/users/login-confirm');
       const isLoggedIn = response.data.loggedIn;
 
       if (!isLoggedIn) {
@@ -174,8 +174,8 @@ const BannerSlider: React.FC = () => {
         </RoundedRectangle>
       </ReservationLink>
       <RoundedRectangle2>
-        <h3>관리자와</h3>
-        <h2>실시간 채팅</h2>
+        <h3>필독!</h3>
+        <h2>공지사항 확인</h2>
       </RoundedRectangle2>
     </Banner>
   );

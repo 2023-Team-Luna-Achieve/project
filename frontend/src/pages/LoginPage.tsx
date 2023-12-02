@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import axios from '../util/axiosConfig';
 import Modal from '../components/Modal';
 
@@ -53,6 +54,7 @@ const LoginButton = styled.button`
   }
 `;
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,7 +68,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('https://achieve-project.store/api/users/signin', {
+      const response = await axios.post('http://achieve-project.store/api/users/signin', {
         email,
         password,
       });
@@ -81,20 +83,21 @@ const LoginPage: React.FC = () => {
 
   const handleLoginVerification = async () => {
     try {
-      const confirmResponse = await axios.get('https://achieve-project.store/api/users/login-confirm');
+      const confirmResponse = await axios.get('http://achieve-project.store/api/users/login-confirm');
 
       console.log('로그인 검증 성공:', confirmResponse.data);
     } catch (error) {
       console.error('로그인 검증 실패:', error);
     }
   };
-  const closeModal = () => {
+  const closeModalAndRedirect = () => {
     setIsModalOpen(false);
+    navigate('/main');
   };
 
   return (
     <FormContainer>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <Modal isOpen={isModalOpen} onClose={closeModalAndRedirect}>
         <p>로그인이 완료 되었습니다.</p>
       </Modal>
       <LoginText className="login">로그인</LoginText>

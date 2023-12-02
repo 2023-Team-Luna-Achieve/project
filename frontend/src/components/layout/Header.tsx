@@ -31,18 +31,21 @@ const StyledNav = styled.nav`
 `;
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   useEffect(() => {
     axios
-      .get('https://achieve-project.store/api/users/login-confirm')
+      .get('http://achieve-project.store/api/users/login-confirm')
       .then((response) => {
-        setIsLoggedIn(response.data.loggedIn);
+        if (response.data.loggedIn) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
       })
       .catch((error) => {
         console.error('로그인 상태 확인 중 에러:', error);
         setIsLoggedIn(false);
       });
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <StyledHeaderBorder>
@@ -55,9 +58,11 @@ const Header = () => {
             <li>
               <Link to="/About">About</Link>
             </li>
-            <li>
-              <Link to="/Select">Reservation</Link>
-            </li>
+            {isLoggedIn && (
+              <li>
+                <Link to="/Reservation">Reservation</Link>
+              </li>
+            )}
             <li>
               <Link to="/Notice">Notice</Link>
             </li>
@@ -65,11 +70,9 @@ const Header = () => {
               <Link to="/Community">Community</Link>
             </li>
             {isLoggedIn ? (
-              <>
-                <li>
-                  <Link to="/Mypage">Mypage</Link>
-                </li>
-              </>
+              <li>
+                <Link to="/Mypage">Mypage</Link>
+              </li>
             ) : (
               <>
                 <li>

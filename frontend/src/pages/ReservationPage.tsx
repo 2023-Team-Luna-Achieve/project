@@ -87,8 +87,6 @@ const ReservationPage: React.FC = () => {
   };
 
   const handleReservation = async () => {
-    console.log('members:', selectedMembers?.value);
-
     if (selectedDate && startTime && endTime && selectedMembers?.value !== undefined) {
       const reservationStartTime = new Date(selectedDate);
       reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]));
@@ -105,13 +103,10 @@ const ReservationPage: React.FC = () => {
       const isoStartTime = reservationStartTime.toISOString().replace(/\.000Z$/, '');
       const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
 
-      console.log('reservationStartTime:', isoStartTime);
-      console.log('reservationEndTime:', isoEndTime);
-
       try {
-        const response = await axios.post('https://achieve-project.store/api/reservation', {
-          reservationStartTime: reservationStartTime.toISOString(),
-          reservationEndTime: reservationEndTime.toISOString(),
+        const response = await axios.post('http://achieve-project.store/api/reservation', {
+          reservationStartTime: isoStartTime,
+          reservationEndTime: isoEndTime,
           members: selectedMembers.value,
           meetingRoomId: 1,
         });
