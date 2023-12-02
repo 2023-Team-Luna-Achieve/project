@@ -34,7 +34,7 @@ const Header = () => {
 
   useEffect(() => {
     axios
-      .get('https://achieve-project.store/api/users/login-confirm')
+      .get('http://localhost:8080/api/users/login-confirm')
       .then((response) => {
         setIsLoggedIn(response.data.loggedIn);
       })
