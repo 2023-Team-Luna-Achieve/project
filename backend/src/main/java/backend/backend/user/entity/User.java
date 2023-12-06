@@ -21,13 +21,12 @@ public class User {
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
-
     private String name;
     private String email;
     private String password;
     private LocalDateTime created_at;
     @Enumerated(EnumType.STRING)
-    private Auth auth;
+    private Role role;
 
     @Enumerated(EnumType.STRING)
     private Affiliation affiliation;
@@ -40,4 +39,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservation;
+
+
+    public String roleName() {
+        return role.name();
+    }
 }

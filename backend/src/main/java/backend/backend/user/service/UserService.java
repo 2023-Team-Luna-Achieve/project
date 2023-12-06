@@ -30,9 +30,10 @@ public class UserService {
 
     @Transactional
     public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
-        if (findUserByEmail(signUpRequest.getEmail()) == null) {
+        if (userRepository.findUserByEmail(signUpRequest.getEmail()) == null) {
             if (redisUtil.getData(signUpRequest.getEmail()) == null) {
                 throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
+
             } else if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
                 signUpRequest = signUpRequest.encryptPassword(encoder);
                 User user = signUpRequest.toEntity();
@@ -41,13 +42,9 @@ public class UserService {
         }
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
-    private User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
-    }
-
 
     public SignInResponse processSignIn (SignInRequest signInRequest, HttpSession session) {
-        User user = findUserByEmail(signInRequest.getEmail());
+        User user = userRepository.findUserByEmail(signInRequest.getEmail());
         if (user != null) {
             if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword())) {
                 session.setAttribute("userId", user.getId());

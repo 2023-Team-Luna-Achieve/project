@@ -19,17 +19,10 @@ public class UserController {
     private final UserService userService;
     private final HttpSession session;
 
-
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public SignUpResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
         return userService.createUserIfEmailNotExists(signUpRequest, encoder);
-    }
-
-    @PostMapping("/signin")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<SignInResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) {
-        return ResponseEntity.ok().body(userService.processSignIn(signInRequest, session));
     }
 
     @PostMapping("/signout")
