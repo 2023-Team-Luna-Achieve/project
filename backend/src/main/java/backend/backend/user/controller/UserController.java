@@ -2,6 +2,7 @@ package backend.backend.user.controller;
 
 import backend.backend.user.dto.*;
 import backend.backend.user.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+@Tag(name = "user", description = "회원 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
