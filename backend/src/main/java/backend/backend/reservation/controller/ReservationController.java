@@ -1,38 +1,46 @@
 package backend.backend.reservation.controller;
 
+import backend.backend.auth.jwt.CustomUserDetails;
+import backend.backend.auth.jwt.UserAdapter;
+import backend.backend.exception.ErrorCode;
+import backend.backend.exception.NotFoundException;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.service.ReservationService;
+import backend.backend.user.entity.User;
+import backend.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/reservation")
 public class ReservationController {
 
+    private final UserService userService;
     private final ReservationService reservationService;
-    private final HttpSession httpSession;
-
     //예약 생성
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        ReservationResponse response = reservationService.createReservation(request);
+    public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal UserAdapter userDetails, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+        User loggedUser = userService.getUserWithAuthorities().orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
+        ReservationResponse response = reservationService.createReservation(loggedUser, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //예약 내역 조회
     @GetMapping("/check")
     public ResponseEntity<List<ReservationResponse>> getReservationsByUserId() {
-        Long userId = (long) httpSession.getAttribute("userId");
-        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(userId);
+        User loggedUser = userService.getUserWithAuthorities().orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
+        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(loggedUser.getId());
         return ResponseEntity.ok(reservations);
     }
 

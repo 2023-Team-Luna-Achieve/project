@@ -54,13 +54,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                .antMatchers("/api/signin").permitAll() // 로그인 api
+                .antMatchers("/api/signin").permitAll() // 로그인
+                // api
                 .antMatchers("/api/users/signup").permitAll() // 회원가입 api
+                .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
+                .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
 
 //                .antMatchers(HttpMethod.GET, "/", "/")
 //                .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
                 .antMatchers("/favicon.ico").permitAll()
-                .anyRequest().permitAll();// 그 외 인증 없이 접근X
+                .anyRequest().authenticated();// 그 외 인증 없이 접근X
 
                 http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class); // JwtFilter를 addFilterBefore로 등록;
 

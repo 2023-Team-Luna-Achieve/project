@@ -1,6 +1,7 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
+import backend.backend.auth.jwt.SecurityUtil;
 import backend.backend.exception.*;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -15,7 +16,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +76,10 @@ public class UserService {
             return new LoginConfirmResponse("로그인이 필요합니다", false);
         }
         return new LoginConfirmResponse("로그인이 되어있습니다", true);
+    }
+    @Transactional(readOnly = true)
+    public Optional<User> getUserWithAuthorities() {
+        return SecurityUtil.getCurrentUsername()
+                .flatMap(userRepository::findOneWithAuthoritiesByEmail);
     }
 }

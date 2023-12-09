@@ -12,7 +12,8 @@ public enum ErrorCode {
     INVALID_CODE(400, "AU_004", "코드가 옳지 못합니다."),
     ALREADY_VERIFIED_EMAIL(400, "AU_005", "이미 인증된 이메일입니다."),
     NEED_LOGIN(401, "AU_006", "로그인이 필요합니다"),
-    NOT_LOGIN(401, "AU_006", "로그인이 되어있지 않습니다");
+    NOT_LOGIN(401, "AU_007", "로그인이 되어있지 않습니다"),
+    NOT_FOUND(404, "AU_008","유저가 존재하지 않습니다");
 
 
     private final int status;

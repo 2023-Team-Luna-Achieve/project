@@ -8,7 +8,11 @@ import java.util.stream.DoubleStream;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
+//    Optional<User>  findUserByEmail(String email);
+
     User findUserByEmail(String email);
 
-    Optional<User> findOneWithAuthoritiesByEmail(String username);
+    Optional<User> findOneWithAuthoritiesByEmail(String email);
+
+
 }
