@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
 import axios from '../util/axiosConfig';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 
 const ReservationPageWrapper = styled.div``;
 
@@ -42,12 +43,12 @@ const Notice = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 30px; /* 버튼과 상단 간격 조절 */
+  margin-top: 30px;
 `;
 
 const TimeSelectContainer = styled.div`
   display: flex;
-  flex-direction: column; /* 수직으로 정렬하도록 추가 */
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 20%;
@@ -70,6 +71,9 @@ const Button = styled.button`
 `;
 
 const ReservationPage: React.FC = () => {
+  const navigate = useNavigate(); // useNavigate를 사용하여 navigate 변수 설정
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 초기 상태를 Date | null로 수정
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
@@ -127,6 +131,25 @@ const ReservationPage: React.FC = () => {
       console.error('Please fill in all fields');
     }
   };
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/users/login-confirm')
+      .then((response) => {
+        setIsLoggedIn(response.data.loggedIn);
+      })
+      .catch((error) => {
+        console.error('로그인 상태 확인 중 에러:', error);
+        setIsLoggedIn(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    // 로그인 상태를 확인하고 리디렉션
+    if (!isLoggedIn) {
+      navigate('/Login'); // 로그인 페이지로 리디렉션
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <ReservationPageWrapper>

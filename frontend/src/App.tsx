@@ -10,6 +10,7 @@ import AboutPage from './pages/AboutPage';
 import Reservationpage from './pages/ReservationPage';
 import SelectPage from './pages/SelectPage';
 import MyPage from './pages/MyPage';
+import WritePage from './pages/WritePage';
 
 const App: React.FC = () => {
   return (
@@ -22,11 +23,12 @@ const App: React.FC = () => {
           <Route path="About" element={<AboutPage />} />
           <Route path="Reservation" element={<Reservationpage />} />
           <Route path="Select" element={<SelectPage />} />
-          <Route path="Notice" element={<NoticePage />} />
+          <Route path="Notice" element={<NoticePage title={''} content={''} />} />
           <Route path="Login" element={<LoginPage />} />
           <Route path="Join" element={<JoinPage />} />
           <Route path="Mypage" element={<MyPage />} />
           <Route path="Community" element={<CommunityPage />} />
+          <Route path="WritePage" element={<WritePage />} />
         </Routes>
       </div>
     </Router>

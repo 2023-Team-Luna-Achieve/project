@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from '../../util/axiosConfig';
 
@@ -29,8 +29,10 @@ const StyledNav = styled.nav`
     }
   }
 `;
+
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -44,6 +46,13 @@ const Header = () => {
       });
   }, []);
 
+  const handleReservationClick = () => {
+    // 로그인이 안 되어 있으면 LoginPage로 이동
+    if (!isLoggedIn) {
+      navigate('/Login');
+    }
+  };
+
   return (
     <StyledHeaderBorder>
       <StyledHeader>
@@ -56,7 +65,9 @@ const Header = () => {
               <Link to="/About">About</Link>
             </li>
             <li>
-              <Link to="/Select">Reservation</Link>
+              <Link onClick={handleReservationClick} to="/Select">
+                Reservation
+              </Link>
             </li>
             <li>
               <Link to="/Notice">Notice</Link>
