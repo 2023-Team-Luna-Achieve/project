@@ -56,7 +56,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./devops/nginx/prod/nginx_develop.conf:/etc/nginx/nginx.conf
+      - ./devops/nginx/prod/nginx_production.conf:/etc/nginx/nginx.conf
       - ./devops/nginx/certbot/conf:/etc/letsencrypt
       - ./devops/nginx/certbot/www:/var/www/certbot
       - build_folder:/var/www/frontend

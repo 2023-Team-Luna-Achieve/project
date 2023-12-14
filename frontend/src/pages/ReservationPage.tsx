@@ -6,6 +6,7 @@ import TimeSelect from '../components/TimeSelect';
 import axios from '../util/axiosConfig';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../components/Modal';
 
 const ReservationPageWrapper = styled.div``;
 
@@ -81,6 +82,7 @@ const ReservationPage: React.FC = () => {
     value: 0,
     label: '0명',
   });
+  const [isReservationModalOpen, setReservationModalOpen] = useState(false);
 
   const membersOptions = Array.from({ length: 10 }, (_, i) => ({ value: i + 1, label: `${i + 1}명` }));
 
@@ -89,8 +91,6 @@ const ReservationPage: React.FC = () => {
   };
 
   const handleReservation = async () => {
-    console.log('members:', selectedMembers?.value);
-
     if (selectedDate && startTime && endTime && selectedMembers?.value !== undefined) {
       const reservationStartTime = new Date(selectedDate);
       reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]));
@@ -99,7 +99,7 @@ const ReservationPage: React.FC = () => {
       reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
 
       // 한국 시간으로 변환
-      const koreanTimeZoneOffset = 9 * 60; // 한국 시간은 UTC+9
+      const koreanTimeZoneOffset = 9 * 60;
       reservationStartTime.setMinutes(reservationStartTime.getMinutes() + koreanTimeZoneOffset);
       reservationEndTime.setMinutes(reservationEndTime.getMinutes() + koreanTimeZoneOffset);
 
@@ -107,28 +107,25 @@ const ReservationPage: React.FC = () => {
       const isoStartTime = reservationStartTime.toISOString().replace(/\.000Z$/, '');
       const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
 
-      console.log('reservationStartTime:', isoStartTime);
-      console.log('reservationEndTime:', isoEndTime);
-
       try {
-        // axios를 사용하여 API 호출
-        const response = await axios.post('http://localhost:8080/api/reservation', {
-          reservationStartTime: reservationStartTime.toISOString(),
-          reservationEndTime: reservationEndTime.toISOString(),
+        const response = await axios.post('https://achieve-project.store/api/reservation', {
+          reservationStartTime: isoStartTime,
+          reservationEndTime: isoEndTime,
           members: selectedMembers.value,
           meetingRoomId: 1,
         });
 
         if (response.status === 201) {
-          console.log('Reservation successful');
+          console.log('예약에 성공 했습니다.');
+          setReservationModalOpen(true);
         } else {
-          console.error('Reservation failed');
+          console.error('예약에 실패 했습니다.');
         }
       } catch (error) {
-        console.error('Reservation failed:', error);
+        console.error('예약에 실패 했습니다.:', error);
       }
     } else {
-      console.error('Please fill in all fields');
+      console.error('모든 요소를 선택 해주세요.');
     }
   };
 
@@ -153,6 +150,11 @@ const ReservationPage: React.FC = () => {
 
   return (
     <ReservationPageWrapper>
+      <Modal isOpen={isReservationModalOpen} onClose={() => setReservationModalOpen(false)}>
+        <div>
+          <p>예약이 완료 되었습니다.</p>
+        </div>
+      </Modal>
       <HeaderSection>
         <Title>Palo Alto 예약하기</Title>
       </HeaderSection>

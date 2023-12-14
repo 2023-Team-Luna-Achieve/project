@@ -137,19 +137,16 @@ const BannerSlider: React.FC = () => {
 
   const handleReservationClick = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/users/login-confirm');
-      const isLoggedIn = response.data.loggedIn; // API에서 받은 로그인 상태
+      const response = await axios.get('https://achieve-project.store/api/users/login-confirm');
+      const isLoggedIn = response.data.loggedIn;
 
       if (!isLoggedIn) {
-        // 로그인되어 있지 않으면 로그인 페이지로 이동
         window.location.href = '/login';
       } else {
-        // 로그인되어 있을 때 예약 페이지로 이동
         window.location.href = '/select';
       }
     } catch (error) {
       console.error('로그인 상태 확인 중 에러:', error);
-      // 에러 발생 시 로그인 페이지로 이동
       window.location.href = '/login';
     }
   };
@@ -158,22 +155,16 @@ const BannerSlider: React.FC = () => {
     <Banner>
       <StyledSlider {...settings}>
         <Background>
-          <StudyLabel>study</StudyLabel>
-          <Heading>프론트엔드 스터디 SF5팀</Heading>
-          <Heading2>드림코딩 강의 수강중</Heading2>
-          <Text>Next.js</Text>
+          <StudyLabel>project</StudyLabel>
+          <Heading>테커 동아리방 예약 시스템</Heading>
+          <Heading2>예약과 취소를 간편하게!</Heading2>
+          <Text>Achieve</Text>
         </Background>
         <Background>
           <StudyLabel>study</StudyLabel>
-          <Heading>프론트엔드 스터디 SF5팀</Heading>
-          <Heading2>드림코딩 강의 수강중</Heading2>
-          <Text>Next.js</Text>
-        </Background>
-        <Background>
-          <StudyLabel>study</StudyLabel>
-          <Heading>프론트엔드 스터디 SF5팀</Heading>
-          <Heading2>드림코딩 강의 수강중</Heading2>
-          <Text>Next.js</Text>
+          <Heading>프론트엔드 스터디</Heading>
+          <Heading2>드림코딩 Next.js 강의 수강중</Heading2>
+          <Text>SF5</Text>
         </Background>
       </StyledSlider>
       <ReservationLink to="/select" onClick={handleReservationClick}>
@@ -183,8 +174,8 @@ const BannerSlider: React.FC = () => {
         </RoundedRectangle>
       </ReservationLink>
       <RoundedRectangle2>
-        <h3>관리자와</h3>
-        <h2>실시간 채팅</h2>
+        <h3>필독!</h3>
+        <h2>공지사항 확인</h2>
       </RoundedRectangle2>
     </Banner>
   );

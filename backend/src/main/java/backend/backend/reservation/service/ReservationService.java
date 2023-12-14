@@ -96,6 +96,13 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReservationResponse> getAllReservations() {
+        List<Reservation> allReservations = reservationRepository.findAll();
+        return allReservations.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
     public boolean cancelReservation(Long reservationId) {
         Long userId = (long) session.getAttribute("userId");
         User user = userService.findById(userId);
