@@ -31,6 +31,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    private static final String[] PERMIT_URL_ARRAY = {
+            /* swagger v2 */
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -53,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                .antMatchers("/swagger-ui").permitAll()
+                .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .antMatchers("/api/signin").permitAll() // 로그인
                 // api
                 .antMatchers("/api/users/signup").permitAll() // 회원가입 api
