@@ -3,12 +3,14 @@ package backend.backend.noticeboardcomment.controller;
 import backend.backend.noticeboardcomment.dto.CommentRequestDto;
 import backend.backend.noticeboardcomment.dto.CommentResponseDto;
 import backend.backend.noticeboardcomment.service.CommentService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api(tags = "Comment API", description = "댓글")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/comments")
