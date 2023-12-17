@@ -1,5 +1,7 @@
 package backend.backend.auth.controller;
 
+import backend.backend.auth.jwt.CustomUserDetails;
+import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.user.dto.SignInRequest;
 import backend.backend.user.service.UserService;
@@ -28,6 +30,14 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        authenticationToken.setDetails(principal);
+
+        System.out.println("?? " + authenticationToken.getDetails().toString());
+
+
+
+        System.out.println(" 하 시발 " + authentication.getDetails());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication);

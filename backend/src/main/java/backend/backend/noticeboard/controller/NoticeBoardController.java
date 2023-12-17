@@ -11,12 +11,9 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/board")
 public class NoticeBoardController {
 
     private final NoticeBoardService noticeBoardService;
-
-    private final HttpSession httpSession;
 
     @GetMapping("/notice")
     public List<NoticeBoardResponseDto> getAllNoticeBoards() {

@@ -1,5 +1,6 @@
 package backend.backend.reservation.controller;
 
+import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.exception.ErrorCode;
@@ -30,17 +31,15 @@ public class ReservationController {
     private final ReservationService reservationService;
     //예약 생성
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal UserAdapter userDetails, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        User loggedUser = userService.getUserWithAuthorities().orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
-        ReservationResponse response = reservationService.createReservation(loggedUser, request);
+    public ResponseEntity<ReservationResponse> createReservation(@CurrentUser User currentUser, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+        ReservationResponse response = reservationService.createReservation(currentUser, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //예약 내역 조회
     @GetMapping("/check")
-    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId() {
-        User loggedUser = userService.getUserWithAuthorities().orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
-        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(loggedUser.getId());
+    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@CurrentUser User currentUser) {
+        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(currentUser.getId());
         return ResponseEntity.ok(reservations);
     }
 

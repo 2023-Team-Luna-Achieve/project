@@ -4,7 +4,7 @@ import backend.backend.auth.jwt.filter.JwtFilter;
 import backend.backend.auth.jwt.handler.JwtAccessDeniedHandler;
 import backend.backend.auth.jwt.handler.JwtAuthenticationEntryPoint;
 import backend.backend.auth.jwt.token.TokenProvider;
-import io.swagger.models.HttpMethod;
+import backend.backend.auth.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -33,15 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors() // CORS 설정 활
-                // 성화
+                .cors() // CORS 설정 활성화
                 .and()
                 .csrf().disable() // CSRF 보호를 무시할 경로 패턴
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
-                // enable h2-console
                 .and()
                 .headers()
                 .frameOptions()
@@ -54,29 +53,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                .antMatchers("/swagger-ui").permitAll()
                 .antMatchers("/api/signin").permitAll() // 로그인
                 // api
                 .antMatchers("/api/users/signup").permitAll() // 회원가입 api
                 .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
                 .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
 
-//                .antMatchers(HttpMethod.GET, "/", "/")
-//                .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
                 .antMatchers("/favicon.ico").permitAll()
                 .anyRequest().authenticated();// 그 외 인증 없이 접근X
 
-                http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class); // JwtFilter를 addFilterBefore로 등록;
-
-//                .authorizeRequests()
-//                .antMatchers("/**").permitAll()
-//                .anyRequest().authenticated() // 그 외의 요청은 인증이 필요
-//                .and()
-//                .formLogin() // 로그인 폼 활성화
-//                .and()
-//                .logout()
-//                    .invalidateHttpSession(true)
-//                    .clearAuthentication(true)
-//                    .permitAll()
-//                .and()
+                http.addFilterBefore(new JwtFilter(customUserDetailsService, tokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }
