@@ -9,7 +9,7 @@ import java.util.Map;
 public class UserAdapter extends CustomUserDetails {
 
     private User user;
-//    private Map<String, Object> attributes;
+    private Map<String, Object> attributes;
 
     public UserAdapter(User user){
         super(user);

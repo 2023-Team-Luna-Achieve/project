@@ -40,8 +40,6 @@ public class JwtFilter extends GenericFilterBean {
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-//            Authentication authentication = tokenProvider.getAuthentication(jwt);
-
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(tokenProvider.getUserEmailFromToken(jwt));
 
             UsernamePasswordAuthenticationToken authentication =

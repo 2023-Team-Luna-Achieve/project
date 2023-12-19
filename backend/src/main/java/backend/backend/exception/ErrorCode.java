@@ -13,9 +13,8 @@ public enum ErrorCode {
     ALREADY_VERIFIED_EMAIL(400, "AU_005", "이미 인증된 이메일입니다."),
     NEED_LOGIN(401, "AU_006", "로그인이 필요합니다"),
     NOT_LOGIN(401, "AU_007", "로그인이 되어있지 않습니다"),
-    NOT_FOUND(404, "AU_008","유저가 존재하지 않습니다");
-
-
+    NOT_FOUND(404, "AU_008","유저가 존재하지 않습니다"),
+    UNAUTHORIZED_REDIRECT_URI(400, "AU_009", "인증되지 않은 REDIRECT_URI입니다.");
     private final int status;
     private final String code;
     private final String message;
