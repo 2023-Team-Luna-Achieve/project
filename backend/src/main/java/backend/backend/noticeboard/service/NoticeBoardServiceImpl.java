@@ -113,7 +113,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     private NoticeBoardResponseDto mapToDto(NoticeBoard noticeBoard) {
         if (noticeBoard == null) {
-            return null; // 또는 예외를 throw하거나 기본값을 반환할 수 있습니다.
+            return null;
         }
 
         NoticeBoardResponseDto noticeBoardResponseDto = new NoticeBoardResponseDto();
@@ -121,7 +121,6 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         noticeBoardResponseDto.setTitle(noticeBoard.getTitle());
         noticeBoardResponseDto.setCategory(noticeBoard.getCategory());
         noticeBoardResponseDto.setContext(noticeBoard.getContext());
-        // 나머지 필드 설정
 
         return noticeBoardResponseDto;
     }
