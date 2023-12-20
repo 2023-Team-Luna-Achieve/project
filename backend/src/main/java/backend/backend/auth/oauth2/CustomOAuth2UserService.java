@@ -1,6 +1,7 @@
 package backend.backend.auth.oauth2;
 
 import backend.backend.auth.jwt.CustomUserDetails;
+import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.auth.oauth2.user.OAuth2UserInfo;
 import backend.backend.auth.oauth2.user.OAuth2UserInfoFactory;
 import backend.backend.exception.AuthenticationException;
@@ -26,7 +27,6 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-        System.out.println("씨발 " + oAuth2User.getName());
         try {
             return processOAuth2User(oAuth2UserRequest, oAuth2User);
         } catch (AuthenticationException ex) {
@@ -57,7 +57,7 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
 
-        return CustomUserDetails.create(user, oAuth2User.getAttributes());
+        return new UserAdapter(user, oAuth2User.getAttributes());
     }
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {

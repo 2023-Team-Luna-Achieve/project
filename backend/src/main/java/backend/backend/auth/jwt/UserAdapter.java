@@ -16,9 +16,9 @@ public class UserAdapter extends CustomUserDetails {
         this.user = user;
     }
 
-//    public UserAdapter(User user, Map<String, Object> attributes){
-//        super(user, attributes);
-//        this.user = user;
-//        this.attributes = attributes;
-//    }
+    public UserAdapter(User user, Map<String, Object> attributes){
+        super(user, attributes);
+        this.user = user;
+        this.attributes = attributes;
+    }
 }

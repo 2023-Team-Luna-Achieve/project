@@ -22,17 +22,20 @@ public class CustomUserDetails implements OAuth2User, UserDetails {
         this.user = user;
     }
 
+    public CustomUserDetails(User user, Map<String, Object> attributes) {
+        this.user = user;
+        this.attributes = attributes;
+    }
+
     public static CustomUserDetails create(User user) {
         return new CustomUserDetails(user);
     }
-
 
     public static CustomUserDetails create(User user, Map<String, Object> attributes) {
         CustomUserDetails userDetails = CustomUserDetails.create(user);
         userDetails.setAttributes(attributes);
         return userDetails;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

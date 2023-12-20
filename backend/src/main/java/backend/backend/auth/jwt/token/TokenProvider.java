@@ -48,6 +48,7 @@ public class TokenProvider implements InitializingBean {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        System.out.println("ㅎㅇ요 " + authentication.getPrincipal());
         UserAdapter principal = (UserAdapter) authentication.getPrincipal();
 
         long now = (new Date()).getTime();
