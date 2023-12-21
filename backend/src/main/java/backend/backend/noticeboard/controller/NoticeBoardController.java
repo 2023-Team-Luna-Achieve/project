@@ -17,13 +17,15 @@ import java.util.List;
 public class NoticeBoardController {
 
     private final NoticeBoardService noticeBoardService;
+    private final HttpSession httpSession;
 
-    @ApiOperation(value = "게시판 전체 조회 API", notes = "존재하는 전체 게시판 조회를 진행한다")
-    @GetMapping("/notice")
-    public List<NoticeBoardResponseDto> getAllNoticeBoards() {
-        return noticeBoardService.getAllNoticeBoards();
+    //모든 공지사항 글 목록 조회
+    @GetMapping("/notice/{id}")
+    public NoticeBoardResponseDto.PagedNoticeBoardResponseDto getAllNoticeBoards(@PathVariable Long id) {
+        return noticeBoardService.getNoticeBoards(5,id);
     }
 
+    //특정 글 조회?
     @ApiOperation(value = "게시판 단일 조회 API", notes = "게시판 단일 조회를 진행한다")
     @GetMapping("/{id}")
     public ResponseEntity<NoticeBoardResponseDto> getNoticeBoardById(@PathVariable Long id) {
@@ -31,6 +33,7 @@ public class NoticeBoardController {
         return ResponseEntity.ok(noticeBoardDto);
     }
 
+    //글 생성
     @ApiOperation(value = "게시판 작성 API", notes = "게시판 작성을 진행한다. \n " +
             "category는 Notice, LostItem, Suggestion 3가지만 입력한다")
     @PostMapping("/notice")
@@ -39,6 +42,7 @@ public class NoticeBoardController {
         return ResponseEntity.ok(createdNoticeBoard);
     }
 
+    //글 수정
     @ApiOperation(value = "게시판 수정 API", notes = "게시판 수정을 진행한다")
     @PutMapping("/{id}")
     public ResponseEntity<NoticeBoardResponseDto> updateNoticeBoard(
@@ -46,6 +50,8 @@ public class NoticeBoardController {
         NoticeBoardResponseDto updatedNoticeBoard = noticeBoardService.updateNoticeBoard(id, noticeBoardDto);
         return ResponseEntity.ok(updatedNoticeBoard);
     }
+
+    //공지사항 글 삭제
 
     @ApiOperation(value = "게시판 삭제 API", notes = "게시판 삭제를 진행한다")
     @DeleteMapping("/{id}")
