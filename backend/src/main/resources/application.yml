@@ -7,7 +7,9 @@ spring:
 spring:
   profiles:
     active: dev
+    include: oauth
 ---
 spring:
   profiles:
     active: prod
+    include: oauth
