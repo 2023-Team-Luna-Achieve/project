@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from '../../util/axiosConfig';
+import { useRecoilState } from 'recoil';
+import { isLoggedInState } from '../../recoil/recoilState';
 
 const StyledHeaderBorder = styled.div`
   border-bottom: 1px solid #dddddd;
@@ -30,10 +32,11 @@ const StyledNav = styled.nav`
   }
 `;
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+
   useEffect(() => {
     axios
-      .get('https://achieve-project.store/api/users/login-confirm')
+      .get('http://localhost:8080/api/users/login-confirm')
       .then((response) => {
         if (response.data.loggedIn) {
           setIsLoggedIn(true);
@@ -45,7 +48,7 @@ const Header = () => {
         console.error('로그인 상태 확인 중 에러:', error);
         setIsLoggedIn(false);
       });
-  }, [isLoggedIn]);
+  }, [setIsLoggedIn]);
 
   return (
     <StyledHeaderBorder>
@@ -60,7 +63,7 @@ const Header = () => {
             </li>
             {isLoggedIn && (
               <li>
-                <Link to="/Reservation">Reservation</Link>
+                <Link to="/Select">Reservation</Link>
               </li>
             )}
             <li>
@@ -89,7 +92,6 @@ const Header = () => {
     </StyledHeaderBorder>
   );
 };
-
 export default Header;
 
 export {};

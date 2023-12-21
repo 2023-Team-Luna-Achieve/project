@@ -104,7 +104,7 @@ const ReservationPage: React.FC = () => {
       const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
 
       try {
-        const response = await axios.post('https://achieve-project.store/api/reservation', {
+        const response = await axios.post('http://localhost:8080/api/reservation', {
           reservationStartTime: isoStartTime,
           reservationEndTime: isoEndTime,
           members: selectedMembers.value,

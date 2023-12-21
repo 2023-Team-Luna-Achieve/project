@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
 import MainPage from './pages/MainPage';
 import Header from './components/layout/Header';
 import NoticePage from './pages/NoticePage';
@@ -13,23 +14,25 @@ import MyPage from './pages/MyPage';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <div>
-        <Header />
-        <Routes>
-          <Route path="" element={<MainPage />} />
-          <Route path="Main" element={<MainPage />} />
-          <Route path="About" element={<AboutPage />} />
-          <Route path="Reservation" element={<ReservationPage />} />
-          <Route path="Select" element={<SelectPage />} />
-          <Route path="Notice" element={<NoticePage />} />
-          <Route path="Login" element={<LoginPage />} />
-          <Route path="Join" element={<JoinPage />} />
-          <Route path="Mypage" element={<MyPage />} />
-          <Route path="Community" element={<CommunityPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <RecoilRoot>
+      <Router>
+        <div>
+          <Header />
+          <Routes>
+            <Route path="" element={<MainPage />} />
+            <Route path="Main" element={<MainPage />} />
+            <Route path="About" element={<AboutPage />} />
+            <Route path="Reservation" element={<ReservationPage />} />
+            <Route path="Select" element={<SelectPage />} />
+            <Route path="Notice" element={<NoticePage />} />
+            <Route path="Login" element={<LoginPage />} />
+            <Route path="Join" element={<JoinPage />} />
+            <Route path="Mypage" element={<MyPage />} />
+            <Route path="Community" element={<CommunityPage />} />
+          </Routes>
+        </div>
+      </Router>
+    </RecoilRoot>
   );
 };
 
