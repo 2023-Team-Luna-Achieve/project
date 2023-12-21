@@ -1,4 +1,4 @@
-package backend.backend.noticeboardcomment.controller;
-
-public class SuggestionCommentController {
-}
+//package backend.backend.noticeboardcomment.controller;
+//
+//public class SuggestionCommentController {
+//}

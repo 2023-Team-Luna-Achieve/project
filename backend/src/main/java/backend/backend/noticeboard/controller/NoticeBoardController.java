@@ -19,9 +19,9 @@ public class NoticeBoardController {
     private final HttpSession httpSession;
 
     //모든 공지사항 글 목록 조회
-    @GetMapping("/notice")
-    public List<NoticeBoardResponseDto> getAllNoticeBoards() {
-        return noticeBoardService.getAllNoticeBoards();
+    @GetMapping("/notice/{id}")
+    public NoticeBoardResponseDto.PagedNoticeBoardResponseDto getAllNoticeBoards(@PathVariable Long id) {
+        return noticeBoardService.getNoticeBoards(5,id);
     }
 
     //특정 글 조회?

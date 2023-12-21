@@ -28,6 +28,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 
     @Override
+    public List<NoticeBoardResponseDto> getNoticeBoards() {
+        return null;
+    }
+
+    @Override
     public NoticeBoardResponseDto getNoticeBoardById(Long id) {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("NoticeBoard not found with id: " + id));
@@ -92,7 +97,8 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         return noticeBoard;  // 이 부분에 중괄호가 누락되면 오류가 발생할 수 있습니다.
     }
 
-    //커서 페이지네이션
+    //커서기반 페이지네이션
+    @Override
     public NoticeBoardResponseDto.PagedNoticeBoardResponseDto getNoticeBoards(int size, Long lastNoticeBoardId) {
         PageRequest pageRequest = PageRequest.of(0, size + 1);
         Page<NoticeBoard> page = noticeBoardRepository.findAllByIdLessThanOrderByIdDesc(lastNoticeBoardId, pageRequest);
@@ -113,7 +119,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     private NoticeBoardResponseDto mapToDto(NoticeBoard noticeBoard) {
         if (noticeBoard == null) {
-            return null;
+            throw new IllegalArgumentException("NoticeBoard cannot be null");
         }
 
         NoticeBoardResponseDto noticeBoardResponseDto = new NoticeBoardResponseDto();

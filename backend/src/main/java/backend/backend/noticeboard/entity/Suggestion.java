@@ -1,6 +1,6 @@
 package backend.backend.noticeboard.entity;
 
-import backend.backend.noticeboardcomment.entity.Comment;
+//import backend.backend.noticeboardcomment.entity.Comment;
 import backend.backend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +26,8 @@ public class Suggestion {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "suggestion_id")
-    private List<Comment> comments;
+//    @OneToMany(mappedBy = "suggestion_id")
+//    private List<Comment> comments;
 
     private String title;
 
