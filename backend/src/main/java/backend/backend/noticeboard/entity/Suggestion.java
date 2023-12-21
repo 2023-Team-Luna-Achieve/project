@@ -16,17 +16,17 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeBoard {
+public class Suggestion {
     @Id
-    @GeneratedValue
-    @Column(name = "noticeBoard_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "suggestion_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToMany(mappedBy = "noticeBoard")
+//    @OneToMany(mappedBy = "suggestion_id")
 //    private List<Comment> comments;
 
     private String title;

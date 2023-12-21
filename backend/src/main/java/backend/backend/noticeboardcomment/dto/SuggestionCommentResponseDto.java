@@ -7,11 +7,10 @@
 //
 //@Getter
 //@Setter
-//public class CommentResponseDto {
+//public class SuggestionCommentResponseDto {
 //    private Long id;
-//    private Long noticeBoardId;
+//    private Long suggestionId;
 //    private Long userId;
 //    private String context;
 //    private LocalDateTime created_at;
-//    // 추가 필드가 있다면 추가
 //}
