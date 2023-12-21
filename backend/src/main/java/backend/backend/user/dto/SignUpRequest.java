@@ -1,7 +1,7 @@
 package backend.backend.user.dto;
 
 import backend.backend.user.entity.Affiliation;
-import backend.backend.user.entity.Auth;
+import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,7 +35,7 @@ public class SignUpRequest {
                 .password(password)
                 .email(email)
                 .affiliation(affiliation)
-                .auth(Auth.General)
+                .role(Role.ROLE_USER)
                 .created_at(LocalDateTime.now())
                 .build();
     }

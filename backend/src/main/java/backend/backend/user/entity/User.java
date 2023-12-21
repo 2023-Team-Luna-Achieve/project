@@ -3,16 +3,14 @@ package backend.backend.user.entity;
 import backend.backend.noticeboard.entity.NoticeBoard;
 //import backend.backend.noticeboardcomment.entity.Comment;
 import backend.backend.reservation.entity.Reservation;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -21,13 +19,12 @@ public class User {
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
-
     private String name;
     private String email;
     private String password;
     private LocalDateTime created_at;
     @Enumerated(EnumType.STRING)
-    private Auth auth;
+    private Role role;
 
     @Enumerated(EnumType.STRING)
     private Affiliation affiliation;
@@ -40,4 +37,12 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservation;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+    private String providerId;
+
+    public String roleName() {
+        return role.name();
+    }
 }
