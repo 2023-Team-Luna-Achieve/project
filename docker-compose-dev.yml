@@ -1,4 +1,4 @@
-version: '3'
+version: "3.8"
 
 services:
   mysql:
@@ -20,13 +20,14 @@ services:
   backend:
     container_name: backend
     build:
-      context: backend # dockerfile의 위치
-      dockerfile: dockerfile
+      context: backend
+      dockerfile: dockerfile-dev
     environment:
       WAIT_HOSTS: mysql:3306
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/achieve?createDatabaseIfNotExist=true&characterEncoding=UTF-8&profileSql=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8080:8080"
     depends_on:
@@ -67,18 +68,28 @@ services:
   nginx:
     container_name: nginx
     build:
-      context: devops/nginx
+      context: devops/nginx/dev
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./devops/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./devops/nginx/dev/nginx_develop.conf:/etc/nginx/nginx.conf
       - build_folder:/var/www/frontend
     depends_on:
       - backend
     expose:
       - '80'
+      - '443'
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  certbot: # certbot 서비스 추가
+    image: certbot/certbot
+    container_name: certbot_service
+    volumes:
+      - ../certbot/conf:/etc/letsencrypt
+      - ../certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 
 volumes:

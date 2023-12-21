@@ -1,17 +1,16 @@
 package backend.backend.user.dto;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class SignInResponse {
+public class LoginConfirmResponse {
     private String message;
-    private UserDto user;
+    private boolean loggedIn;
 
-    public SignInResponse(String message, UserDto user) {
+    public LoginConfirmResponse(String message, boolean loggedIn) {
         this.message = message;
-        this.user = user;
+        this.loggedIn = loggedIn;
     }
 }

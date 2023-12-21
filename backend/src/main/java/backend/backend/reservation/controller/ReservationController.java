@@ -2,7 +2,6 @@ package backend.backend.reservation.controller;
 
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
-import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,11 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +19,7 @@ import java.util.stream.Collectors;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final HttpSession httpSession;
 
     //예약 생성
     @PostMapping
@@ -30,10 +28,19 @@ public class ReservationController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    //예약 정보 가져오기
+    //예약 내역 조회
+    @GetMapping("/check")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId() {
+        Long userId = (long) httpSession.getAttribute("userId");
+        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(userId);
+        return ResponseEntity.ok(reservations);
+    }
+
+    //전체 예약 내역 조회
+    @GetMapping("/all")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
-        List<ReservationResponse> responses = reservationService.getAllReservations();
-        return ResponseEntity.ok(responses);
+        List<ReservationResponse> allReservations = reservationService.getAllReservations();
+        return ResponseEntity.ok(allReservations);
     }
 
     //예약 취소

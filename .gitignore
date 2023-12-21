@@ -3,3 +3,8 @@
 /project
 /target
 backend/src/main/resources/email.properties
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-dev.yml
+backend/src/main/resources/application-prod.yml
+.env
+/devops/nginx/certbot/*

@@ -147,7 +147,6 @@ public class EmailService {
     @Transactional
     public VerificationResponse verifyEmail(String email, String code) {
         String verificationCode = redisUtil.getData(email);
-        User user = userRepository.findUserByEmail(email);
         if (verificationCode.equals("verified")) {
             throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }

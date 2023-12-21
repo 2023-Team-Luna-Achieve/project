@@ -1,5 +1,4 @@
 FROM openjdk:11-jdk-slim as Build
-ENV SPRING_PROFILES_ACTIVE=docker
 
 COPY . /app
 
@@ -12,7 +11,6 @@ RUN chmod +x gradlew
 RUN ./gradlew build -x test
 
 FROM openjdk:11-jdk-slim
-ENV SPRING_PROFILES_ACTIVE=docker
 
 ARG JAR_FILE=build/libs/backend-0.0.1-SNAPSHOT.jar
 COPY --from=Build /app/${JAR_FILE} app.jar

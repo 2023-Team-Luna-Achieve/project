@@ -1,126 +1,120 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import axios from '../util/axiosConfig';
+import Modal from '../components/Modal';
 
 const FormContainer = styled.div`
   max-width: 600px;
-  margin: 300px auto;
+  margin: 50px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-height: 100vh;
+  max-height: calc(100vh - 40px);
   overflow: hidden;
+  color: #585858;
 `;
-
-const Form = styled.form`
+const LoginText = styled.div`
+  font-size: 70px;
+  font-weight: bold;
+  color: #3a3a3a;
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 0px;
+`;
+const Input = styled.input`
+  border-radius: 0;
+  border: 0.7px solid #c0c0c0;
+  height: 26px;
+  width: 400px;
+`;
+const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new-password' })`
+  margin-bottom: 0px;
+  border-radius: 0;
+`;
+const StyledForm = styled.form``;
+const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin-bottom: 10px;
 `;
-
-const FormGroup = styled.div`
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Label = styled.label`
-  font-weight: bold;
-  width: 150px;
-  text-align: right;
-  margin-left: 0px;
-`;
-
-const PasswordInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  margin-top: -3px;
-`;
-
-const EmailInput = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  margin-top: -3px;
-`;
-
 const LoginButton = styled.button`
+  border: none;
   background-color: #c0c0c0;
-  border: 2px solid #c0c0c0;
-  padding: 10px 40px;
-  margin-left: 10px;
   color: #ffffff;
-  font-weight: 600;
   font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
-  border-radius: 5px;
+  height: 26px;
+  width: 100%;
   transition:
     background-color 0.3s,
-    border-color 0.3s,
     color 0.3s;
-
   &:hover {
     background-color: #000000;
-    border-color: #000000;
   }
 `;
-
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
-
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
-      // signin 엔드포인트로 API 호출
-      const response = await axios.post('http://localhost:8080/api/users/signin', {
+      const response = await axios.post('https://achieve-project.store/api/users/signin', {
         email,
         password,
       });
 
-      // 응답을 처리하고, 예를 들어 성공 시 새로운 페이지로 리다이렉트
       console.log('로그인 성공:', response.data);
+      await handleLoginVerification();
+      setIsModalOpen(true);
     } catch (error) {
-      // 에러 처리
       console.error('로그인 실패:', error);
     }
   };
 
+  const handleLoginVerification = async () => {
+    try {
+      const confirmResponse = await axios.get('https://achieve-project.store/api/users/login-confirm');
+
+      console.log('로그인 검증 성공:', confirmResponse.data);
+    } catch (error) {
+      console.error('로그인 검증 실패:', error);
+    }
+  };
+  const closeModalAndRedirect = () => {
+    setIsModalOpen(false);
+    navigate('/main');
+  };
+
   return (
     <FormContainer>
-      <Form onSubmit={handleLogin}>
+      <Modal isOpen={isModalOpen} onClose={closeModalAndRedirect}>
+        <p>로그인이 완료 되었습니다.</p>
+      </Modal>
+      <LoginText className="login">로그인</LoginText>
+      <StyledForm onSubmit={handleLogin}>
         <FormGroup>
-          <Label>이메일</Label>
-          <EmailInput type="email" value={email} onChange={handleEmailChange} />
+          <label htmlFor="name">이메일</label>
+          <Input type="email" id="email" name="email" value={email} onChange={handleEmailChange} />
         </FormGroup>
         <FormGroup>
-          <Label>비밀번호</Label>
-          <PasswordInput type="password" value={password} onChange={handlePasswordChange} />
+          <label htmlFor="password">비밀번호</label>
+          <PasswordInput id="password" name="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+        <div>
           <LoginButton type="submit">로그인</LoginButton>
         </div>
-      </Form>
+      </StyledForm>
     </FormContainer>
   );
 };
-
 export default LoginPage;

@@ -13,18 +13,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation {
+
     @Id @GeneratedValue
     @Column(name = "reservation_id")
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
     private LocalDateTime reservationStartTime;
     private LocalDateTime reservationEndTime;
     private int members;
-
     private LocalDateTime created_at;
     private LocalDateTime deleted_at;
+
     @OneToOne
     @JoinColumn(name = "meetingRoom_id")
     private MeetingRoom meetingRoom;
