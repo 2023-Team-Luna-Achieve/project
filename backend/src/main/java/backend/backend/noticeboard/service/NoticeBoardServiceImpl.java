@@ -4,10 +4,9 @@ import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.noticeboard.repository.NoticeBoardRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class NoticeBoardServiceImpl implements NoticeBoardService {
@@ -19,10 +18,9 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 
     @Override
-    public List<NoticeBoardResponseDto> getAllNoticeBoards() {
-        return noticeBoardRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public Page<NoticeBoardResponseDto> getAllNoticeBoards(Pageable pageable, Long cursor) {
+        Page<NoticeBoard> noticeBoards = noticeBoardRepository.findAllByCursor(pageable, cursor);
+        return noticeBoards.map(this::convertToDto);
     }
 
     @Override
@@ -48,8 +46,6 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         existingNoticeBoard.setCategory(noticeBoardDto.getCategory());
         existingNoticeBoard.setContext(noticeBoardDto.getContext());
 
-        // 여기에 다른 필요한 업데이트 로직을 추가할 수 있습니다.
-
         noticeBoardRepository.save(existingNoticeBoard);
         return convertToDto(existingNoticeBoard);
     }
@@ -61,7 +57,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     private NoticeBoardResponseDto convertToDto(NoticeBoard noticeBoard) {
         if (noticeBoard == null) {
-            return null; // 또는 예외를 throw하거나 기본값을 반환할 수 있습니다.
+            return null;
         }
 
         NoticeBoardResponseDto noticeBoardResponseDto = new NoticeBoardResponseDto();
@@ -69,24 +65,20 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         noticeBoardResponseDto.setTitle(noticeBoard.getTitle());
         noticeBoardResponseDto.setCategory(noticeBoard.getCategory());
         noticeBoardResponseDto.setContext(noticeBoard.getContext());
-        // 나머지 필드 설정
 
         return noticeBoardResponseDto;
     }
 
     private NoticeBoard convertToEntity(NoticeBoardRequestDto noticeBoardDto) {
-
         if (noticeBoardDto == null) {
-            return null; // 또는 예외를 throw하거나 기본값을 반환할 수 있습니다.
+            return null;
         }
 
         NoticeBoard noticeBoard = new NoticeBoard();
-        // noticeBoard.setId(noticeBoardDto.getId());
         noticeBoard.setTitle(noticeBoardDto.getTitle());
         noticeBoard.setCategory(noticeBoardDto.getCategory());
         noticeBoard.setContext(noticeBoardDto.getContext());
-        // 나머지 필드 설정
 
-        return noticeBoard;  // 이 부분에 중괄호가 누락되면 오류가 발생할 수 있습니다.
+        return noticeBoard;
     }
 }
