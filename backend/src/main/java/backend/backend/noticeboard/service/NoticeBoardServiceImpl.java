@@ -6,6 +6,7 @@ import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.noticeboard.repository.NoticeBoardRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     public Page<NoticeBoardResponseDto> getAllNoticeBoards(Pageable pageable, Long cursor) {
         Page<NoticeBoard> noticeBoards = noticeBoardRepository.findAllByCursor(pageable, cursor);
         return noticeBoards.map(this::convertToDto);
+    }
+
+    @Override
+    public List<NoticeBoardResponseDto> getNoticeBoards() {
+        return null;
     }
 
     @Override
@@ -80,5 +86,39 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         noticeBoard.setContext(noticeBoardDto.getContext());
 
         return noticeBoard;
+    }
+
+    //커서기반 페이지네이션
+    @Override
+    public NoticeBoardResponseDto.PagedNoticeBoardResponseDto getNoticeBoards(int size, Long lastNoticeBoardId) {
+        PageRequest pageRequest = PageRequest.of(0, size + 1);
+        Page<NoticeBoard> page = noticeBoardRepository.findAllByIdLessThanOrderByIdDesc(lastNoticeBoardId, pageRequest);
+        List<NoticeBoard> noticeBoards = page.getContent();
+
+        long nextCursor = -1L;
+        if (page.hasNext()) {
+            nextCursor = noticeBoards.get(noticeBoards.size() - 1).getId();
+        }
+
+        NoticeBoardResponseDto.PagedNoticeBoardResponseDto response = new NoticeBoardResponseDto.PagedNoticeBoardResponseDto();
+        response.setContents(noticeBoards.stream().map(this::mapToDto).collect(Collectors.toList()));
+        response.setTotalElements(noticeBoardRepository.count());
+        response.setNextCursor(nextCursor);
+
+        return response;
+    }
+
+    private NoticeBoardResponseDto mapToDto(NoticeBoard noticeBoard) {
+        if (noticeBoard == null) {
+            throw new IllegalArgumentException("NoticeBoard cannot be null");
+        }
+
+        NoticeBoardResponseDto noticeBoardResponseDto = new NoticeBoardResponseDto();
+        noticeBoardResponseDto.setId(noticeBoard.getId());
+        noticeBoardResponseDto.setTitle(noticeBoard.getTitle());
+        noticeBoardResponseDto.setCategory(noticeBoard.getCategory());
+        noticeBoardResponseDto.setContext(noticeBoard.getContext());
+
+        return noticeBoardResponseDto;
     }
 }

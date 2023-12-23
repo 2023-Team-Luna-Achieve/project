@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from '../util/axiosConfig';
 import Modal from '../components/Modal';
+import { useSetRecoilState } from 'recoil';
+import { isLoggedInState } from '../recoil/recoilState';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -59,21 +61,28 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const setLoggedInState = useSetRecoilState(isLoggedInState);
+
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
+
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
+
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('https://achieve-project.store/api/users/signin', {
+      const response = await axios.post('http://localhost:8080/api/users/signin', {
         email,
         password,
       });
 
       console.log('로그인 성공:', response.data);
+
+      setLoggedInState(true);
+
       await handleLoginVerification();
       setIsModalOpen(true);
     } catch (error) {
@@ -83,13 +92,14 @@ const LoginPage: React.FC = () => {
 
   const handleLoginVerification = async () => {
     try {
-      const confirmResponse = await axios.get('https://achieve-project.store/api/users/login-confirm');
+      const confirmResponse = await axios.get('http://localhost:8080/api/users/login-confirm');
 
       console.log('로그인 검증 성공:', confirmResponse.data);
     } catch (error) {
       console.error('로그인 검증 실패:', error);
     }
   };
+
   const closeModalAndRedirect = () => {
     setIsModalOpen(false);
     navigate('/main');
@@ -117,4 +127,5 @@ const LoginPage: React.FC = () => {
     </FormContainer>
   );
 };
+
 export default LoginPage;

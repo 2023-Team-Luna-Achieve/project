@@ -32,15 +32,13 @@ public class ReservationService {
     private final UserService userService;
     private final EmailService emailService;
 
-    public ReservationResponse createReservation(ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        Reservation reservation = makeReservation(request);
+    public ReservationResponse createReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+        Reservation reservation = makeReservation(user, request);
         return convertToResponse(reservation);
     }
 
     @Transactional
-    public Reservation makeReservation(ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        Long userId = (long) session.getAttribute("userId");
-        User user = userService.findById(userId);
+    public Reservation makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
                 .orElse(new MeetingRoom());
 
