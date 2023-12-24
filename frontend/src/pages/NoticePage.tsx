@@ -1,5 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from '../util/axiosConfig';
+
+type NoticeProps = {
+  title: string;
+  context: string;
+};
+
 const PageContainer = styled.div`
   background-color: #ececec;
   display: flex;
@@ -9,8 +17,9 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 20px;
 `;
+
 const Box = styled.div`
-  width: calc(20%);
+  width: 300px;
   height: 180px;
   background-color: #ffffff;
   border: 1px solid #e4e4e4;
@@ -19,7 +28,13 @@ const Box = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   padding: 10px;
+  margin-bottom: 20px;
 `;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
 const Title = styled.div`
   font-weight: bold;
   color: #000000;
@@ -29,6 +44,7 @@ const Title = styled.div`
   margin-top: 10px;
   margin-left: 10px;
 `;
+
 const Content = styled.div`
   color: #575757;
   font-size: 14px;
@@ -37,61 +53,66 @@ const Content = styled.div`
   margin-right: 10px;
   margin-bottom: 10px;
 `;
-const NoticePage: React.FC = () => {
+
+const Button = styled.button`
+  width: 100px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid #232323;
+  background-color: #232323;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+const NoticePage: React.FC<NoticeProps> = ({}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/board/notice?page=${page}&limit=10`);
+      setData([...data, ...response.data]);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleWriteClick = () => {
+    navigate('/WritePage');
+  };
+
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+
   return (
-    <PageContainer>
-      <Box>
-        <Title>Achieve 프로젝트 팀 공지</Title>
-        <Content>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, delectus! Sunt corrupti repellat iste amet
-          laboriosam non dolorum iusto
-        </Content>
-      </Box>
-      <Box>
-        <Title>공지 2</Title>
-        <Content>내용 2</Content>
-      </Box>
-      <Box>
-        <Title>공지 3</Title>
-        <Content>내용 3</Content>
-      </Box>
-      <Box>
-        <Title>공지 4</Title>
-        <Content>내용 4</Content>
-      </Box>
-      <Box>
-        <Title>공지 5</Title>
-        <Content>내용 5</Content>
-      </Box>
-      <Box>
-        <Title>공지 6</Title>
-        <Content>내용 6</Content>
-      </Box>
-      <Box>
-        <Title>공지 7</Title>
-        <Content>내용 7</Content>
-      </Box>
-      <Box>
-        <Title>공지 8</Title>
-        <Content>내용 8</Content>
-      </Box>
-      <Box>
-        <Title>공지 9</Title>
-        <Content>내용 9</Content>
-      </Box>
-      <Box>
-        <Title>공지 10</Title>
-        <Content>내용 10</Content>
-      </Box>
-      <Box>
-        <Title>공지 11</Title>
-        <Content>내용 11</Content>
-      </Box>
-      <Box>
-        <Title>공지 12</Title>
-        <Content>내용 12</Content>
-      </Box>
-    </PageContainer>
+    <>
+      <Button onClick={handleWriteClick}>글쓰기</Button>
+      <PageContainer>
+        {data &&
+          data.map((item: any, index: number) => (
+            <StyledLink to={`/NewPage/${item.id}`} key={index}>
+              <Box>
+                <Title>{item.title}</Title>
+                <Content>{item.context}</Content>
+              </Box>
+            </StyledLink>
+          ))}
+        {loading ? <p>Loading...</p> : <Button onClick={loadMore}>더 불러오기</Button>}
+      </PageContainer>
+    </>
   );
 };
+
 export default NoticePage;

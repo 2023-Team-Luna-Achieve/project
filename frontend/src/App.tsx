@@ -11,6 +11,8 @@ import AboutPage from './pages/AboutPage';
 import ReservationPage from './pages/ReservationPage';
 import SelectPage from './pages/SelectPage';
 import MyPage from './pages/MyPage';
+import WritePage from './pages/WritePage';
+import NewPage from './pages/NewPage';
 
 const App: React.FC = () => {
   return (
@@ -24,11 +26,13 @@ const App: React.FC = () => {
             <Route path="About" element={<AboutPage />} />
             <Route path="Reservation" element={<ReservationPage />} />
             <Route path="Select" element={<SelectPage />} />
-            <Route path="Notice" element={<NoticePage />} />
+            <Route path="Notice" element={<NoticePage title={''} context={''} />} />
             <Route path="Login" element={<LoginPage />} />
             <Route path="Join" element={<JoinPage />} />
             <Route path="Mypage" element={<MyPage />} />
             <Route path="Community" element={<CommunityPage />} />
+            <Route path="WritePage" element={<WritePage />} />
+            <Route path="/NewPage/:id" element={<NewPage />} />
           </Routes>
         </div>
       </Router>

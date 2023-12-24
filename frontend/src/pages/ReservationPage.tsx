@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styled from 'styled-components';
 import TimeSelect from '../components/TimeSelect';
 import axios from '../util/axiosConfig';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
 
 const ReservationPageWrapper = styled.div``;
@@ -71,6 +72,9 @@ const Button = styled.button`
 `;
 
 const ReservationPage: React.FC = () => {
+  const navigate = useNavigate(); // useNavigate를 사용하여 navigate 변수 설정
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 초기 상태를 Date | null로 수정
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
@@ -124,6 +128,25 @@ const ReservationPage: React.FC = () => {
       console.error('모든 요소를 선택 해주세요.');
     }
   };
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/users/login-confirm')
+      .then((response) => {
+        setIsLoggedIn(response.data.loggedIn);
+      })
+      .catch((error) => {
+        console.error('로그인 상태 확인 중 에러:', error);
+        setIsLoggedIn(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    // 로그인 상태를 확인하고 리디렉션
+    if (!isLoggedIn) {
+      navigate('/Login'); // 로그인 페이지로 리디렉션
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <ReservationPageWrapper>

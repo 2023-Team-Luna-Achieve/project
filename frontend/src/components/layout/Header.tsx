@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from '../../util/axiosConfig';
 import { useRecoilState } from 'recoil';
@@ -31,9 +31,10 @@ const StyledNav = styled.nav`
     }
   }
 `;
+
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get('http://localhost:8080/api/users/login-confirm')
@@ -50,6 +51,13 @@ const Header = () => {
       });
   }, [setIsLoggedIn]);
 
+  const handleReservationClick = () => {
+    // 로그인이 안 되어 있으면 LoginPage로 이동
+    if (!isLoggedIn) {
+      navigate('/Login');
+    }
+  };
+
   return (
     <StyledHeaderBorder>
       <StyledHeader>
@@ -60,6 +68,11 @@ const Header = () => {
             </li>
             <li>
               <Link to="/About">About</Link>
+            </li>
+            <li>
+              <Link onClick={handleReservationClick} to="/Select">
+                Reservation
+              </Link>
             </li>
             {isLoggedIn && (
               <li>
