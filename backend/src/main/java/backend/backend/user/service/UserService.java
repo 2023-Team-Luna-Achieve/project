@@ -1,20 +1,17 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
-import backend.backend.auth.jwt.SecurityUtil;
 import backend.backend.exception.*;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,18 +39,6 @@ public class UserService {
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
 
-    public SignInResponse processSignIn (SignInRequest signInRequest, HttpSession session) {
-        User user = userRepository.findUserByEmail(signInRequest.getEmail());
-        if (user != null) {
-            if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword())) {
-                session.setAttribute("userId", user.getId());
-                return new SignInResponse("로그인이 완료 되었습니다", UserDto.of(user));
-            }
-            throw new InvalidValueException(ErrorCode.BAD_LOGIN);
-        }
-        throw new InvalidValueException(ErrorCode.BAD_LOGIN);
-    }
-
     public SignOutResponse processSignOut(HttpSession session) {
         if (session.getAttribute("userId") == null) {
             throw new NotLoginException(ErrorCode.NOT_LOGIN);
@@ -65,17 +50,5 @@ public class UserService {
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
-    }
-
-    public LoginConfirmResponse loginConfirm(HttpSession session) {
-        if (session.getAttribute("userId") == null) {
-            return new LoginConfirmResponse("로그인이 필요합니다", false);
-        }
-        return new LoginConfirmResponse("로그인이 되어있습니다", true);
-    }
-    @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthorities() {
-        return SecurityUtil.getCurrentUsername()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail);
     }
 }
