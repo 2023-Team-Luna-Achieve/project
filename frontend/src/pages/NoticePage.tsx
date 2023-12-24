@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from '../util/axiosConfig';
 
 type NoticeProps = {
   title: string;
@@ -19,7 +19,7 @@ const PageContainer = styled.div`
 `;
 
 const Box = styled.div`
-  width: calc(20%);
+  width: 300px;
   height: 180px;
   background-color: #ffffff;
   border: 1px solid #e4e4e4;
@@ -28,6 +28,11 @@ const Box = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   padding: 10px;
+  margin-bottom: 20px;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const Title = styled.div`
@@ -60,40 +65,51 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const NoticePage: React.FC<NoticeProps> = ({ title, context }) => {
-  const [data, setData] = useState([]);
+const NoticePage: React.FC<NoticeProps> = ({}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/board/notice');
-        setData(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/board/notice?page=${page}&limit=10`);
+      setData([...data, ...response.data]);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleWriteClick = () => {
+    navigate('/WritePage');
+  };
+
+  const loadMore = () => {
+    setPage(page + 1);
+  };
 
   return (
     <>
-      <Link to="/WritePage">
-        <Button>글 작성</Button>
-      </Link>
+      <Button onClick={handleWriteClick}>글쓰기</Button>
       <PageContainer>
         {data &&
           data.map((item: any, index: number) => (
-            <Box key={index}>
-              <Title>{item.title}</Title>
-              <Content>{item.context}</Content>
-            </Box>
+            <StyledLink to={`/NewPage/${item.id}`} key={index}>
+              <Box>
+                <Title>{item.title}</Title>
+                <Content>{item.context}</Content>
+              </Box>
+            </StyledLink>
           ))}
-        <Box>
-          <Title>{title}</Title>
-          <Content>{context}</Content>
-        </Box>
+        {loading ? <p>Loading...</p> : <Button onClick={loadMore}>더 불러오기</Button>}
       </PageContainer>
     </>
   );

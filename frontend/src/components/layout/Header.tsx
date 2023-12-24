@@ -35,7 +35,7 @@ const Header = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get('https://achieve-project.store/api/users/login-confirm')
+      .get('http://localhost:8080/api/users/login-confirm')
       .then((response) => {
         if (response.data.loggedIn) {
           setIsLoggedIn(true);
