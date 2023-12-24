@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from '../../util/axiosConfig';
+import { useRecoilState } from 'recoil';
+import { isLoggedInState } from '../../recoil/recoilState';
 
 const StyledHeaderBorder = styled.div`
   border-bottom: 1px solid #dddddd;
@@ -31,7 +33,7 @@ const StyledNav = styled.nav`
 `;
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const navigate = useNavigate();
   useEffect(() => {
     axios
@@ -47,7 +49,7 @@ const Header = () => {
         console.error('로그인 상태 확인 중 에러:', error);
         setIsLoggedIn(false);
       });
-  }, [isLoggedIn]);
+  }, [setIsLoggedIn]);
 
   const handleReservationClick = () => {
     // 로그인이 안 되어 있으면 LoginPage로 이동
@@ -74,7 +76,7 @@ const Header = () => {
             </li>
             {isLoggedIn && (
               <li>
-                <Link to="/Reservation">Reservation</Link>
+                <Link to="/Select">Reservation</Link>
               </li>
             )}
             <li>
@@ -103,7 +105,6 @@ const Header = () => {
     </StyledHeaderBorder>
   );
 };
-
 export default Header;
 
 export {};

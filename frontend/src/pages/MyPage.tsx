@@ -3,6 +3,8 @@ import axios from '../util/axiosConfig';
 import styled from 'styled-components';
 import Modal from '../components/Modal';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { isLoggedInState } from '../recoil/recoilState';
 
 const Title = styled.h1`
   font-size: 50px;
@@ -79,6 +81,7 @@ const MyPage: React.FC = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
+  const [, setIsLoggedIn] = useRecoilState(isLoggedInState); // Recoil 상태 가져오기
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,16 +94,20 @@ const MyPage: React.FC = () => {
     };
     fetchData();
   }, []);
+
   const handleLogout = async () => {
     try {
       await axios.post('http://localhost:8080/api/users/signout');
       console.log('로그아웃 성공');
       setIsLogoutModalOpen(true);
       setModalContent('로그아웃이 완료 되었습니다.');
+
+      setIsLoggedIn(false);
     } catch (error) {
       console.error('로그아웃 실패', error);
     }
   };
+
   const handleDeleteReservation = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8080/api/reservation/${id}`);

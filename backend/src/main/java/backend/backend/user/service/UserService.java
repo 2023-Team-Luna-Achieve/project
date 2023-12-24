@@ -1,6 +1,7 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
+import backend.backend.auth.jwt.SecurityUtil;
 import backend.backend.exception.*;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -11,11 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +29,10 @@ public class UserService {
 
     @Transactional
     public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
-        if (findUserByEmail(signUpRequest.getEmail()) == null) {
+        if (userRepository.findUserByEmail(signUpRequest.getEmail()) == null) {
             if (redisUtil.getData(signUpRequest.getEmail()) == null) {
                 throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
+
             } else if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
                 signUpRequest = signUpRequest.encryptPassword(encoder);
                 User user = signUpRequest.toEntity();
@@ -41,13 +41,9 @@ public class UserService {
         }
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
-    private User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
-    }
-
 
     public SignInResponse processSignIn (SignInRequest signInRequest, HttpSession session) {
-        User user = findUserByEmail(signInRequest.getEmail());
+        User user = userRepository.findUserByEmail(signInRequest.getEmail());
         if (user != null) {
             if (BCrypt.checkpw(signInRequest.getPassword(), user.getPassword())) {
                 session.setAttribute("userId", user.getId());
@@ -76,5 +72,10 @@ public class UserService {
             return new LoginConfirmResponse("로그인이 필요합니다", false);
         }
         return new LoginConfirmResponse("로그인이 되어있습니다", true);
+    }
+    @Transactional(readOnly = true)
+    public Optional<User> getUserWithAuthorities() {
+        return SecurityUtil.getCurrentUsername()
+                .flatMap(userRepository::findOneWithAuthoritiesByEmail);
     }
 }
