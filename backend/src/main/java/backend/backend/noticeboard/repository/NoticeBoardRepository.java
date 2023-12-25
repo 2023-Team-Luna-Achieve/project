@@ -10,10 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface NoticeBoardRepository extends JpaRepository<NoticeBoard, Long> {
 
-    @Query("SELECT n FROM NoticeBoard n WHERE n.id < :cursor ORDER BY n.id DESC")
-    Page<NoticeBoard> findAllByCursor(Pageable pageable, @Param("cursor") Long cursor);
-}
-
     Page<NoticeBoard> findAllByIdLessThanOrderByIdDesc(Long lastNoticeBoardId, PageRequest pageRequest);
     // 추가적인 쿼리 메서드가 필요하다면 여기에 추가할 수 있습니다.
 }

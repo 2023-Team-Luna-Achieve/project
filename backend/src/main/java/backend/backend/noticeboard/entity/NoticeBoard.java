@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class NoticeBoard {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "noticeBoard_id")
     private Long id;
 
@@ -60,4 +60,7 @@ public class NoticeBoard {
         this.id = id;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
