@@ -3,6 +3,7 @@ package backend.backend.swagger;
 import backend.backend.user.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.PathSelectors;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Configuration
+@Profile({"dev", "local"})
 public class SwaggerConfiguration {
     private static final String REFERENCE = "Authorization 헤더 값";
 

@@ -8,4 +8,5 @@ backend/src/main/resources/application-dev.yml
 backend/src/main/resources/application-prod.yml
 backend/src/main/resources/application-oauth.yml
 .env
+.DS_Store
 /devops/nginx/certbot/*

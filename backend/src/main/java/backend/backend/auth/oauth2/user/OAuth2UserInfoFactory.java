@@ -14,6 +14,10 @@ public class OAuth2UserInfoFactory {
         if (registrationId.equalsIgnoreCase(AuthProvider.GOOGLE.toString())) {
             return new GoogleOAuth2UserInfo(attributes);
         }
+        if (registrationId.equalsIgnoreCase(AuthProvider.NAVER.toString())) {
+            Map<String, Object> naverAttributes = (Map<String, Object>) attributes.get("response");
+            return new NaverOauth2UserInfo(naverAttributes);
+        }
         throw new OAuth2AuthenticationProcessingException(
                 registrationId + " 로그인은 지원하지 않습니다.");
     }
