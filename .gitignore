@@ -10,3 +10,4 @@ backend/src/main/resources/application-oauth.yml
 .env
 .DS_Store
 /devops/nginx/certbot/*
+./.idea
