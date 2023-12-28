@@ -1,6 +1,5 @@
 package backend.backend.auth.oauth2;
 
-import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.auth.oauth2.user.OAuth2UserInfo;
 import backend.backend.auth.oauth2.user.OAuth2UserInfoFactory;
@@ -17,7 +16,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service

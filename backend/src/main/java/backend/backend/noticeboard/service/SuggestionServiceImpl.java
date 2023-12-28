@@ -112,7 +112,6 @@ public class SuggestionServiceImpl implements SuggestionService {
         Suggestion suggestion = new Suggestion();
         suggestion.setTitle(suggestionDto.getTitle());
         suggestion.setCategory(suggestionDto.getCategory());
-        System.out.println("ㅅㅂ " + suggestionDto.getCategory());
         suggestion.setContext(suggestionDto.getContext());
         suggestion.setUser(user);
         return suggestion;
