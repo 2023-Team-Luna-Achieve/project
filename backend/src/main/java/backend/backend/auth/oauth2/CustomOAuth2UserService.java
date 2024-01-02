@@ -1,6 +1,5 @@
 package backend.backend.auth.oauth2;
 
-import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.auth.oauth2.user.OAuth2UserInfo;
 import backend.backend.auth.oauth2.user.OAuth2UserInfoFactory;
@@ -35,21 +34,22 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
     }
+
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
-                oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
+                oAuth2UserRequest.getClientRegistration().getRegistrationId(),
+                oAuth2User.getAttributes()
+        );
 
-        if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+        if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("OAuth2 provider에 이메일이 없습니다.");
         }
-
 
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
         if (userOptional.isPresent()) {
             user = userOptional.get();
-            if (!user.getProvider()
-                    .equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId().toLowerCase()))) {
+            if (!user.getProvider().toString().equalsIgnoreCase(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()).toString())) {
                 throw new OAuth2AuthenticationProcessingException("이미 등록된 회원입니다.");
             }
             user = updateExistingUser(user, oAuth2UserInfo);

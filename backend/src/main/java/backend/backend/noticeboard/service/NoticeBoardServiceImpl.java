@@ -1,53 +1,49 @@
 package backend.backend.noticeboard.service;
 
+import backend.backend.exception.ErrorCode;
+import backend.backend.exception.NotFoundException;
 import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.noticeboard.repository.NoticeBoardRepository;
+import backend.backend.noticeboard.validator.AuthorizationValidator;
+import backend.backend.user.entity.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
+@RequiredArgsConstructor
 public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     private final NoticeBoardRepository noticeBoardRepository;
-
-    public NoticeBoardServiceImpl(NoticeBoardRepository noticeBoardRepository) {
-        this.noticeBoardRepository = noticeBoardRepository;
-    }
-
-    @Override
-    public Page<NoticeBoardResponseDto> getAllNoticeBoards(Pageable pageable, Long cursor) {
-        Page<NoticeBoard> noticeBoards = noticeBoardRepository.findAllByCursor(pageable, cursor);
-        return noticeBoards.map(this::convertToDto);
-    }
-
-    @Override
-    public List<NoticeBoardResponseDto> getNoticeBoards() {
-        return null;
-    }
+    private final AuthorizationValidator authorizationValidator;
 
     @Override
     public NoticeBoardResponseDto getNoticeBoardById(Long id) {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("NoticeBoard not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
         return convertToDto(noticeBoard);
     }
 
     @Override
-    public NoticeBoardResponseDto createNoticeBoard(NoticeBoardRequestDto noticeBoardRequestDto) {
-        NoticeBoard noticeBoard = convertToEntity(noticeBoardRequestDto);
+    public NoticeBoardResponseDto createNoticeBoard(User user, NoticeBoardRequestDto noticeBoardRequestDto) {
+        NoticeBoard noticeBoard = convertToEntity(user, noticeBoardRequestDto);
         noticeBoard = noticeBoardRepository.save(noticeBoard);
         return convertToDto(noticeBoard);
     }
 
     @Override
-    public NoticeBoardResponseDto updateNoticeBoard(Long id, NoticeBoardResponseDto noticeBoardDto) {
+    public NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardResponseDto noticeBoardDto) {
         NoticeBoard existingNoticeBoard = noticeBoardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("NoticeBoard not found with id: " + id));
-
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+        authorizationValidator.validateNoticeBoardModifyOrDeletePermission(user, existingNoticeBoard);
         existingNoticeBoard.setTitle(noticeBoardDto.getTitle());
         existingNoticeBoard.setCategory(noticeBoardDto.getCategory());
         existingNoticeBoard.setContext(noticeBoardDto.getContext());
@@ -57,7 +53,10 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 
     @Override
-    public void deleteNoticeBoard(Long id) {
+    public void deleteNoticeBoard(Long id, User user) {
+        NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+        authorizationValidator.validateNoticeBoardModifyOrDeletePermission(user, noticeBoard);
         noticeBoardRepository.deleteById(id);
     }
 
@@ -71,11 +70,10 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         noticeBoardResponseDto.setTitle(noticeBoard.getTitle());
         noticeBoardResponseDto.setCategory(noticeBoard.getCategory());
         noticeBoardResponseDto.setContext(noticeBoard.getContext());
-
         return noticeBoardResponseDto;
     }
 
-    private NoticeBoard convertToEntity(NoticeBoardRequestDto noticeBoardDto) {
+    private NoticeBoard convertToEntity(User user, NoticeBoardRequestDto noticeBoardDto) {
         if (noticeBoardDto == null) {
             return null;
         }
@@ -84,7 +82,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         noticeBoard.setTitle(noticeBoardDto.getTitle());
         noticeBoard.setCategory(noticeBoardDto.getCategory());
         noticeBoard.setContext(noticeBoardDto.getContext());
-
+        noticeBoard.setUser(user);
         return noticeBoard;
     }
 

@@ -47,6 +47,9 @@ public class Suggestion {
     public void setTitle(String title) {
         this.title = title;
     }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public void setCategory(Category category) {
         this.category = category;
