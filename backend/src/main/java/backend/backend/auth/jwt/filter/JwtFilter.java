@@ -26,13 +26,11 @@ public class JwtFilter extends GenericFilterBean {
     private final CustomUserDetailsService customUserDetailsService;
     private final TokenProvider tokenProvider;
 
-    // 실제 필터릴 로직
     // 토큰의 인증정보를 SecurityContext에 저장하는 역할 수행
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = jwtExtractUtil.resolveAccessToken(httpServletRequest);
-        System.out.println("뭔호 " + jwt);
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {

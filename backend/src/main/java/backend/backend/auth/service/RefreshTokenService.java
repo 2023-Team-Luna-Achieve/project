@@ -4,6 +4,7 @@ import backend.backend.auth.domain.RefreshToken;
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.repository.RefreshTokenRepository;
 import backend.backend.exception.ErrorCode;
+import backend.backend.exception.NotFoundException;
 import backend.backend.exception.NotFoundRefreshTokenException;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
@@ -21,20 +22,29 @@ public class RefreshTokenService {
     @Transactional
     public void saveRefreshToken(String refreshToken, String email) {
         User user = userRepository.findUserByEmail(email);
-        deleteRefreshToken(email);
+        deleteRefreshToken(user.getId());
         refreshTokenRepository.save(new RefreshToken(user.getId(), refreshToken));
     }
 
-    @Transactional
-    public void deleteRefreshToken(String email) {
-        refreshTokenRepository.deleteAllByEmail(email);
+    public void deleteRefreshToken(Long id) {
+        refreshTokenRepository.deleteAllById(id);
     }
 
     @Transactional(readOnly = true)
     public void validateRefreshToken(String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findRefreshTokenByToken(refreshToken)
-                .orElseThrow(() -> new NotFoundRefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
-
+        RefreshToken token = findRefreshToken(refreshToken);
         tokenProvider.validateToken(token.getToken());
+    }
+
+    public User findRefreshTokenOwner(String refreshToken) {
+        RefreshToken token = findRefreshToken(refreshToken);
+        return userRepository.findById(token.getId()).orElseThrow(
+                () -> new NotFoundException(ErrorCode.USER_NOT_FOUND)
+        );
+    }
+
+    private RefreshToken findRefreshToken(String refreshToken) {
+        return refreshTokenRepository.findRefreshTokenByToken(refreshToken)
+                .orElseThrow(() -> new NotFoundRefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
     }
 }

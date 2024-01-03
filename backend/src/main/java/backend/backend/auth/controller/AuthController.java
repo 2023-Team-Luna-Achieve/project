@@ -32,18 +32,10 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @ApiOperation(value = "로그인 API", notes = "로그인을 진행한다. (헤더로 보낸 jwt토큰 확인)")
+    @ApiOperation(value = "로그인 API", notes = "로그인을 진행한다. (헤더로 보낸 jwt 토큰 확인)")
     @PostMapping("/sign-in")
     public ResponseEntity<String> authorize(@Valid @RequestBody SignInRequest signInRequest) {
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-        authenticationToken.setDetails(principal);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication authentication = settingAuthentication(signInRequest.getEmail(), signInRequest.getPassword());
         String accessToken = tokenProvider.createAccessToken(authentication);
         String refreshToken = tokenProvider.createRefreshToken();
 
@@ -55,11 +47,29 @@ public class AuthController {
                 .build();
     }
 
+    @ApiOperation(value = "access 토큰 재발급 API", notes = "refresh 토큰을 사용하여 엑세스 토큰을 재발급 한다.")
     @PostMapping("/refresh")
-    public ResponseEntity<String> getAccessTokenUsingRefresh(HttpServletRequest request, Authentication authentication) {
+    public ResponseEntity<String> getAccessTokenUsingRefresh(HttpServletRequest request) {
         String refreshToken = jwtExtractUtil.resolveRefreshToken(request);
         refreshTokenService.validateRefreshToken(refreshToken);
-        tokenProvider.createAccessToken(authentication);
-        return null;
+        User refreshTokenOwner = refreshTokenService.findRefreshTokenOwner(refreshToken);
+
+        Authentication authentication = settingAuthentication(refreshTokenOwner.getEmail(), refreshTokenOwner.getPassword());
+        String accessToken = tokenProvider.createAccessToken(authentication);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .build();
+    }
+
+    private Authentication settingAuthentication(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        authenticationToken.setDetails(principal);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 }
