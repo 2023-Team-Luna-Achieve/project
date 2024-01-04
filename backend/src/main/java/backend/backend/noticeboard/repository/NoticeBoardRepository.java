@@ -8,8 +8,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface NoticeBoardRepository extends JpaRepository<NoticeBoard, Long> {
 
-    Page<NoticeBoard> findAllByIdLessThanOrderByIdDesc(Long lastNoticeBoardId, PageRequest pageRequest);
-    // 추가적인 쿼리 메서드가 필요하다면 여기에 추가할 수 있습니다.
+    @Query(value = "SELECT nb FROM NoticeBoard nb " +
+            " JOIN fetch nb.user " +
+            " WHERE nb.id < :lastNoticeBoardId" +
+            " order by nb.id desc",
+            countQuery = "SELECT count(nb) from NoticeBoard nb where nb.id < :lastNoticeBoardId")
+    Page<NoticeBoard> findAllByIdLessThanOrderByIdDesc(@Param("lastNoticeBoardId") Long lastNoticeBoardId, PageRequest pageRequest);
+
+    @Query("SELECT nb FROM NoticeBoard nb LEFT JOIN FETCH nb.user WHERE nb.id = :id")
+    Optional<NoticeBoard> findByIdWithUsername(@Param("id") Long id);
 }

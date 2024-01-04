@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +27,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     private final AuthorizationValidator authorizationValidator;
 
     @Override
+    @Transactional
     public NoticeBoardResponseDto getNoticeBoardById(Long id) {
-        NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+        NoticeBoard noticeBoard = noticeBoardRepository.findByIdWithUsername(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
+        noticeBoard.addViewCount();
         return convertToDto(noticeBoard);
     }
 
@@ -40,9 +43,9 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 
     @Override
-    public NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardResponseDto noticeBoardDto) {
+    public NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto) {
         NoticeBoard existingNoticeBoard = noticeBoardRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         authorizationValidator.validateNoticeBoardModifyOrDeletePermission(user, existingNoticeBoard);
         existingNoticeBoard.setTitle(noticeBoardDto.getTitle());
         existingNoticeBoard.setCategory(noticeBoardDto.getCategory());
@@ -55,22 +58,9 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     @Override
     public void deleteNoticeBoard(Long id, User user) {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         authorizationValidator.validateNoticeBoardModifyOrDeletePermission(user, noticeBoard);
         noticeBoardRepository.deleteById(id);
-    }
-
-    private NoticeBoardResponseDto convertToDto(NoticeBoard noticeBoard) {
-        if (noticeBoard == null) {
-            return null;
-        }
-
-        NoticeBoardResponseDto noticeBoardResponseDto = new NoticeBoardResponseDto();
-        noticeBoardResponseDto.setId(noticeBoard.getId());
-        noticeBoardResponseDto.setTitle(noticeBoard.getTitle());
-        noticeBoardResponseDto.setCategory(noticeBoard.getCategory());
-        noticeBoardResponseDto.setContext(noticeBoard.getContext());
-        return noticeBoardResponseDto;
     }
 
     private NoticeBoard convertToEntity(User user, NoticeBoardRequestDto noticeBoardDto) {
@@ -99,24 +89,21 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         }
 
         NoticeBoardResponseDto.PagedNoticeBoardResponseDto response = new NoticeBoardResponseDto.PagedNoticeBoardResponseDto();
-        response.setContents(noticeBoards.stream().map(this::mapToDto).collect(Collectors.toList()));
+        response.setContents(noticeBoards.stream().map(this::convertToDto).collect(Collectors.toList()));
         response.setTotalElements(noticeBoardRepository.count());
         response.setNextCursor(nextCursor);
 
         return response;
     }
 
-    private NoticeBoardResponseDto mapToDto(NoticeBoard noticeBoard) {
-        if (noticeBoard == null) {
-            throw new IllegalArgumentException("NoticeBoard cannot be null");
-        }
-
-        NoticeBoardResponseDto noticeBoardResponseDto = new NoticeBoardResponseDto();
-        noticeBoardResponseDto.setId(noticeBoard.getId());
-        noticeBoardResponseDto.setTitle(noticeBoard.getTitle());
-        noticeBoardResponseDto.setCategory(noticeBoard.getCategory());
-        noticeBoardResponseDto.setContext(noticeBoard.getContext());
-
-        return noticeBoardResponseDto;
+    private NoticeBoardResponseDto convertToDto(NoticeBoard noticeBoard) {
+        return new NoticeBoardResponseDto(
+                noticeBoard.getId(),
+                noticeBoard.getUser().getName(),
+                noticeBoard.getTitle(),
+                noticeBoard.getCategory(),
+                noticeBoard.getContext(),
+                noticeBoard.getViewCount()
+        );
     }
 }

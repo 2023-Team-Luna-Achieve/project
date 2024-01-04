@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class NoticeBoardResponseDto {
     private Long id;
+    private String author;
     private String title;
     private Category category;
     private String context;
@@ -23,5 +24,14 @@ public class NoticeBoardResponseDto {
         private long totalElements;
         private long nextCursor;
 
+    }
+
+    public NoticeBoardResponseDto(Long id, String author, String title, Category category, String context, int viewCount) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.category = category;
+        this.context = context;
+        this.viewCount = viewCount;
     }
 }

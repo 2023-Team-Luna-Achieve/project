@@ -74,6 +74,7 @@ public class SuggestionController {
             @CurrentUser User user,
             @PathVariable Long suggestion_id,
             @RequestBody SuggestionResponseDto suggestionDto) {
+
         SuggestionResponseDto updatedSuggestion = suggestionService.updateSuggestion(user, suggestion_id, suggestionDto);
         return ResponseEntity.ok(updatedSuggestion);
     }

@@ -63,4 +63,8 @@ public class NoticeBoard {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public void addViewCount() {
+        this.viewCount ++;
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -24,7 +25,6 @@ public class SuggestionServiceImpl implements SuggestionService {
     private final AuthorizationValidator authorizationValidator;
     private final SuggestionRepository suggestionRepository;
     private static final int PAGE_SIZE = 10; //페이지네이션
-
 
     @Override //게시글목록조회 페이지네이션
     public List<SuggestionResponseDto> getSuggestionsByPage(int page) {
@@ -65,7 +65,7 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public SuggestionResponseDto updateSuggestion(User user, Long id, SuggestionResponseDto suggestionDto) {
         Suggestion suggestion = suggestionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         authorizationValidator.validateSuggestionModifyOrDeletePermission(user, suggestion);
 
         suggestion.setTitle(suggestionDto.getTitle());
@@ -85,24 +85,23 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public void deleteSuggestion(User user, Long id) {
         Suggestion suggestion = suggestionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         authorizationValidator.validateSuggestionModifyOrDeletePermission(user, suggestion);
         suggestionRepository.deleteById(id);
     }
-
 
     private SuggestionResponseDto convertToDto(Suggestion suggestion) {
         if (suggestion == null) {
             return null;
         }
 
-        SuggestionResponseDto suggestionResponseDto = new SuggestionResponseDto();
-        suggestionResponseDto.setId(suggestion.getId());
-        suggestionResponseDto.setTitle(suggestion.getTitle());
-        suggestionResponseDto.setCategory(suggestion.getCategory());
-        suggestionResponseDto.setContext(suggestion.getContext());
-
-        return suggestionResponseDto;
+        return new SuggestionResponseDto(
+                suggestion.getId(),
+                suggestion.getUser().getName(),
+                suggestion.getTitle(),
+                suggestion.getCategory(),
+                suggestion.getContext()
+        );
     }
 
     private Suggestion convertToEntity(User user, SuggestionRequestDto suggestionDto) {
@@ -116,5 +115,4 @@ public class SuggestionServiceImpl implements SuggestionService {
         suggestion.setUser(user);
         return suggestion;
     }
-
 }

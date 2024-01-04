@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class NoticeBoardComment {
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
