@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ public interface NoticeBoardService {
 
     NoticeBoardResponseDto createNoticeBoard(User user, NoticeBoardRequestDto noticeBoardDto);
 
-    NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardResponseDto noticeBoardDto);
+    NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto);
 
     void deleteNoticeBoard(Long id, User user);
 }

@@ -1,6 +1,7 @@
 package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
+import backend.backend.auth.repository.RefreshTokenRepository;
 import backend.backend.exception.*;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -10,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
 
 @Service
@@ -18,14 +18,15 @@ import java.util.NoSuchElementException;
 public class UserService {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    private SignUpResponse create(User user) {
-        userRepository.save(user);
-        return new SignUpResponse(201, true, "회원가입이 완료 되었습니다.", UserDto.of(user));
+    private Long create(User user) {
+        User savedUser = userRepository.save(user);
+        return savedUser.getId();
     }
 
     @Transactional
-    public SignUpResponse createUserIfEmailNotExists(SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
+    public Long createUserIfEmailNotExists(SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
         if (userRepository.findUserByEmail(signUpRequest.getEmail()) == null) {
             if (redisUtil.getData(signUpRequest.getEmail()) == null) {
                 throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
@@ -39,12 +40,8 @@ public class UserService {
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
 
-    public SignOutResponse processSignOut(HttpSession session) {
-        if (session.getAttribute("userId") == null) {
-            throw new NotLoginException(ErrorCode.NOT_LOGIN);
-        }
-        session.invalidate();
-        return new SignOutResponse("로그아웃 완료되었습니다.");
+    public void signOut(User user) {
+        refreshTokenRepository.deleteAllByUserId(user.getId());
     }
 
     public User findById(Long id) {

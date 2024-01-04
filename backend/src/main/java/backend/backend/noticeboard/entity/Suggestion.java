@@ -63,4 +63,7 @@ public class Suggestion {
         this.id = id;
     }
 
+    public void addViewCount() {
+        this.viewCount ++;
+    }
 }

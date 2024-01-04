@@ -21,9 +21,9 @@ public class NoticeBoardController {
 
     // 상아님 코드 전체조회 코드
     @ApiOperation(value = "공지사항 전체조회 API", notes = "공지사항 조희를 진행한다(페이지네이션)")
-    @GetMapping("/every/{id}")
+    @GetMapping("/cursor/{id}")
     public NoticeBoardResponseDto.PagedNoticeBoardResponseDto getAllNoticeBoards(@PathVariable Long id) {
-        return noticeBoardService.getNoticeBoards(5,id);
+        return noticeBoardService.getNoticeBoards(10,id);
     }
 
     //특정 글 조회?
@@ -49,12 +49,11 @@ public class NoticeBoardController {
     public ResponseEntity<NoticeBoardResponseDto> updateNoticeBoard(
             @PathVariable Long id,
             @CurrentUser User user,
-            @RequestBody NoticeBoardResponseDto noticeBoardDto)
+            @RequestBody NoticeBoardRequestDto noticeBoardDto)
     {
         NoticeBoardResponseDto updatedNoticeBoard = noticeBoardService.updateNoticeBoard(id, user, noticeBoardDto);
         return ResponseEntity.ok(updatedNoticeBoard);
     }
-
 
     //공지사항 글 삭제
     @ApiOperation(value = "공지사항 삭제 API", notes = "공지사항 삭제를 진행한다")
