@@ -27,7 +27,7 @@ public class RefreshTokenService {
     }
 
     public void deleteRefreshToken(Long id) {
-        refreshTokenRepository.deleteAllById(id);
+        refreshTokenRepository.deleteAllByUserId(id);
     }
 
     @Transactional(readOnly = true)

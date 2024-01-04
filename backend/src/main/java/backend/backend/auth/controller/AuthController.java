@@ -1,8 +1,6 @@
 package backend.backend.auth.controller;
 
-import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.auth.jwt.CustomUserDetails;
-import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.auth.jwt.filter.JwtExtractUtil;
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.service.RefreshTokenService;
@@ -47,7 +45,9 @@ public class AuthController {
                 .build();
     }
 
-    @ApiOperation(value = "access 토큰 재발급 API", notes = "refresh 토큰을 사용하여 엑세스 토큰을 재발급 한다.")
+    @ApiOperation(value = "access 토큰 재발급 API",
+            notes = "access 토큰 만료시 refresh 토큰을 사용하여 엑세스 토큰을 재발급 한다. " +
+                    "refresh 토큰또한 만료된 경우 다시 로그인한다. ")
     @PostMapping("/refresh")
     public ResponseEntity<String> getAccessTokenUsingRefresh(HttpServletRequest request) {
         String refreshToken = jwtExtractUtil.resolveRefreshToken(request);
