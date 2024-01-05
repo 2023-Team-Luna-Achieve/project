@@ -49,7 +49,7 @@ package backend.backend.noticeboardcomment.controller;
 
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.noticeboardcomment.dto.CommentRequestDto;
-import backend.backend.noticeboardcomment.dto.CommentResponseDto;
+import backend.backend.noticeboardcomment.dto.CommentResponse;
 import backend.backend.noticeboardcomment.service.CommentService;
 import backend.backend.user.entity.User;
 import io.swagger.annotations.ApiOperation;
@@ -59,38 +59,35 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@ApiOperation(value = "작성글 API", notes = "회원 작성글의 댓글을 작성한다.")
+@ApiOperation(value = "게시글 댓글 API", notes = "회원 작성글의 댓글을 작성한다.")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api")
 public class CommentController {
-
     private final CommentService commentService;
 
-    @GetMapping("/notice-board/{noticeBoardId}")
-    public List<CommentResponseDto> getAllCommentsByNoticeBoardId(@PathVariable Long noticeBoardId) {
+    @GetMapping("/{noticeBoardId}")
+    public List<CommentResponse> getAllCommentsByNoticeBoardId(@PathVariable Long noticeBoardId) {
         return commentService.getAllCommentsByNoticeBoardId(noticeBoardId);
     }
 
-    @PostMapping("/{noticeBoardId}/create")
-    public ResponseEntity<CommentResponseDto> createComment(@PathVariable("noticeBoardId") Long noticeBoardId,
-                                                            @RequestBody CommentRequestDto commentRequestDto,
-                                                            @CurrentUser User user) {
-        CommentResponseDto createdComment = commentService.createComment(user, noticeBoardId, commentRequestDto);
+    @PostMapping("/noticeboard/{noticeBoardId}")
+    public ResponseEntity<CommentResponse> createComment(@PathVariable("noticeBoardId") Long noticeBoardId,
+                                                         @RequestBody CommentRequestDto commentRequestDto,
+                                                         @CurrentUser User user) {
+        CommentResponse createdComment = commentService.createComment(user, noticeBoardId, commentRequestDto);
         return ResponseEntity.ok(createdComment);
     }
 
-    @DeleteMapping("/{commentId}")
+    @GetMapping("/comments/{commentId}")
+        public ResponseEntity<CommentResponse> getCommentById(@PathVariable Long commentId) {
+        CommentResponse commentDto = commentService.getCommentById(commentId);
+            return ResponseEntity.ok(commentDto);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.noContent().build();
-    }
-
-    // 추가적인 기능이 있다면 여기에 추가
-
-    @GetMapping("/{commentId}")
-    public ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long commentId) {
-        CommentResponseDto commentDto = commentService.getCommentById(commentId);
-        return ResponseEntity.ok(commentDto);
     }
 }

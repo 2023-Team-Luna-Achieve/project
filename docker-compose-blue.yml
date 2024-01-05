@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    container_name: backend
+    container_name: backend-blue
     build:
       context: backend
       dockerfile: dockerfile-prod
@@ -47,35 +47,36 @@ services:
       - 6380:6379
     restart: always
 
-  nginx:
-    container_name: nginx
-    build:
-      context: devops/nginx/prod
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./devops/nginx/prod/nginx_production.conf:/etc/nginx/nginx.conf
-      - ./devops/nginx/certbot/conf:/etc/letsencrypt
-      - ./devops/nginx/certbot/www:/var/www/certbot
-      - build_folder:/var/www/frontend
-    depends_on:
-      - backend
-    expose:
-      - '80'
-      - '443'
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./devops/nginx/certbot/conf:/etc/letsencrypt
-      - ./devops/nginx/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    depends_on:
-      - nginx
+#  nginx:
+#    container_name: nginx
+#    build:
+#      context: devops/nginx/prod
+#    restart: unless-stopped
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./devops/nginx/prod/nginx_production.conf:/etc/nginx/nginx.conf
+#      - ./devops/nginx/certbot/conf:/etc/letsencrypt
+#      - ./devops/nginx/certbot/www:/var/www/certbot
+#      - build_folder:/var/www/frontend
+#    depends_on:
+#      - backend-blue
+#      - backend-green
+#    expose:
+#      - '80'
+#      - '443'
+#    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+#
+#  certbot:
+#    image: certbot/certbot
+#    restart: unless-stopped
+#    volumes:
+#      - ./devops/nginx/certbot/conf:/etc/letsencrypt
+#      - ./devops/nginx/certbot/www:/var/www/certbot
+#    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+#    depends_on:
+#      - nginx
 
 volumes:
   mysql_data:
