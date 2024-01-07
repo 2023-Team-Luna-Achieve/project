@@ -30,15 +30,15 @@ services:
       - ./frontend:/frontend
       - /frontend/node_modules
       - ./frontend/.npm/_cacache:/frontend/.npm/_cacache
-#      - build_folder:/frontend/dist
+      - build_folder:/frontend/dist
     ports:
       - "5173:5173"
     tty: true
     environment:
       - npm_config_cache=/frontend/.npm/_cacache
     depends_on:
-      - backend-blue
-
+      - backend
+    
   redis:
     hostname: redis
     container_name: redis
