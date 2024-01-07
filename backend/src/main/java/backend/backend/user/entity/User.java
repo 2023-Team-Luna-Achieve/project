@@ -2,6 +2,7 @@ package backend.backend.user.entity;
 
 import backend.backend.noticeboard.entity.NoticeBoard;
 //import backend.backend.noticeboardcomment.entity.Comment;
+import backend.backend.noticeboardcomment.entity.NoticeBoardComment;
 import backend.backend.reservation.entity.Reservation;
 import lombok.*;
 
@@ -32,8 +33,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<NoticeBoard> noticeBoards;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "user")
+    private List<NoticeBoardComment> comments;
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservation;

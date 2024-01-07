@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String ADMIN = "ADMIN";
     private final TokenProvider tokenProvider;
     private final JwtExtractUtil jwtExtractUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -84,11 +85,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
                 .antMatchers("/").permitAll() // 로그인
                 .antMatchers("/api/sign-in").permitAll() // 로그인
-                .antMatchers("/api/users/sign-up").permitAll() // 회원가입 api
+                .antMatchers("/api/user/sign-up").permitAll() // 회원가입
                 .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
                 .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
                 .antMatchers("/api/refresh").permitAll() // 로그인
                 .antMatchers("/favicon.ico").permitAll()
+//                .antMatchers("/api/notice")
+//                .hasRole(ADMIN)
                 .anyRequest().authenticated()// 그 외 인증 없이 접근X
                 .and()
                 .addFilterBefore(new JwtFilter(jwtExtractUtil, customUserDetailsService, tokenProvider), UsernamePasswordAuthenticationFilter.class)
