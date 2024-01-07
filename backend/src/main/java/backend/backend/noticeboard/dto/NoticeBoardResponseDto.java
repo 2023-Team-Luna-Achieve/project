@@ -1,6 +1,7 @@
 package backend.backend.noticeboard.dto;
 
 import backend.backend.noticeboard.entity.Category;
+import backend.backend.noticeboardcomment.dto.CommentResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class NoticeBoardResponseDto {
     private Category category;
     private String context;
     private int viewCount;
+//    private List<CommentResponse> commentResponse;
 
 
     @Getter
