@@ -42,10 +42,9 @@ if [ -z "$EXIST_BLUE" ]; then
      # 사용하지 않는 이미지 삭제
     sudo docker image prune -af
 
-    sudo docker exec frontend-blue tar -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
-    sudo docker cp frontend-blue:/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-    sudo tar -xzvf /usr/share/nginx/html/achieve_static_file.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
-
+      sudo docker exec frontend-blue tar --exclude='achieve_static_file.tar.gz' -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
+      sudo docker cp frontend-blue:/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+      sudo tar -xzvf /usr/share/nginx/html/achieve_static_file.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
     echo "green 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
 
@@ -71,7 +70,7 @@ else
       # 사용하지 않는 이미지 삭제
       sudo docker image prune -af
 
-      sudo docker exec frontend-green tar -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist . && echo "Archive2 created successfully!" >> /opt/deploy.log
+      sudo docker exec frontend-green tar --exclude='achieve_static_file.tar.gz' -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
       sudo docker cp frontend-green:/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
       sudo tar -xzvf /usr/share/nginx/html/achieve_static_file.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
