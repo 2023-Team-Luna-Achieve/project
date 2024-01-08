@@ -11,7 +11,7 @@ DOCKER_APP_NAME=achieve
 #EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps)
 EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
 # 테스트 배포 시작한 날짜와 시간을 기록
-echo "EXIST_BLUE: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
+echo "EXIST_BLUE: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; $6=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
 echo "배포 시작일자 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
 # green이 실행중이면 blue up
@@ -25,7 +25,7 @@ if [ -z "$EXIST_BLUE" ]; then
 	sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml up -d --build
 
   # 120초 동안 대기
-  sleep 100
+  sleep 120
 
 #  BLUE_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | grep Up)
   BLUE_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
@@ -35,10 +35,6 @@ if [ -z "$EXIST_BLUE" ]; then
     sudo echo "에러 발생" >> /opt/error.log
     # blue가 현재 실행되고 있는 경우에만 green을 종료
   else
-    sudo docker exec -it frontend-blue tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
-    sudo docker cp frontend-blue:/frontend/dist/archive2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-    sudo tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
-
     # /opt/deploy.log: 로그 파일에 "green 중단 시작"이라는 내용을 추가
     echo "green 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
@@ -47,6 +43,10 @@ if [ -z "$EXIST_BLUE" ]; then
 
      # 사용하지 않는 이미지 삭제
     sudo docker image prune -af
+
+    docker exec -it frontend-blue tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
+    docker cp frontend-blue:/frontend/dist/archive2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+    tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
     echo "green 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
@@ -64,10 +64,6 @@ else
   if [ -z "$GREEN_HEALTH" ]; then
        sudo echo "컴파일 에러 발생" >> /opt/error.log
   else
-      sudo docker exec -it frontend-green tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist . && echo "Archive2 created successfully!" >> /opt/deploy.log
-      sudo docker cp frontend-green:/frontend/dist/archive2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-      sudo tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
-
       # /home/ec2-user/deploy.log: 로그 파일에 "blue 중단 시작"이라는 내용을 추가
       echo "blue 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
@@ -76,6 +72,12 @@ else
 
       # 사용하지 않는 이미지 삭제
       sudo docker image prune -af
+
+#      sleep 20
+
+      docker exec -it frontend-green tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist . && echo "Archive2 created successfully!" >> /opt/deploy.log
+      docker cp frontend-green:/frontend/dist/archive2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+      tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
       echo "blue 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
