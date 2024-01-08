@@ -49,8 +49,6 @@ if [ -z "$EXIST_BLUE" ]; then
     sudo docker image prune -af
 
     echo "green 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
-
-    sudo systemctl restart nginx
   fi
 
 # blue가 실행중이면 green up
@@ -66,9 +64,9 @@ else
   if [ -z "$GREEN_HEALTH" ]; then
        sudo echo "컴파일 에러 발생" >> /opt/error.log
   else
-      sudo docker exec -it frontend-green tar -czvf /frontend/dist/archive.tar.gz -C /frontend/dist .
-      sudo docker cp frontend-green:/frontend/dist/archive.tar.gz /usr/share/nginx/html
-      sudo tar -xzvf /usr/share/nginx/html/archive.tar.gz -C /usr/share/nginx/html
+      sudo docker exec -it frontend-green tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist .
+      sudo docker cp frontend-green:/frontend/dist/archive2.tar.gz /usr/share/nginx/html
+      sudo tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html
 
       # /home/ec2-user/deploy.log: 로그 파일에 "blue 중단 시작"이라는 내용을 추가
       echo "blue 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
@@ -80,11 +78,14 @@ else
       sudo docker image prune -af
 
       echo "blue 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
-
-      sudo systemctl restart nginx
   fi
 fi
   echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
+
+  echo "    " >> /var/log/nginx/error.log
+  sudo systemctl restart nginx
+  echo "엔진엑스 리로드 성공인가요" >> /var/log/nginx/error.log
+  echo "    " >> /var/log/nginx/error.log
 
   echo "===================== 배포 완료 =====================" >> /opt/deploy.log
   echo >> /opt/deploy.log
