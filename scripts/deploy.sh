@@ -37,7 +37,7 @@ if [ -z "$EXIST_BLUE" ]; then
     echo "green 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
     # docker-compose.green.yml 파일을 사용하여 spring-green 프로젝트의 컨테이너를 중지
-    sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml down
+    sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml down -v --rmi all
 
      # 사용하지 않는 이미지 삭제
     sudo docker image prune -af
@@ -64,11 +64,8 @@ else
       # /home/ec2-user/deploy.log: 로그 파일에 "blue 중단 시작"이라는 내용을 추가
       echo "blue 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
-      # docker-compose.blue.yml 파일을 사용하여 spring-green 프로젝트의 컨테이너를 중지
-      sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml down
-
-      # 사용하지 않는 이미지 삭제
-      sudo docker image prune -af
+      # docker-compose.blue.yml 파일을 사용하여 spring-green 프로젝트의 컨테이너를 중지, 볼륨, 이미지 삭제
+      sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml down -v --rmi all
 
       sudo docker exec frontend-green tar --exclude='achieve_static_file.tar.gz' -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
       sudo docker cp frontend-green:/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
