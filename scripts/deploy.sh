@@ -11,7 +11,7 @@ DOCKER_APP_NAME=achieve
 #EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps)
 EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
 # 테스트 배포 시작한 날짜와 시간을 기록
-echo "EXIST_BLUE: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; $6=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
+echo "EXIST_BLUE: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
 echo "배포 시작일자 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
 # green이 실행중이면 blue up
@@ -32,7 +32,7 @@ if [ -z "$EXIST_BLUE" ]; then
   echo "BLUE_HEALTH: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
     # blue가 현재 실행중이지 않다면 -> 런타임 에러 또는 다른 이유로 배포가 되지 못한 상태
   if [ -z "$BLUE_HEALTH" ]; then
-    sudo echo "에러 발생" >> /opt/error.log
+    sudo echo "에러 발생 $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/error.log
     # blue가 현재 실행되고 있는 경우에만 green을 종료
   else
     # /opt/deploy.log: 로그 파일에 "green 중단 시작"이라는 내용을 추가
@@ -44,9 +44,9 @@ if [ -z "$EXIST_BLUE" ]; then
      # 사용하지 않는 이미지 삭제
     sudo docker image prune -af
 
-    docker exec -it frontend-blue tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
-    docker cp frontend-blue:/frontend/dist/archive2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-    tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
+    docker exec -it frontend-blue tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
+    docker cp frontend-blue:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+    tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
     echo "green 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
@@ -59,10 +59,10 @@ else
   sleep 100
 
   echo "GREEN_HEALTH: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
-  GREEN_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
+  GREEN_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
 
   if [ -z "$GREEN_HEALTH" ]; then
-       sudo echo "컴파일 에러 발생" >> /opt/error.log
+       sudo echo "에러 발생 $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/error.log
   else
       # /home/ec2-user/deploy.log: 로그 파일에 "blue 중단 시작"이라는 내용을 추가
       echo "blue 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
@@ -75,9 +75,9 @@ else
 
 #      sleep 20
 
-      docker exec -it frontend-green tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist . && echo "Archive2 created successfully!" >> /opt/deploy.log
-      docker cp frontend-green:/frontend/dist/archive2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-      tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
+      docker exec -it frontend-green tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist . && echo "Archive2 created successfully!" >> /opt/deploy.log
+      docker cp frontend-green:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+      tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
       echo "blue 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
