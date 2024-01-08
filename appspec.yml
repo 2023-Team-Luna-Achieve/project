@@ -13,5 +13,5 @@ permissions:
 hooks:
   ApplicationStart:
     - location: scripts/deploy.sh
-      timeout: 360
+      timeout: 560
       runas: root
