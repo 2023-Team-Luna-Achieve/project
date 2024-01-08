@@ -35,9 +35,9 @@ if [ -z "$EXIST_BLUE" ]; then
     sudo echo "에러 발생" >> /opt/error.log
     # blue가 현재 실행되고 있는 경우에만 green을 종료
   else
-    sudo docker exec -it frontend-blue tar -czvf /frontend/dist/archive.tar.gz -C /frontend/dist .
-    sudo docker cp frontend-blue:/frontend/dist/archive.tar.gz /usr/share/nginx/html
-    sudo tar -xzvf /usr/share/nginx/html/archive.tar.gz -C /usr/share/nginx/html
+    sudo docker exec -it frontend-blue tar -czvf /frontend/dist/archive2.tar.gz -C /frontend/dist .
+    sudo docker cp frontend-blue:/frontend/dist/archive2.tar.gz /usr/share/nginx/html
+    sudo tar -xzvf /usr/share/nginx/html/archive2.tar.gz -C /usr/share/nginx/html
 
     # /opt/deploy.log: 로그 파일에 "green 중단 시작"이라는 내용을 추가
     echo "green 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
