@@ -8,9 +8,10 @@ DOCKER_APP_NAME=achieve
 
 # 실행중인 blue가 있는지 확인
 # 프로젝트의 실행 중인 컨테이너를 확인하고, 해당 컨테이너가 실행 중인지 여부를 EXIST_BLUE 변수에 저장
-EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | grep Up)
+EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps)
 
 # 배포 시작한 날짜와 시간을 기록
+echo "EXIST_BLUE: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps)" >> /opt/deploy.log
 echo "배포 시작일자 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
 # green이 실행중이면 blue up
@@ -24,9 +25,10 @@ if [ -z "$EXIST_BLUE" ]; then
 	sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml up -d --build
 
   # 120초 동안 대기
-  sleep 120
+  sleep 100
 
-  BLUE_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | grep Up)
+#  BLUE_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | grep Up)
+  BLUE_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps)
 
     # blue가 현재 실행중이지 않다면 -> 런타임 에러 또는 다른 이유로 배포가 되지 못한 상태
   if [ -z "$BLUE_HEALTH" ]; then
@@ -56,8 +58,9 @@ else
 	echo "green 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 	sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml up -d --build
 
-  sleep 120
-  GREEN_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml ps | grep Up)
+  sleep 100
+  echo "GREEN_HEALTH: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml ps)" >> /opt/deploy.log
+  GREEN_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml ps)
 
   if [ -z "$GREEN_HEALTH" ]; then
        sudo echo "컴파일 에러 발생" >> /opt/error.log
