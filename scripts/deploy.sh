@@ -73,7 +73,6 @@ else
 fi
   echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
-  echo "  ---  " >> /var/log/nginx/error.log
   sudo systemctl restart nginx
   echo "  ---  " >> /var/log/nginx/error.log
 
