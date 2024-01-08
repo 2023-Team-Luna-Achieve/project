@@ -32,7 +32,7 @@ services:
       - ./frontend/.npm/_cacache:/frontend/.npm/_cacache
       - build_folder:/frontend/dist
     ports:
-      - "5173:5173"
+      - "5174:5173"
     tty: true
     environment:
       - npm_config_cache=/frontend/.npm/_cacache
@@ -44,7 +44,7 @@ services:
     container_name: redis-green
     image: redis:latest
     ports:
-      - 6380:6379
+      - 6381:6379
     restart: always
 
 volumes:
