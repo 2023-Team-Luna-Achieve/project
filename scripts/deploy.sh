@@ -44,9 +44,9 @@ if [ -z "$EXIST_BLUE" ]; then
      # 사용하지 않는 이미지 삭제
     sudo docker image prune -af
 
-    docker exec -it frontend-blue tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
-    docker cp frontend-blue:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-    tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
+    sudo docker exec -it frontend-blue tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
+    sudo docker cp frontend-blue:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+    sudo tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
     echo "green 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
@@ -56,7 +56,7 @@ else
 	echo "green 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 	sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml up -d --build
 
-  sleep 100
+  sleep 120
 
   echo "GREEN_HEALTH: 결과  $(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')" >> /opt/deploy.log
   GREEN_HEALTH=$(sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
@@ -75,7 +75,8 @@ else
 
 #      sleep 20
 
-      docker exec -it frontend-green tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist . && echo "Archive2 created successfully!" >> /opt/deploy.log
+      docker exec -it frontend-green tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .
+      echo "도커 정적 파일 확인 $(sudo docker exec -it frontend-green /bin/bash -c "ls;")" >> /opt/deploy.log
       docker cp frontend-green:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
       tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
@@ -84,10 +85,10 @@ else
 fi
   echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
-  echo "    " >> /var/log/nginx/error.log
+  echo "  ---  " >> /var/log/nginx/error.log
   sudo systemctl restart nginx
   echo "엔진엑스 리로드 성공인가요" >> /var/log/nginx/error.log
-  echo "    " >> /var/log/nginx/error.log
+  echo "  ---  " >> /var/log/nginx/error.log
 
   echo "===================== 배포 완료 =====================" >> /opt/deploy.log
   echo >> /opt/deploy.log
