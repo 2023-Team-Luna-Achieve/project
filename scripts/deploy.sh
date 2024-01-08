@@ -43,7 +43,8 @@ if [ -z "$EXIST_BLUE" ]; then
      # 사용하지 않는 이미지 삭제
     sudo docker image prune -af
 
-    sudo docker exec -it frontend-blue tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
+    sudo docker exec frontend-blue tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .  && echo "Archive2 created successfully!" >> /opt/deploy.log
+    sudo echo "도커 정적 파일 확인 $(sudo docker exec frontend-green /bin/bash -c "ls;")" >> /opt/deploy.log
     sudo docker cp frontend-blue:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
     sudo tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
@@ -74,10 +75,10 @@ else
 
 #      sleep 20
 
-      docker exec -it frontend-green tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .
-      echo "도커 정적 파일 확인 $(sudo docker exec -it frontend-green /bin/bash -c "ls;")" >> /opt/deploy.log
-      docker cp frontend-green:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
-      tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
+      sudo docker exec frontend-green tar -czvf /frontend/dist/achieve2.tar.gz -C /frontend/dist .
+      sudo echo "도커 정적 파일 확인 $(sudo docker exec frontend-green /bin/bash -c "ls;")" >> /opt/deploy.log
+      sudo docker cp frontend-green:/frontend/dist/achieve2.tar.gz /usr/share/nginx/html && echo "Archive2 moved successfully!" >> /opt/deploy.log
+      sudo tar -xzvf /usr/share/nginx/html/achieve2.tar.gz -C /usr/share/nginx/html && echo "Archive2 tar successfully!" >> /opt/deploy.log
 
       echo "blue 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
