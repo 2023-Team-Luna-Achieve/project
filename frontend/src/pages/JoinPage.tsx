@@ -154,7 +154,7 @@ const JoinPage: React.FC = () => {
 
     {
       try {
-        const response = await axios.post('http://localhost:8080/api/users/signup', {
+        const response = await axios.post('https://achieve-project.store/api/user/sign-up', {
           affiliation,
           name,
           email,

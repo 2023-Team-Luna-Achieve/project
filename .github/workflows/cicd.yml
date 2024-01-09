@@ -1,6 +1,8 @@
 on:
   push:
     branches: ["feature"]
+  pull_request:
+    branches: [ "feature" ]
 
 name: Deploy achieve project to Amazon EC2
 env:
@@ -22,8 +24,11 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Make application.yml
+      - name: Make application-prod.yml
         run: echo "${{ secrets.APPLICATION_PROD }}" > ./backend/src/main/resources/application-prod.yml
+
+      - name: Make application-oauth.yml
+        run: echo "${{ secrets.APPLICATION_OAUTH_YML }}" > ./backend/src/main/resources/application-oauth.yml
 
       - name: Make aws RDS env file
         run: echo "${{ secrets.AWS_RDS }}" > ./.env
