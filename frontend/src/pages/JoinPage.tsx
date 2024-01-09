@@ -114,7 +114,7 @@ const JoinPage: React.FC = () => {
 
   const sendCode = async () => {
     try {
-      await axios.post('https://achieve-project.store/api/email/verification/request', {
+      await axios.post('http://localhost:8080/api/email/verification/request', {
         email: email,
       });
 
