@@ -137,7 +137,7 @@ const JoinPage: React.FC = () => {
   };
   const handleConfirmAuthClick = async () => {
     try {
-      const response = await axios.post('https://achieve-project.store/api/email/verification/confirm', {
+      const response = await axios.post('http://localhost:8080/api/email/verification/confirm', {
         email,
         code: authCode,
       });
