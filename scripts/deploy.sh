@@ -71,6 +71,5 @@ fi
   echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
   sudo systemctl restart nginx
-
   echo "===================== 배포 완료 =====================" >> /opt/deploy.log
   echo >> /opt/deploy.log
