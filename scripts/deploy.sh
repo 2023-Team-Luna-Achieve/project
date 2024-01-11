@@ -27,6 +27,7 @@ function blue_green_deploy() {
     sudo docker cp frontend-$1:/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "achieve_static_file moved successfully!" >> /opt/deploy.log
     sudo tar -xzvf /usr/share/nginx/html/achieve_static_file.tar.gz -C /usr/share/nginx/html && echo "achieve_static_file tar successfully!" >> /opt/deploy.log
     echo "$2 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
+  fi
 }
 
 
