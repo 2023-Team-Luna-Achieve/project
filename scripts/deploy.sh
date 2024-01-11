@@ -57,8 +57,10 @@ else
   if [ -z "$GREEN_HEALTH" ]; then
        sudo echo "에러 발생 $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/error.log
   else
+      # /home/ec2-user/deploy.log: 로그 파일에 "blue 중단 시작"이라는 내용을 추가
       echo "blue 중단 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
+      # docker-compose.blue.yml 파일을 사용하여 achieve-green 프로젝트의 컨테이너를 중지, 볼륨, 이미지 삭제
       sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml down -v --rmi all
 
       sudo docker exec frontend-green tar -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist .
@@ -71,5 +73,6 @@ fi
   echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
   sudo systemctl restart nginx
+
   echo "===================== 배포 완료 =====================" >> /opt/deploy.log
   echo >> /opt/deploy.log
