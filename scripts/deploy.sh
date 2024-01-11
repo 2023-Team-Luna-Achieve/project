@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-
-
 function blue_green_deploy() {
   # 로그 파일(/home/ec2-user/deploy.log)에 "blue up - blue 배포 : port:8081"이라는 내용을 추가
   echo "$1 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
@@ -29,3 +27,28 @@ function blue_green_deploy() {
     echo "$2 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
   fi
 }
+
+# 작업 디렉토리를 /opt/achieve/project 로 변경
+REPOSITORY=/opt/achieve/project
+cd $REPOSITORY
+
+DOCKER_APP_NAME=achieve
+
+# 실행중인 blue가 있는지 확인
+EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
+# 테스트 배포 시작한 날짜와 시간을 기록
+echo "배포 시작일자 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
+
+# green이 실행중이면 blue up
+# EXIST_BLUE 변수가 비어있는지 확인
+if [ -z "$EXIST_BLUE" ]; then
+    blue_green_deploy "blue" "green"
+else
+    blue_green_deploy "green" "blue"
+fi
+  echo "배포 종료  : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
+
+  sudo systemctl restart nginx
+
+  echo "===================== 배포 완료 =====================" >> /opt/deploy.log
+  echo >> /opt/deploy.log
