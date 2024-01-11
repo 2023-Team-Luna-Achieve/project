@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-function blue_green_deploy (
+function blue_green_deploy() (
   # 로그 파일(/home/ec2-user/deploy.log)에 "blue up - blue 배포 : port:8081"이라는 내용을 추가
   echo "$1 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
