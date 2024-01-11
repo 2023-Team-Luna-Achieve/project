@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-function blue_green_deploy() (
+function blue_green_deploy() {
   # 로그 파일(/home/ec2-user/deploy.log)에 "blue up - blue 배포 : port:8081"이라는 내용을 추가
   echo "$1 배포 시작 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
@@ -27,7 +27,7 @@ function blue_green_deploy() (
     sudo docker cp frontend-$1:/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "achieve_static_file moved successfully!" >> /opt/deploy.log
     sudo tar -xzvf /usr/share/nginx/html/achieve_static_file.tar.gz -C /usr/share/nginx/html && echo "achieve_static_file tar successfully!" >> /opt/deploy.log
     echo "$2 중단 완료 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
-)
+}
 
 
 # 작업 디렉토리를 /opt/achieve/project 로 변경
