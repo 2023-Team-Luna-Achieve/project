@@ -21,6 +21,7 @@ function blue_green_deploy() {
     # docker-compose.green.yml 파일을 사용하여 achieve-green 프로젝트의 컨테이너를 중지
     sudo docker-compose -p ${DOCKER_APP_NAME}-"$2" -f docker-compose-"$2".yml down -v --rmi all
 
+
     sudo docker exec frontend-"$1" tar -czvf /frontend/dist/achieve_static_file.tar.gz -C /frontend/dist .
     sudo docker cp frontend-"$1":/frontend/dist/achieve_static_file.tar.gz /usr/share/nginx/html && echo "achieve_static_file moved successfully!" >> /opt/deploy.log
     sudo tar -xzvf /usr/share/nginx/html/achieve_static_file.tar.gz -C /usr/share/nginx/html && echo "achieve_static_file tar successfully!" >> /opt/deploy.log
