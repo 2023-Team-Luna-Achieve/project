@@ -2,7 +2,6 @@ package backend.backend.noticeboard.service;
 
 import backend.backend.noticeboard.dto.SuggestionRequestDto;
 import backend.backend.noticeboard.dto.SuggestionResponseDto;
-import backend.backend.noticeboard.validator.AuthorizationValidator;
 import backend.backend.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

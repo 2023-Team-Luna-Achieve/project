@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "Suggestion API", description = "건의사항 게시판")
+@Api(tags = "Suggestion Board API", description = "건의사항 게시판")
 @RestController
 @RequestMapping("/api/suggestion")
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class SuggestionController {
 
     // 건의사항 글 생성 - 수정완료
     @ApiOperation(value = "건의사항 작성 API", notes = "건의사항 작성을 진행한다")
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<SuggestionResponseDto> createSuggestion(@CurrentUser User currentUser, @RequestBody SuggestionRequestDto suggestionRequestDto) {
         SuggestionResponseDto createdSuggestion = suggestionService.createSuggestion(currentUser ,suggestionRequestDto);
         return ResponseEntity.ok(createdSuggestion);

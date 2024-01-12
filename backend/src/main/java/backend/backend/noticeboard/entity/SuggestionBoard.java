@@ -1,6 +1,7 @@
 package backend.backend.noticeboard.entity;
 
 //import backend.backend.noticeboardcomment.entity.Comment;
+import backend.backend.comment.entity.SuggestionComment;
 import backend.backend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Suggestion {
+public class SuggestionBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "suggestion_id")
@@ -26,8 +27,8 @@ public class Suggestion {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToMany(mappedBy = "suggestion_id")
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "suggestionBoard")
+    private List<SuggestionComment> comments;
 
     private String title;
 

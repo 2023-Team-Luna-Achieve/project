@@ -1,7 +1,6 @@
 package backend.backend.noticeboard.dto;
 
 import backend.backend.noticeboard.entity.Category;
-import backend.backend.noticeboardcomment.dto.CommentResponse;
 import lombok.Getter;
 import lombok.Setter;
 

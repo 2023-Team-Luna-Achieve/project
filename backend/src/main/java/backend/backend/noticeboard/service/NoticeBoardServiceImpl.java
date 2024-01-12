@@ -1,12 +1,12 @@
 package backend.backend.noticeboard.service;
 
+import backend.backend.exception.AuthException;
 import backend.backend.exception.ErrorCode;
 import backend.backend.exception.NotFoundException;
 import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.noticeboard.repository.NoticeBoardRepository;
-import backend.backend.noticeboard.validator.AuthorizationValidator;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     private final NoticeBoardRepository noticeBoardRepository;
-    private final AuthorizationValidator authorizationValidator;
 
     @Override
     @Transactional
@@ -42,22 +41,26 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     @Override
     public NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto) {
-        NoticeBoard existingNoticeBoard = noticeBoardRepository.findById(id)
+        NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-        authorizationValidator.validateNoticeBoardModifyOrDeletePermission(user, existingNoticeBoard);
-        existingNoticeBoard.setTitle(noticeBoardDto.getTitle());
-        existingNoticeBoard.setCategory(noticeBoardDto.getCategory());
-        existingNoticeBoard.setContext(noticeBoardDto.getContext());
+        if (user.isNotPossibleModifyOrDeletePermission(noticeBoard.getUser().getId())) {
+            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        }
+        noticeBoard.setTitle(noticeBoardDto.getTitle());
+        noticeBoard.setCategory(noticeBoardDto.getCategory());
+        noticeBoard.setContext(noticeBoardDto.getContext());
 
-        noticeBoardRepository.save(existingNoticeBoard);
-        return convertToDto(existingNoticeBoard);
+        noticeBoardRepository.save(noticeBoard);
+        return convertToDto(noticeBoard);
     }
 
     @Override
     public void deleteNoticeBoard(Long id, User user) {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-        authorizationValidator.validateNoticeBoardModifyOrDeletePermission(user, noticeBoard);
+        if (user.isNotPossibleModifyOrDeletePermission(noticeBoard.getUser().getId())) {
+            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        }
         noticeBoardRepository.deleteById(id);
     }
 
