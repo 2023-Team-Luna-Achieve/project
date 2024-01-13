@@ -25,7 +25,7 @@ public class SuggestionCommentService {
 
     public SuggestionComment createSuggestionComment(User user, Long suggestionBoardId, CommentRequestDto commentRequestDto) {
         SuggestionBoard suggestBoard = findSuggestBoardById(suggestionBoardId);
-        SuggestionComment suggestionComment = commentRequestDto.toEntity(user, suggestBoard);
+        SuggestionComment suggestionComment = commentRequestDto.toSuggestComment(user, suggestBoard);
         return suggestionCommentRepository.save(suggestionComment);
     }
 

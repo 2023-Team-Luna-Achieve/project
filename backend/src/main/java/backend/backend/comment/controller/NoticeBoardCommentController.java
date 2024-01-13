@@ -3,6 +3,7 @@ package backend.backend.comment.controller;
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.comment.dto.CommentRequestDto;
 import backend.backend.comment.dto.NoticeBoardCommentResponse;
+import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.comment.service.NoticeBoardCommentService;
 import backend.backend.user.entity.User;
 import io.swagger.annotations.Api;
@@ -32,21 +33,29 @@ public class NoticeBoardCommentController {
     public ResponseEntity<NoticeBoardCommentResponse> createComment(@PathVariable("noticeBoardId") Long noticeBoardId,
                                                                     @RequestBody CommentRequestDto commentRequestDto,
                                                                     @CurrentUser User user) {
-        NoticeBoardCommentResponse createdComment = commentService.createComment(user, noticeBoardId, commentRequestDto);
+        NoticeBoardComment createdComment = commentService.createComment(user, noticeBoardId, commentRequestDto);
         return ResponseEntity.created(URI.create("/api/comment/" + createdComment.getId())).build();
     }
 
     @ApiOperation(value = "공지사항 단일 조회 API", notes = "공지사항 댓글을 단일 조회 한다.")
     @GetMapping("/{noticeCommentId}")
-        public ResponseEntity<NoticeBoardCommentResponse> getCommentById(@PathVariable Long noticeCommentId) {
-        NoticeBoardCommentResponse commentDto = commentService.getCommentById(noticeCommentId);
-            return ResponseEntity.ok(commentDto);
+    public ResponseEntity<NoticeBoardCommentResponse> getCommentById(@PathVariable Long noticeCommentId) {
+        return ResponseEntity.ok(commentService.getOneNoticeBoardComment(noticeCommentId));
+    }
+
+    @PutMapping("/{noticeCommentId}")
+    public ResponseEntity<Void> updateComment(@PathVariable Long noticeCommentId,
+                                              @CurrentUser User user,
+                                              @RequestBody CommentRequestDto commentRequestDto) {
+        commentService.updateNoticeBoardComment(user, noticeCommentId, commentRequestDto);
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "공지사항 댓글 삭제 API", notes = "공지사항 댓글을 삭제 한다.")
     @DeleteMapping("/{noticeCommentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long noticeCommentId,
+                                              @CurrentUser User user) {
+        commentService.deleteComment(user, noticeCommentId);
         return ResponseEntity.noContent().build();
     }
 }

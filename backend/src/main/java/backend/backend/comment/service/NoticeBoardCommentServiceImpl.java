@@ -1,6 +1,7 @@
 package backend.backend.comment.service;
 
 import backend.backend.comment.dto.CommentRequestDto;
+import backend.backend.exception.AuthException;
 import backend.backend.exception.ErrorCode;
 import backend.backend.exception.NotFoundException;
 import backend.backend.comment.dto.NoticeBoardCommentResponse;
@@ -25,23 +26,48 @@ public class NoticeBoardCommentServiceImpl implements NoticeBoardCommentService 
     @Override
     public List<NoticeBoardCommentResponse> getAllCommentsByNoticeBoardId(Long noticeBoardId) {
         return commentRepository.findAllByNoticeBoardId(noticeBoardId).stream()
-                .map(this::convertToDto)
+                .map(noticeBoardComment -> NoticeBoardCommentResponse.of(noticeBoardComment))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public NoticeBoardCommentResponse createComment(User user, Long noticeBoardId, CommentRequestDto commentRequestDto) {
+    public NoticeBoardComment createComment(User user, Long noticeBoardId, CommentRequestDto commentRequestDto) {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(noticeBoardId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
-        NoticeBoardComment comment = NoticeBoardComment.builder()
-                .noticeBoard(noticeBoard)
-                .user(user)
-                .context(commentRequestDto.getContext())
-                .build();
+        NoticeBoardComment noticeBoardComment = commentRequestDto.toNoticeComment(user, noticeBoard);
 
-        comment = commentRepository.save(comment);
-        return convertToDto(comment);
+        return commentRepository.save(noticeBoardComment);
+    }
+
+    @Override
+    public NoticeBoardCommentResponse getOneNoticeBoardComment(Long id) {
+        NoticeBoardComment noticeBoardComment = findNoticeBoardCommentById(id);
+        return NoticeBoardCommentResponse.of(noticeBoardComment);
+    }
+
+    @Override
+    public void updateNoticeBoardComment(User user, Long commentId, CommentRequestDto commentRequestDto) {
+        NoticeBoardComment noticeBoardComment = findNoticeBoardCommentById(commentId);
+        if(user.isNotPossibleModifyOrDeletePermission(noticeBoardComment.getUser().getId())) {
+            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        }
+        noticeBoardComment.update(commentRequestDto);
+    }
+
+    @Override
+    public void deleteComment(User user, Long commentId) {
+        NoticeBoardComment noticeBoardComment = findNoticeBoardCommentById(commentId);
+        if(user.isNotPossibleModifyOrDeletePermission(noticeBoardComment.getUser().getId())) {
+            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        }
+        commentRepository.deleteById(commentId);
+    }
+
+//    @Override
+    private NoticeBoardComment findNoticeBoardCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
     }
 
     // 기타 필요한 메소드 정의
@@ -52,20 +78,8 @@ public class NoticeBoardCommentServiceImpl implements NoticeBoardCommentService 
         }
         return new NoticeBoardCommentResponse(
                 comment.getId(),
-                comment.getNoticeBoard().getId(),
                 comment.getUser().getName(),
                 comment.getContext()
         );
-    }
-    @Override
-    public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
-    }
-
-    @Override
-    public NoticeBoardCommentResponse getCommentById(Long commentId) {
-        NoticeBoardComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
-        return convertToDto(comment);
     }
 }

@@ -52,7 +52,6 @@ public class SuggestionCommentController {
         return ResponseEntity.ok().build();
     }
 
-
     @ApiOperation(value = "건의사항 댓글 삭제 API", notes = "특정 건의사항의 댓글을 단일 조회 한다.")
     @DeleteMapping("/{suggestionCommentId}")
     public ResponseEntity<Void> deleteOneSuggestionComment(@PathVariable Long suggestionCommentId,
