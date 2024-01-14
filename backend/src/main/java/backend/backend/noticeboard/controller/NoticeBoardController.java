@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "Noticeboard API", description = "공지사항 게시판")
+@Api(tags = "Notice Board API", description = "공지사항 게시판")
 @RequiredArgsConstructor
 @RequestMapping("/api/notice")
 @RestController

@@ -26,7 +26,6 @@ public class ReservationRequest {
     }
 
     public Reservation toEntity(User user, MeetingRoom meetingRoom) {
-
         return Reservation.builder()
                 .user(user)
                 .reservationStartTime(reservationStartTime)

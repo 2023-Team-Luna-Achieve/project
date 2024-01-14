@@ -1,19 +1,18 @@
 package backend.backend.noticeboard.service;
 
+import backend.backend.exception.AuthException;
 import backend.backend.exception.ErrorCode;
 import backend.backend.exception.NotFoundException;
 import backend.backend.noticeboard.dto.SuggestionRequestDto;
 import backend.backend.noticeboard.dto.SuggestionResponseDto;
-import backend.backend.noticeboard.entity.Suggestion;
-import backend.backend.noticeboard.repository.SuggestionRepository;
-import backend.backend.noticeboard.validator.AuthorizationValidator;
+import backend.backend.noticeboard.entity.SuggestionBoard;
+import backend.backend.noticeboard.repository.SuggestionBoardRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -22,75 +21,79 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SuggestionServiceImpl implements SuggestionService {
-    private final AuthorizationValidator authorizationValidator;
-    private final SuggestionRepository suggestionRepository;
+    private final SuggestionBoardRepository suggestionBoardRepository;
     private static final int PAGE_SIZE = 10; //페이지네이션
 
     @Override //게시글목록조회 페이지네이션
     public List<SuggestionResponseDto> getSuggestionsByPage(int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        return suggestionRepository.findAll(pageable).stream()
+        return suggestionBoardRepository.findAll(pageable).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public List<SuggestionResponseDto> getSuggestionsAfterId(Long id, int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        return suggestionRepository.findSuggestionsByIdGreaterThan(id, pageable).stream()
+        return suggestionBoardRepository.findSuggestionsByIdGreaterThan(id, pageable).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public List<SuggestionResponseDto> getSuggestionsBeforeId(Long id, int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        return suggestionRepository.findSuggestionsByIdLessThan(id, pageable).stream()
+        return suggestionBoardRepository.findSuggestionsByIdLessThan(id, pageable).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public SuggestionResponseDto getSuggestionById(Long id) {
-        Suggestion suggestion = suggestionRepository.findById(id)
+        SuggestionBoard suggestion = suggestionBoardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Suggestion not found with id: " + id));
         return convertToDto(suggestion);
     }
 
     @Override
     public SuggestionResponseDto createSuggestion(User user, SuggestionRequestDto suggestionRequestDto) {
-        Suggestion suggestion = convertToEntity(user, suggestionRequestDto);
-        suggestion = suggestionRepository.save(suggestion);
+        SuggestionBoard suggestion = convertToEntity(user, suggestionRequestDto);
+        suggestion = suggestionBoardRepository.save(suggestion);
         return convertToDto(suggestion);
     }
 
     @Override
     public SuggestionResponseDto updateSuggestion(User user, Long id, SuggestionResponseDto suggestionDto) {
-        Suggestion suggestion = suggestionRepository.findById(id)
+        SuggestionBoard suggestionBoard = suggestionBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-        authorizationValidator.validateSuggestionModifyOrDeletePermission(user, suggestion);
+        if (user.isNotPossibleModifyOrDeletePermission(suggestionBoard.getUser().getId())) {
+            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        }
 
-        suggestion.setTitle(suggestionDto.getTitle());
-        suggestion.setCategory(suggestionDto.getCategory());
-        suggestion.setContext(suggestionDto.getContext());
+        suggestionBoard.setTitle(suggestionDto.getTitle());
+        suggestionBoard.setCategory(suggestionDto.getCategory());
+        suggestionBoard.setContext(suggestionDto.getContext());
 
-        suggestionRepository.save(suggestion);
-        return convertToDto(suggestion);
+        suggestionBoardRepository.save(suggestionBoard);
+        return convertToDto(suggestionBoard);
     }
 
     @Override
     public Page<SuggestionResponseDto> getSuggestions(Pageable pageable, Long offset) {
-        Page<Suggestion> suggestions = suggestionRepository.findAllByCursor(pageable, offset);
+        Page<SuggestionBoard> suggestions = suggestionBoardRepository.findAllByCursor(pageable, offset);
         return suggestions.map(this::convertToDto);
     }
 
     @Override
     public void deleteSuggestion(User user, Long id) {
-        Suggestion suggestion = suggestionRepository.findById(id)
+        SuggestionBoard suggestionBoard = suggestionBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-        authorizationValidator.validateSuggestionModifyOrDeletePermission(user, suggestion);
-        suggestionRepository.deleteById(id);
+        if (user.isNotPossibleModifyOrDeletePermission(suggestionBoard.getUser().getId())) {
+            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        }
+
+        suggestionBoardRepository.deleteById(id);
     }
 
-    private SuggestionResponseDto convertToDto(Suggestion suggestion) {
+    private SuggestionResponseDto convertToDto(SuggestionBoard suggestion) {
         if (suggestion == null) {
             return null;
         }
@@ -104,11 +107,11 @@ public class SuggestionServiceImpl implements SuggestionService {
         );
     }
 
-    private Suggestion convertToEntity(User user, SuggestionRequestDto suggestionDto) {
+    private SuggestionBoard convertToEntity(User user, SuggestionRequestDto suggestionDto) {
         if (suggestionDto == null) {
             return null;
         }
-        Suggestion suggestion = new Suggestion();
+        SuggestionBoard suggestion = new SuggestionBoard();
         suggestion.setTitle(suggestionDto.getTitle());
         suggestion.setCategory(suggestionDto.getCategory());
         suggestion.setContext(suggestionDto.getContext());

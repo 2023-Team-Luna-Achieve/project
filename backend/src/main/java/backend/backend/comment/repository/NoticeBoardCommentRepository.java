@@ -1,6 +1,6 @@
-package backend.backend.noticeboardcomment.repository;
+package backend.backend.comment.repository;
 
-import backend.backend.noticeboardcomment.entity.NoticeBoardComment;
+import backend.backend.comment.entity.NoticeBoardComment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface CommentRepository extends JpaRepository<NoticeBoardComment, Long> {
+@Repository
+public interface NoticeBoardCommentRepository extends JpaRepository<NoticeBoardComment, Long> {
 
     @Query("SELECT c FROM NoticeBoardComment c JOIN FETCH c.user WHERE c.noticeBoard.id = :noticeBoardId")
     List<NoticeBoardComment> findAllByNoticeBoardId(@Param("noticeBoardId") Long noticeBoardId);

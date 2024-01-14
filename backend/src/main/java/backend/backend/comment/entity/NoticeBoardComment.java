@@ -1,21 +1,23 @@
-package backend.backend.noticeboardcomment.entity;
+package backend.backend.comment.entity;
 
+import backend.backend.comment.dto.CommentRequestDto;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeBoardComment {
+public class NoticeBoardComment extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
@@ -31,9 +33,8 @@ public class NoticeBoardComment {
 
     private String context;
 
-    private LocalDateTime updated_at;
-
-    private LocalDateTime created_at;
-
-    private LocalDateTime deleted_at;
+    public NoticeBoardComment update(CommentRequestDto commentRequestDto) {
+        this.context = commentRequestDto.getContext();
+        return this;
+    }
 }

@@ -2,7 +2,7 @@ package backend.backend.user.entity;
 
 import backend.backend.noticeboard.entity.NoticeBoard;
 //import backend.backend.noticeboardcomment.entity.Comment;
-import backend.backend.noticeboardcomment.entity.NoticeBoardComment;
+import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.reservation.entity.Reservation;
 import lombok.*;
 
@@ -45,5 +45,9 @@ public class User {
 
     public String roleName() {
         return role.name();
+    }
+
+    public boolean isNotPossibleModifyOrDeletePermission(Long userId) {
+        return !this.id.equals(userId);
     }
 }
