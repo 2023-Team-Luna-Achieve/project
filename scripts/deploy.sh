@@ -8,6 +8,7 @@ DOCKER_APP_NAME=achieve
 
 # 실행중인 blue가 있는지 확인
 EXIST_BLUE=$(sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml ps | awk '{$1=""; $2=""; $3=""; $4=""; $5=""; print $0}' | sed 's/^[ \t]*//')
+
 # 테스트 배포 시작한 날짜와 시간을 기록
 echo "배포 시작일자 : $(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)" >> /opt/deploy.log
 
