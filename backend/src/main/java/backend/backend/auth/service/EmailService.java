@@ -121,6 +121,7 @@ public class EmailService {
         return key.toString();
     }
 
+    //회원 가입용 이메일 전송
     private void sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = createVerificationMessage(targetEmail);
         try{//예외처리
