@@ -40,8 +40,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         UserAcceptanceStep.requestEmailVerifiedCodeSend(new EmailRequest("jaeyoon321@naver"));
         String data = redisUtil.getData("jaeyoon321@naver");
         UserAcceptanceStep.requestEmailVerified(new VerificationRequest("jaeyoon321@naver", data));
-//
-//        //회원가입
+
+        //회원가입
         UserAcceptanceStep.requestSignUp(signUpRequest);
 
         //when

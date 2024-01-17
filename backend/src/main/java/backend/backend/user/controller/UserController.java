@@ -37,8 +37,8 @@ public class UserController {
 
     @ApiOperation(value = "회원가입 API", notes = "회원가입 이전에 이메일 인증을 먼저 진행")
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
-        Long userId = userService.createUserIfEmailNotExists(signUpRequest, encoder);
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+        Long userId = userService.createUserIfEmailNotExists(signUpRequest);
         return ResponseEntity.created(URI.create("/api/user/" + userId)).build();
     }
 

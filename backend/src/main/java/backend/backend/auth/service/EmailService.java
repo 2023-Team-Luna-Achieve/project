@@ -123,6 +123,10 @@ public class EmailService {
 
     //회원 가입용 이메일 전송
     private void sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+        if (userRepository.findUserByEmail(targetEmail) != null) {
+            throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
+        }
+
         MimeMessage message = createVerificationMessage(targetEmail);
         try{//예외처리
             emailSender.send(message);

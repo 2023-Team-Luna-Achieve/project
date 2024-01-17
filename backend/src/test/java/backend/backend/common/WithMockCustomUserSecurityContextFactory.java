@@ -1,3 +1,5 @@
+package backend.backend.common;
+
 import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.user.entity.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

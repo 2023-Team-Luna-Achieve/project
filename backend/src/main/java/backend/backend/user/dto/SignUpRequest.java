@@ -5,10 +5,10 @@ import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,8 +35,8 @@ public class SignUpRequest {
                 .build();
     }
 
-    public SignUpRequest encryptPassword(BCryptPasswordEncoder encoder) {
-        String encryptedPassword = encoder.encode(this.password);
+    public SignUpRequest encryptPassword(PasswordEncoder passwordEncoder) {
+        String encryptedPassword = passwordEncoder.encode(this.password);
         return new SignUpRequest(this.name, this.email, encryptedPassword, this.affiliation);
     }
 }

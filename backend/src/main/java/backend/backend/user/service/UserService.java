@@ -7,7 +7,9 @@ import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private Long create(User user) {
         User savedUser = userRepository.save(user);
@@ -26,13 +29,13 @@ public class UserService {
     }
 
     @Transactional
-    public Long createUserIfEmailNotExists(SignUpRequest signUpRequest, BCryptPasswordEncoder encoder) {
+    public Long createUserIfEmailNotExists(SignUpRequest signUpRequest) {
         if (userRepository.findUserByEmail(signUpRequest.getEmail()) == null) {
             if (redisUtil.getData(signUpRequest.getEmail()) == null) {
                 throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
 
             } else if (redisUtil.getData(signUpRequest.getEmail()).equals("verified")) {
-                signUpRequest = signUpRequest.encryptPassword(encoder);
+                signUpRequest = signUpRequest.encryptPassword(passwordEncoder);
                 User user = signUpRequest.toEntity();
                 return create(user);
             }

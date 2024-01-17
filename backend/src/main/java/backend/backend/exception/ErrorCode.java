@@ -10,7 +10,7 @@ public enum ErrorCode {
     BOARD_NOT_FOUND(404, "C_002","작성글이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(404, "C_003","작성글이 존재하지 않습니다"),
     REFRESH_TOKEN_NOT_FOUND(404, "C_004","refresh 토큰이 존재하지 않습니다"),
-    DUPLICATED_EMAIL(409, "AU_001", "이미 존재하는 Email입니다."),
+    DUPLICATED_EMAIL(409, "AU_001", "이미 가입된 Email입니다."),
     BAD_LOGIN(400, "AU_002", "잘못된 아이디 또는 패스워드입니다."),
     UNAUTHORIZED_EMAIL(400, "AU_003", "인증되지 않은 Email입니다."),
     INVALID_CODE(400, "AU_004", "코드가 옳지 못합니다."),
