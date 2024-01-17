@@ -13,3 +13,8 @@ spring:
   profiles:
     active: prod
     include: oauth
+---
+spring:
+  profiles:
+    active: test
+    include: oauth
