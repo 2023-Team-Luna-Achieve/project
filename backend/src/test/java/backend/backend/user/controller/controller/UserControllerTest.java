@@ -11,6 +11,7 @@ import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.service.EmailService;
 import backend.backend.auth.service.RefreshTokenService;
 import backend.backend.common.WithMockCustomUser;
+import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.reservation.controller.ReservationController;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.entity.Reservation;
@@ -87,18 +88,18 @@ public class UserControllerTest {
     void searchReservation() throws Exception {
 
         List<ReservationResponse> reservationResponse = Arrays.asList(
-
-        );
+                new ReservationResponse(1L, "2342:43:32", "2344:3:32", 5, new MeetingRoom("df")));
 
         given(reservationService.getReservationsByUserId(1L)).willReturn(reservationResponse);
 
         mockMvc.perform(get("/api/reservation/check").accept(MediaType.APPLICATION_JSON)
-                .header("authorization", "Bearer Token"))
+                        .header("authorization", "Bearer Token"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @DisplayName("회원가입을 한다")
+    @WithMockCustomUser
     @Test
     void registerUser() throws Exception {
         EmailRequest emailRequest = new EmailRequest("222@naver.com");
@@ -116,7 +117,6 @@ public class UserControllerTest {
         VerificationRequest verificationRequest = new VerificationRequest(emailRequest.getEmail(), code);
         when(emailService.verifyEmail(emailRequest.getEmail(), code)).thenReturn(new VerificationResponse("됐나"));
 
-
         mockMvc.perform(post("/api/email/verification/confirm")
                         .content(objectMapper.writeValueAsBytes(verificationRequest))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -125,8 +125,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-
-        SignUpRequest signUpRequest = new SignUpRequest("라면", "라면@naver.com", "라면", Affiliation.Techeer);
+        SignUpRequest signUpRequest = new SignUpRequest("라면2", "라면@naver.com", "라면2", Affiliation.Techeer);
         when(userService.createUserIfEmailNotExists(signUpRequest)).thenReturn(1L);
         mockMvc.perform(post("/api/user/sign-up")
                         .content(objectMapper.writeValueAsBytes(signUpRequest))

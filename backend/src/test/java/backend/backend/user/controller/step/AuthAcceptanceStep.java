@@ -24,4 +24,8 @@ public class AuthAcceptanceStep {
         ExtractableResponse<Response> response = requestLogin(signInRequest);
         return new AuthResponse(response.header(HttpHeaders.AUTHORIZATION).substring(7));
     }
+
+    public static String toHeaderValue(AuthResponse authResponse) {
+        return authResponse.getTokenType() +  " " + authResponse.getAccessToken();
+    }
 }

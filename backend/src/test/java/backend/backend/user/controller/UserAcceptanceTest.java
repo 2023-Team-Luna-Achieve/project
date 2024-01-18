@@ -5,9 +5,7 @@ import backend.backend.auth.dto.EmailRequest;
 import backend.backend.auth.dto.VerificationRequest;
 import backend.backend.common.acceptance.AcceptanceTest;
 import backend.backend.common.acceptance.step.AcceptanceStep;
-import backend.backend.user.controller.step.AuthAcceptanceStep;
 import backend.backend.user.controller.step.UserAcceptanceStep;
-import backend.backend.user.dto.AuthResponse;
 import backend.backend.user.dto.SignInRequest;
 import backend.backend.user.dto.SignUpRequest;
 import backend.backend.user.entity.Affiliation;
@@ -25,8 +23,6 @@ class UserAcceptanceTest extends AcceptanceTest {
     @Autowired
     private RedisUtil redisUtil;
     private static SignUpRequest signUpRequest;
-    private static SignInRequest signInRequest;
-    private static AuthResponse authResponse;
 
     @BeforeEach
     @Override
@@ -41,18 +37,7 @@ class UserAcceptanceTest extends AcceptanceTest {
         UserAcceptanceStep.requestSignUp(signUpRequest);
 
         // 로그인
-        signInRequest = new SignInRequest("jaeyoon321@naver", "1105");
-        authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
-    }
-
-    @DisplayName("동아리방 예약을 확인한다.")
-    @Test
-    void getReservation() {
-        //when
-        ExtractableResponse<Response> reservationCheckStatus = UserAcceptanceStep.getReservation(authResponse);
-
-        //then
-        AcceptanceStep.assertThatStatusIsOk(reservationCheckStatus);
+        SignInRequest signInRequest = new SignInRequest("jaeyoon321@naver", "1105");
     }
 
     @DisplayName("회원가입을 요청한다")

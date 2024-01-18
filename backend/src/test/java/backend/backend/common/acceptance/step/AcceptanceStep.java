@@ -14,10 +14,10 @@ public class AcceptanceStep {
     public static void assertThatStatusIsCreated(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
-//
-//    public static void assertThatStatusOk() {
-//
-//    }
+
+    public static void assertThatStatusIsDeleted(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 //
 //    public static void assertThatStatusOk() {
 //
