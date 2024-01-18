@@ -1,6 +1,5 @@
 package backend.backend.auth.dto;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

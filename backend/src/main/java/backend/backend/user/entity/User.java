@@ -1,13 +1,11 @@
 package backend.backend.user.entity;
 
-import backend.backend.noticeboard.entity.NoticeBoard;
-//import backend.backend.noticeboardcomment.entity.Comment;
 import backend.backend.comment.entity.NoticeBoardComment;
+import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.reservation.entity.Reservation;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -21,9 +19,11 @@ public class User {
     @Column(name = "user_id")
     private Long id;
     private String name;
+
     private String email;
+
     private String password;
-    private LocalDateTime created_at;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

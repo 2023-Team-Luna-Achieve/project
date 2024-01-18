@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.List;
 
 @Api(tags = "Reservation API", description = "예약")
@@ -26,9 +27,9 @@ public class ReservationController {
     //예약 생성
     @ApiOperation(value = "예약 생성 API", notes = "예약 생성을 진행한다")
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@CurrentUser User currentUser, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        ReservationResponse response = reservationService.createReservation(currentUser, request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<Void> createReservation(@CurrentUser User currentUser, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+        ReservationResponse reservation = reservationService.createReservation(currentUser, request);
+        return ResponseEntity.created(URI.create("/api/reservation/" + reservation.getId())).build();
     }
 
     //예약 내역 조회
@@ -51,12 +52,7 @@ public class ReservationController {
     @ApiOperation(value = "예약 취소 API", notes = "예약 취소를 진행한다")
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
-        boolean success = reservationService.cancelReservation(reservationId);
-
-        if (success) {
-            return ResponseEntity.ok("예약이 취소되었습니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("예약을 찾을 수 없습니다.");
-        }
+        reservationService.cancelReservation(reservationId);
+        return ResponseEntity.noContent().build();
     }
 }

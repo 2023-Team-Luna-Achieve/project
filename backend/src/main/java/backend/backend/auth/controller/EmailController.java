@@ -26,7 +26,7 @@ public class EmailController {
 
     @ApiOperation(value = "이메일 인증 API", notes = "전송받은 인증번호로 이메일을 인증한다.")
     @PostMapping("/confirm")
-    public ResponseEntity<VerificationResponse> emailVerification(@RequestBody VerificationRequest verificationRequest) throws Exception {//        if (emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode())) {
+    public ResponseEntity<VerificationResponse> emailVerification(@RequestBody VerificationRequest verificationRequest) throws Exception {
         return ResponseEntity.ok().body(emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode()));
     }
 }

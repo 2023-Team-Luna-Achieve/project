@@ -30,9 +30,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -48,12 +45,21 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	implementation 'org.hibernate.validator:hibernate-validator:6.0.21.Final'
-//	implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
 
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+//	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// Rest Assured
+	testImplementation 'io.rest-assured:spring-mock-mvc:4.4.0'
+	implementation 'io.rest-assured:rest-assured:4.4.0'
+	implementation 'io.rest-assured:json-path:4.4.0'
+	implementation 'io.rest-assured:xml-path:4.4.0'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }

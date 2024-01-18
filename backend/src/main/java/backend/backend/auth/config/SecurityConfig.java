@@ -83,12 +83,12 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                .antMatchers("/").permitAll() // 로그인
-                .antMatchers("/api/sign-in").permitAll() // 로그인
+                .antMatchers("/").permitAll() // oauth2 로그인 테스트
+                .antMatchers("/api/user/sign-in").permitAll() // 로그인
                 .antMatchers("/api/user/sign-up").permitAll() // 회원가입
                 .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
                 .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
-                .antMatchers("/api/refresh").permitAll() // 로그인
+                .antMatchers("/api/user/refresh").permitAll() // 로그인
                 .antMatchers("/favicon.ico").permitAll()
 //                .antMatchers("/api/notice")
 //                .hasRole(ADMIN)

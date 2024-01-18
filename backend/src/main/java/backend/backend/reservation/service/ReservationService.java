@@ -1,6 +1,8 @@
 package backend.backend.reservation.service;
 
 import backend.backend.auth.service.EmailService;
+import backend.backend.exception.ErrorCode;
+import backend.backend.exception.NotFoundException;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.meetingroom.service.MeetingRoomService;
 import backend.backend.reservation.dto.ReservationRequest;
@@ -101,16 +103,13 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    public boolean cancelReservation(Long reservationId) {
+    public void cancelReservation(Long reservationId) {
         Long userId = (long) session.getAttribute("userId");
         User user = userService.findById(userId);
 
-        Reservation reservation = reservationRepository.findById(reservationId).orElse(null);
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
 
-        if (reservation == null || !reservation.getUser().getId().equals(userId)) {
-            return false;
-        }
         reservationRepository.delete(reservation);
-        return true;
     }
 }
