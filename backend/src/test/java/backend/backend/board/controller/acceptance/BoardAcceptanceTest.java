@@ -1,4 +1,4 @@
-package backend.backend.reservation.controller.acceptance;
+package backend.backend.board.controller.acceptance;
 
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailRequest;
@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 
 @DisplayName("Reservation 인수 테스트")
 @ActiveProfiles("test")
-public class ReservationAcceptanceTest extends AcceptanceTest {
+public class BoardAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     RedisUtil redisUtil;

@@ -51,7 +51,8 @@ public class ReservationController {
     //예약 취소
     @ApiOperation(value = "예약 취소 API", notes = "예약 취소를 진행한다")
     @DeleteMapping("/{reservationId}")
-    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId) {
+        System.out.println("??? " + reservationId);
         reservationService.cancelReservation(reservationId);
         return ResponseEntity.noContent().build();
     }

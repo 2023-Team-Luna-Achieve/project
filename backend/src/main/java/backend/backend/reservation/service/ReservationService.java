@@ -104,9 +104,6 @@ public class ReservationService {
     }
 
     public void cancelReservation(Long reservationId) {
-        Long userId = (long) session.getAttribute("userId");
-        User user = userService.findById(userId);
-
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
 
