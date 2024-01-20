@@ -19,7 +19,8 @@ public enum ErrorCode {
     NEED_LOGIN(401, "AU_006", "로그인이 필요합니다"),
     NOT_LOGIN(401, "AU_007", "로그인이 되어있지 않습니다"),
     UNAUTHORIZED_REDIRECT_URI(400, "AU_009", "인증되지 않은 REDIRECT_URI입니다."),
-    NOT_ALLOWED(403, "AU_009", "다른 사용자의 작성 글을 삭제 혹은 수정할 권한이 없습니다.");
+    FORBIDDEN(403, "AU_009", "다른 사용자의 작성 글을 삭제 혹은 수정할 권한이 없습니다."),
+    INVALID_RESERVATION_TIME_REQUEST(400, "BE_001", "예약 시간의 형식이 올바르지 않습니다");
     private final int status;
     private final String code;
     private final String message;

@@ -3,6 +3,7 @@ package backend.backend.noticeboard.controller;
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.noticeboard.dto.SuggestionRequestDto;
 import backend.backend.noticeboard.dto.SuggestionResponseDto;
+import backend.backend.noticeboard.entity.SuggestionBoard;
 import backend.backend.noticeboard.service.SuggestionService;
 import backend.backend.user.entity.User;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @Api(tags = "Suggestion Board API", description = "건의사항 게시판")
@@ -33,9 +35,9 @@ public class SuggestionController {
     // 건의사항 글 생성 - 수정완료
     @ApiOperation(value = "건의사항 작성 API", notes = "건의사항 작성을 진행한다")
     @PostMapping
-    public ResponseEntity<SuggestionResponseDto> createSuggestion(@CurrentUser User currentUser, @RequestBody SuggestionRequestDto suggestionRequestDto) {
-        SuggestionResponseDto createdSuggestion = suggestionService.createSuggestion(currentUser ,suggestionRequestDto);
-        return ResponseEntity.ok(createdSuggestion);
+    public ResponseEntity<Void> createSuggestion(@CurrentUser User currentUser, @RequestBody SuggestionRequestDto suggestionRequestDto) {
+        SuggestionBoard suggestion = suggestionService.createSuggestion(currentUser, suggestionRequestDto);
+        return ResponseEntity.created(URI.create("/api/suggestion/" + suggestion.getId())).build();
     }
 
     //모든 건의사항 글 목록 조회 - 수정완료
@@ -70,20 +72,20 @@ public class SuggestionController {
     // 글 수정 - 수정중
     @ApiOperation(value = "건의사항 수정 API", notes = "건의사항 수정을 진행한다")
     @PatchMapping("/{suggestion_id}")
-    public ResponseEntity<SuggestionResponseDto> updateSuggestion(
+    public ResponseEntity<Void> updateSuggestion(
             @CurrentUser User user,
             @PathVariable Long suggestion_id,
-            @RequestBody SuggestionResponseDto suggestionDto) {
+            @RequestBody SuggestionRequestDto suggestionDto) {
 
-        SuggestionResponseDto updatedSuggestion = suggestionService.updateSuggestion(user, suggestion_id, suggestionDto);
-        return ResponseEntity.ok(updatedSuggestion);
+        suggestionService.updateSuggestion(user, suggestion_id, suggestionDto);
+        return ResponseEntity.ok().build();
     }
 
     // 건의사항 글 삭제 - 수정완료
     @ApiOperation(value = "건의사항 삭제 API", notes = "건의사항 삭제를 진행한다")
     @DeleteMapping("/{suggestion_id}")
-    public ResponseEntity deleteSuggestion(@CurrentUser User user, @PathVariable Long suggestion_id) { // id vs suggestion_id ??
+    public ResponseEntity<Void> deleteSuggestion(@CurrentUser User user, @PathVariable Long suggestion_id) { // id vs suggestion_id ??
         suggestionService.deleteSuggestion(user, suggestion_id);
-        return ResponseEntity.ok().body("게시글이 삭제되었습니다.");
+        return ResponseEntity.noContent().build();
     }
 }

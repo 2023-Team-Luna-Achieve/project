@@ -52,7 +52,7 @@ public class SuggestionCommentService {
     public void updateSuggestionComment(User user, Long suggestionCommentId, CommentRequestDto commentRequestDto) {
         SuggestionComment suggestionComment = findSuggestCommentById(suggestionCommentId);
         if (user.isNotPossibleModifyOrDeletePermission(suggestionComment.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
         suggestionComment.update(commentRequestDto);
     }
@@ -60,7 +60,7 @@ public class SuggestionCommentService {
     public void deleteSuggestionCommentById(User user, Long suggestionCommentId) {
         SuggestionComment suggestComment = findSuggestCommentById(suggestionCommentId);
         if (user.isNotPossibleModifyOrDeletePermission(suggestComment.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
         suggestionCommentRepository.deleteById(suggestionCommentId);
     }

@@ -50,7 +50,7 @@ public class NoticeBoardCommentServiceImpl implements NoticeBoardCommentService 
     public void updateNoticeBoardComment(User user, Long commentId, CommentRequestDto commentRequestDto) {
         NoticeBoardComment noticeBoardComment = findNoticeBoardCommentById(commentId);
         if(user.isNotPossibleModifyOrDeletePermission(noticeBoardComment.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
         noticeBoardComment.update(commentRequestDto);
     }
@@ -59,7 +59,7 @@ public class NoticeBoardCommentServiceImpl implements NoticeBoardCommentService 
     public void deleteComment(User user, Long commentId) {
         NoticeBoardComment noticeBoardComment = findNoticeBoardCommentById(commentId);
         if(user.isNotPossibleModifyOrDeletePermission(noticeBoardComment.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
         commentRepository.deleteById(commentId);
     }

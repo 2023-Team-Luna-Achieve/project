@@ -1,7 +1,9 @@
 package backend.backend.reservation.service;
 
 import backend.backend.auth.service.EmailService;
+import backend.backend.exception.AuthException;
 import backend.backend.exception.ErrorCode;
+import backend.backend.exception.InvalidReservationTimeException;
 import backend.backend.exception.NotFoundException;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.meetingroom.service.MeetingRoomService;
@@ -28,10 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
 
-    private final HttpSession session;
     private final ReservationRepository reservationRepository;
     private final MeetingRoomService meetingRoomService;
-    private final UserService userService;
     private final EmailService emailService;
 
     public ReservationResponse createReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
@@ -44,14 +44,27 @@ public class ReservationService {
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
                 .orElse(new MeetingRoom());
 
+        reservationTimeValidator(request);
         // 이미 예약된 시간인지 확인
-        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime(), request.getReservationEndTime())) {
-            throw new RuntimeException("이미 예약된 시간입니다.");
-        }
+
         Reservation reservation = request.toEntity(user, meetingRoom);
 
         emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
         return reservationRepository.save(reservation);
+    }
+
+    private void reservationTimeValidator(ReservationRequest request) {
+        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime(), request.getReservationEndTime())) {
+            throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
+        }
+
+        if (request.getReservationStartTime().isBefore(LocalDateTime.now())) {
+            throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
+        }
+
+        if (request.getReservationStartTime().isAfter(request.getReservationEndTime())) {
+            throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
+        }
     }
 
     private boolean isTimeSlotAlreadyReserved(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime) {
@@ -87,7 +100,7 @@ public class ReservationService {
     public List<ReservationResponse> getReservationsByUserId(Long userId) {
         List<Reservation> userReservations = reservationRepository.findByUserId(userId);
 
-        if(userReservations.isEmpty()) {
+        if (userReservations.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -103,9 +116,13 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    public void cancelReservation(Long reservationId) {
+    public void cancelReservation(User user, Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        if (user.isNotPossibleModifyOrDeletePermission(reservation.getUser().getId())) {
+            throw new AuthException(ErrorCode.FORBIDDEN);
+        }
 
         reservationRepository.delete(reservation);
     }

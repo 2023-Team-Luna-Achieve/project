@@ -44,7 +44,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         if (user.isNotPossibleModifyOrDeletePermission(noticeBoard.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
         noticeBoard.setTitle(noticeBoardDto.getTitle());
         noticeBoard.setCategory(noticeBoardDto.getCategory());
@@ -59,7 +59,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         if (user.isNotPossibleModifyOrDeletePermission(noticeBoard.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
         noticeBoardRepository.deleteById(id);
     }

@@ -49,23 +49,21 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public SuggestionResponseDto getSuggestionById(Long id) {
         SuggestionBoard suggestion = suggestionBoardRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Suggestion not found with id: " + id));
-        return convertToDto(suggestion);
-    }
-
-    @Override
-    public SuggestionResponseDto createSuggestion(User user, SuggestionRequestDto suggestionRequestDto) {
-        SuggestionBoard suggestion = convertToEntity(user, suggestionRequestDto);
-        suggestion = suggestionBoardRepository.save(suggestion);
-        return convertToDto(suggestion);
-    }
-
-    @Override
-    public SuggestionResponseDto updateSuggestion(User user, Long id, SuggestionResponseDto suggestionDto) {
-        SuggestionBoard suggestionBoard = suggestionBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-        if (user.isNotPossibleModifyOrDeletePermission(suggestionBoard.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+        return convertToDto(suggestion);
+    }
+
+    @Override
+    public SuggestionBoard createSuggestion(User user, SuggestionRequestDto suggestionRequestDto) {
+        SuggestionBoard suggestion = convertToEntity(user, suggestionRequestDto);
+        return suggestionBoardRepository.save(suggestion);
+    }
+
+    @Override
+    public void updateSuggestion(User user, Long suggestionId, SuggestionRequestDto suggestionDto) {
+        SuggestionBoard suggestionBoard = findBoardById(suggestionId);
+        if(user.isNotPossibleModifyOrDeletePermission(suggestionBoard.getUser().getId())) {
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
 
         suggestionBoard.setTitle(suggestionDto.getTitle());
@@ -73,7 +71,6 @@ public class SuggestionServiceImpl implements SuggestionService {
         suggestionBoard.setContext(suggestionDto.getContext());
 
         suggestionBoardRepository.save(suggestionBoard);
-        return convertToDto(suggestionBoard);
     }
 
     @Override
@@ -83,14 +80,13 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     @Override
-    public void deleteSuggestion(User user, Long id) {
-        SuggestionBoard suggestionBoard = suggestionBoardRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-        if (user.isNotPossibleModifyOrDeletePermission(suggestionBoard.getUser().getId())) {
-            throw new AuthException(ErrorCode.NOT_ALLOWED);
+    public void deleteSuggestion(User user, Long suggestionId) {
+        SuggestionBoard suggestionBoard = findBoardById(suggestionId);
+        if(user.isNotPossibleModifyOrDeletePermission(suggestionBoard.getUser().getId())) {
+            throw new AuthException(ErrorCode.FORBIDDEN);
         }
 
-        suggestionBoardRepository.deleteById(id);
+        suggestionBoardRepository.deleteById(suggestionId);
     }
 
     private SuggestionResponseDto convertToDto(SuggestionBoard suggestion) {
@@ -117,5 +113,10 @@ public class SuggestionServiceImpl implements SuggestionService {
         suggestion.setContext(suggestionDto.getContext());
         suggestion.setUser(user);
         return suggestion;
+    }
+
+    private SuggestionBoard findBoardById(Long suggestionId) {
+        return suggestionBoardRepository.findById(suggestionId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
     }
 }

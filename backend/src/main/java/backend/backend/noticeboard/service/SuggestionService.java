@@ -2,6 +2,7 @@ package backend.backend.noticeboard.service;
 
 import backend.backend.noticeboard.dto.SuggestionRequestDto;
 import backend.backend.noticeboard.dto.SuggestionResponseDto;
+import backend.backend.noticeboard.entity.SuggestionBoard;
 import backend.backend.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,19 +10,19 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface SuggestionService {
-    public abstract List<SuggestionResponseDto> getSuggestionsByPage(int page);
+    List<SuggestionResponseDto> getSuggestionsByPage(int page);
 
-    public abstract List<SuggestionResponseDto> getSuggestionsAfterId(Long id, int page);
+    List<SuggestionResponseDto> getSuggestionsAfterId(Long id, int page);
 
-    public abstract List<SuggestionResponseDto> getSuggestionsBeforeId(Long id, int page);
+    List<SuggestionResponseDto> getSuggestionsBeforeId(Long id, int page);
 
-    public abstract SuggestionResponseDto getSuggestionById(Long id);
+    SuggestionResponseDto getSuggestionById(Long id);
 
-    public abstract SuggestionResponseDto createSuggestion(User user, SuggestionRequestDto suggestionRequestDto);
+    SuggestionBoard createSuggestion(User user, SuggestionRequestDto suggestionRequestDto);
 
-    public abstract SuggestionResponseDto updateSuggestion(User user, Long suggestion_id, SuggestionResponseDto suggestionDto);
+    void updateSuggestion(User user, Long suggestion_id, SuggestionRequestDto suggestionDto);
 
-    public abstract Page<SuggestionResponseDto> getSuggestions(Pageable pageable, Long offset);
+    Page<SuggestionResponseDto> getSuggestions(Pageable pageable, Long offset);
 
     void deleteSuggestion(User user, Long id);
 }
