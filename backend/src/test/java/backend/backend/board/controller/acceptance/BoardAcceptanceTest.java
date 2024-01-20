@@ -3,10 +3,11 @@ package backend.backend.board.controller.acceptance;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailRequest;
 import backend.backend.auth.dto.VerificationRequest;
+import backend.backend.board.controller.acceptance.step.BoardAcceptanceStep;
 import backend.backend.common.acceptance.AcceptanceTest;
 import backend.backend.common.acceptance.step.AcceptanceStep;
-import backend.backend.reservation.controller.acceptance.step.ReservationAcceptanceStep;
-import backend.backend.reservation.dto.ReservationRequest;
+import backend.backend.noticeboard.dto.SuggestionRequestDto;
+import backend.backend.noticeboard.entity.Category;
 import backend.backend.user.controller.step.AuthAcceptanceStep;
 import backend.backend.user.controller.step.UserAcceptanceStep;
 import backend.backend.user.dto.AuthResponse;
@@ -15,71 +16,92 @@ import backend.backend.user.dto.SignUpRequest;
 import backend.backend.user.entity.Affiliation;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-@DisplayName("Reservation 인수 테스트")
+@DisplayName("Board 인수 테스트")
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 public class BoardAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     RedisUtil redisUtil;
-
-    private static SignUpRequest signUpRequest;
-
-    private static SignInRequest signInRequest;
-
-    private static AuthResponse authResponse;
-
+    private static SignInRequest signInRequest1;
+    private static SignInRequest signInRequest2;
+    private static AuthResponse authResponse1;
+    private static AuthResponse authResponse2;
 
     @BeforeEach
     @Override
     public void setUp() {
-        LocalDateTime startTime = LocalDateTime.parse("2023-12-06T15:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime endTime = LocalDateTime.parse("2023-12-06T17:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
-
         UserAcceptanceStep.requestEmailVerifiedCodeSend(new EmailRequest("jaeyoon321@naver"));
         String data = redisUtil.getData("jaeyoon321@naver");
         UserAcceptanceStep.requestEmailVerified(new VerificationRequest("jaeyoon321@naver", data));
 
         // 회원가입
-        signUpRequest = new SignUpRequest("유재윤", "jaeyoon321@naver", "1105", Affiliation.Techeer);
-        UserAcceptanceStep.requestSignUp(signUpRequest);
+        SignUpRequest signUpRequest1 = new SignUpRequest("유재윤", "jaeyoon321@naver", "1105", Affiliation.Techeer);
+        UserAcceptanceStep.requestSignUp(signUpRequest1);
 
         // 로그인
-        signInRequest = new SignInRequest("jaeyoon321@naver", "1105");
-        authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
+        signInRequest1 = new SignInRequest("jaeyoon321@naver", "1105");
+        authResponse1 = AuthAcceptanceStep.createTokenByLogin(signInRequest1);
 
-        ReservationRequest reservationRequest = new ReservationRequest(startTime, endTime, 5, 1L);
 
-        ReservationAcceptanceStep.requestMakeReservation(reservationRequest, authResponse);
+        // 다른 계정용 테스트
+        UserAcceptanceStep.requestEmailVerifiedCodeSend(new EmailRequest("aaa@naver"));
+        String testData = redisUtil.getData("aaa@naver");
+        UserAcceptanceStep.requestEmailVerified(new VerificationRequest("aaa@naver", testData));
+
+        // 회원가입
+        SignUpRequest signUpRequest2 = new SignUpRequest("aaa", "aaa@naver", "aaa", Affiliation.Techeer);
+        UserAcceptanceStep.requestSignUp(signUpRequest2);
+
+        // 로그인
+        signInRequest2 = new SignInRequest("aaa@naver", "aaa");
+        authResponse2 = AuthAcceptanceStep.createTokenByLogin(signInRequest2);
     }
 
-
-    @DisplayName("동아리방을 예약한다")
+    @DisplayName("건의사항 게시글을 생성한다")
+    @Order(1)
     @Test
-    void requestMakeReservation() {
-        AuthResponse authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
-        LocalDateTime startTime = LocalDateTime.parse("2023-12-09T15:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime endTime = LocalDateTime.parse("2023-12-09T17:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
-        ReservationRequest reservationRequest = new ReservationRequest(startTime, endTime, 5, 1L);
-
-        ExtractableResponse<Response> makeReservationResponse = ReservationAcceptanceStep.requestMakeReservation(reservationRequest, authResponse);
-        AcceptanceStep.assertThatStatusIsCreated(makeReservationResponse);
+    void requestMakeSuggestionBoard() {
+        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("생성 테스트입니다", Category.Suggestion, "생성 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> makeSuggestionBoardResponse = BoardAcceptanceStep.requestMakeSuggestionBoard(suggestionRequestDto, authResponse1);
+        AcceptanceStep.assertThatStatusIsCreated(makeSuggestionBoardResponse);
     }
 
-    @DisplayName("동아리방을 예약을 취소한다.")
+    @DisplayName("작성자가 아닌 유저의 계정으로 건의사항 게시글을 수정할 경우 예외를 발생시킨다")
+    @Order(2)
     @Test
-    void requestDeleteReservation() {
-        AuthResponse authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
-        ExtractableResponse<Response> deleteReservationResponse = ReservationAcceptanceStep.requestDeleteReservation(3L, authResponse);
-        AcceptanceStep.assertThatStatusIsDeleted(deleteReservationResponse);
+    void requestUpdateExceptionSuggestionBoard() {
+        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateSuggestionBoard(1L, suggestionRequestDto, authResponse2);
+        AcceptanceStep.assertThatStatusIsForbidden(updateSuggestionBoardResponse);
+    }
+
+    @DisplayName("건의사항 게시글을 수정한다")
+    @Order(3)
+    @Test
+    void requestUpdateSuggestionBoard() {
+        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateSuggestionBoard(1L, suggestionRequestDto, authResponse1);
+        AcceptanceStep.assertThatStatusIsOk(updateSuggestionBoardResponse);
+    }
+
+    @DisplayName("작성자가 아닌 유저의 계정으로 건의사항 게시글을 삭제할 경우 예외를 발생시킨다.")
+    @Order(4)
+    @Test
+    void requestDeleteExceptionSuggestionBoard() {
+        ExtractableResponse<Response> deleteSuggestionBoardResponse = BoardAcceptanceStep.requestDeleteSuggestionBoard(1L, authResponse2);
+        AcceptanceStep.assertThatStatusIsForbidden(deleteSuggestionBoardResponse);
+    }
+
+    @DisplayName("건의사항 게시글을 삭제한다.")
+    @Order(5)
+    @Test
+    void requestDeleteSuggestionBoard() {
+        ExtractableResponse<Response> deleteSuggestionBoardResponse = BoardAcceptanceStep.requestDeleteSuggestionBoard(1L, authResponse1);
+        AcceptanceStep.assertThatStatusIsDeleted(deleteSuggestionBoardResponse);
     }
 }
-

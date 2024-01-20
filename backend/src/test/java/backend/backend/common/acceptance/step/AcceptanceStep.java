@@ -18,9 +18,8 @@ public class AcceptanceStep {
     public static void assertThatStatusIsDeleted(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-//
-//    public static void assertThatStatusOk() {
-//
-//    }
-//
+
+    public static void assertThatStatusIsForbidden(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
 }
