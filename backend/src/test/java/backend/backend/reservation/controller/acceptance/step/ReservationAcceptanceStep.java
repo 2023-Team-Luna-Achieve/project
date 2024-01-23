@@ -35,13 +35,22 @@ public class ReservationAcceptanceStep {
 
     }
 
-
-    public static ExtractableResponse<Response> getReservation(AuthResponse authResponse) {
+    public static ExtractableResponse<Response> requestReservationByUser(AuthResponse authResponse) {
         return RestAssured.
                 given().log().all()
-                .header(AUTHORIZATION, authResponse.getTokenType() + " " + authResponse.getAccessToken())
+                .header(AUTHORIZATION, AuthAcceptanceStep.toHeaderValue(authResponse))
                 .when()
-                .get("/api/reservation/check")
+                .get("/api/reservation/my")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> requestReservationByRoom(AuthResponse authResponse, Long meetingRoomId) {
+        return RestAssured.
+                given().log().all()
+                .header(AUTHORIZATION, AuthAcceptanceStep.toHeaderValue(authResponse))
+                .when()
+                .get("/api/reservation/meetingroom/{meetingRoomId}", meetingRoomId)
                 .then().log().all()
                 .extract();
     }

@@ -16,7 +16,7 @@ public class MeetingRoomController {
 
     @PostConstruct
     public void initMeetingRoom() {
-        MeetingRoom meetingRoom = new MeetingRoom("Paloalto");
+        MeetingRoom meetingRoom = new MeetingRoom("Palo Alto");
         meetingRoomService.save(meetingRoom);
     }
 }

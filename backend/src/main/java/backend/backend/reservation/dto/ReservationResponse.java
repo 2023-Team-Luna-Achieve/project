@@ -15,7 +15,6 @@ public class ReservationResponse {
     private MeetingRoom meetingRoom;
 
     public ReservationResponse(Long id, String startTime, String endTime, int members, MeetingRoom meetingRoom) {
-
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;

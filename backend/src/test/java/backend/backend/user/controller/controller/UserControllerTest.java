@@ -14,7 +14,6 @@ import backend.backend.common.WithMockCustomUser;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.reservation.controller.ReservationController;
 import backend.backend.reservation.dto.ReservationResponse;
-import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.service.ReservationService;
 import backend.backend.user.controller.UserController;
 import backend.backend.user.dto.SignUpRequest;
@@ -92,7 +91,8 @@ public class UserControllerTest {
 
         given(reservationService.getReservationsByUserId(1L)).willReturn(reservationResponse);
 
-        mockMvc.perform(get("/api/reservation/check").accept(MediaType.APPLICATION_JSON)
+        mockMvc.perform(get("/api/reservation/check")
+                        .accept(MediaType.APPLICATION_JSON)
                         .header("authorization", "Bearer Token"))
                 .andExpect(status().isOk())
                 .andDo(print());
