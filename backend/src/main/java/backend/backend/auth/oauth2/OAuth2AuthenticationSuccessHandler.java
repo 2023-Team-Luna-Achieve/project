@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.util.CookieUtils;
-import backend.backend.exception.ErrorCode;
+import backend.backend.common.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

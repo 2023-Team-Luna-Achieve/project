@@ -1,6 +1,7 @@
 package backend.backend.user.entity;
 
 import backend.backend.comment.entity.NoticeBoardComment;
+import backend.backend.common.domain.BaseEntity;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.reservation.entity.Reservation;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;

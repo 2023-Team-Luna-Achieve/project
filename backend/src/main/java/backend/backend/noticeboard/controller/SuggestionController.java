@@ -19,7 +19,7 @@ import java.util.List;
 
 @Api(tags = "Suggestion Board API", description = "건의사항 게시판")
 @RestController
-@RequestMapping("/api/suggestion")
+@RequestMapping("/api/suggestionboard")
 @RequiredArgsConstructor
 public class SuggestionController {
 
@@ -37,7 +37,7 @@ public class SuggestionController {
     @PostMapping
     public ResponseEntity<Void> createSuggestion(@CurrentUser User currentUser, @RequestBody SuggestionRequestDto suggestionRequestDto) {
         SuggestionBoard suggestion = suggestionService.createSuggestion(currentUser, suggestionRequestDto);
-        return ResponseEntity.created(URI.create("/api/suggestion/" + suggestion.getId())).build();
+        return ResponseEntity.created(URI.create("/api/suggestionboard/" + suggestion.getId())).build();
     }
 
     //모든 건의사항 글 목록 조회 - 수정완료

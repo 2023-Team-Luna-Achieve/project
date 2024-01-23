@@ -1,5 +1,6 @@
 package backend.backend.reservation.entity;
 
+import backend.backend.common.domain.BaseEntity;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.user.entity.User;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reservation {
+public class Reservation extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "reservation_id")

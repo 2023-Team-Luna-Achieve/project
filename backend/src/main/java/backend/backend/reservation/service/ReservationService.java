@@ -1,10 +1,10 @@
 package backend.backend.reservation.service;
 
 import backend.backend.auth.service.EmailService;
-import backend.backend.exception.AuthException;
-import backend.backend.exception.ErrorCode;
-import backend.backend.exception.InvalidReservationTimeException;
-import backend.backend.exception.NotFoundException;
+import backend.backend.common.exception.AuthException;
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.InvalidReservationTimeException;
+import backend.backend.common.exception.NotFoundException;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.meetingroom.service.MeetingRoomService;
 import backend.backend.reservation.dto.ReservationRequest;
@@ -12,13 +12,11 @@ import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.repository.ReservationRepository;
 import backend.backend.user.entity.User;
-import backend.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,9 +32,8 @@ public class ReservationService {
     private final MeetingRoomService meetingRoomService;
     private final EmailService emailService;
 
-    public ReservationResponse createReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        Reservation reservation = makeReservation(user, request);
-        return convertToResponse(reservation);
+    public Long createReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+        return makeReservation(user, request).getId();
     }
 
     @Transactional
@@ -108,6 +105,19 @@ public class ReservationService {
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
+
+    public List<ReservationResponse> getReservationsByMeetingRoomId(Long roomId) {
+        List<Reservation> roomReservations = reservationRepository.findByMeetingRoomId(roomId);
+
+        if (roomReservations.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return roomReservations.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
 
     public List<ReservationResponse> getAllReservations() {
         List<Reservation> allReservations = reservationRepository.findAll();

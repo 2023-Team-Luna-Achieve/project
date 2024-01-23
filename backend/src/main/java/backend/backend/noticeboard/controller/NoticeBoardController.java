@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @Api(tags = "Notice Board API", description = "공지사항 게시판")
 @RequiredArgsConstructor
-@RequestMapping("/api/notice")
+@RequestMapping("/api/noticeboard")
 @RestController
 public class NoticeBoardController {
 
@@ -39,20 +41,20 @@ public class NoticeBoardController {
             "category는 Notice, LostItem, Suggestion 3가지만 입력한다")
     @PostMapping
     public ResponseEntity<NoticeBoardResponseDto> createNoticeBoard(@RequestBody NoticeBoardRequestDto noticeBoardRequestDto, @CurrentUser User user) {
-        NoticeBoardResponseDto createdNoticeBoard = noticeBoardService.createNoticeBoard(user, noticeBoardRequestDto);
-        return ResponseEntity.ok(createdNoticeBoard);
+        Long noticeBoardId = noticeBoardService.createNoticeBoard(user, noticeBoardRequestDto);
+        return ResponseEntity.created(URI.create("/api/noticeboard/" + noticeBoardId)).build();
     }
 
     //글 수정
     @ApiOperation(value = "공지사항 수정 API", notes = "공지사항 수정을 진행한다")
-    @PutMapping("/{id}")
+    @PutMapping("/{noticeBoardId}")
     public ResponseEntity<NoticeBoardResponseDto> updateNoticeBoard(
-            @PathVariable Long id,
+            @PathVariable Long noticeBoardId,
             @CurrentUser User user,
             @RequestBody NoticeBoardRequestDto noticeBoardDto)
     {
-        NoticeBoardResponseDto updatedNoticeBoard = noticeBoardService.updateNoticeBoard(id, user, noticeBoardDto);
-        return ResponseEntity.ok(updatedNoticeBoard);
+        noticeBoardService.updateNoticeBoard(noticeBoardId, user, noticeBoardDto);
+        return ResponseEntity.ok().build();
     }
 
     //공지사항 글 삭제

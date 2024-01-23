@@ -34,7 +34,7 @@ public class SuggestionCommentController {
                                               @CurrentUser User user,
                                               @RequestBody CommentRequestDto commentRequestDto) {
         SuggestionComment suggestionComment = suggestionCommentService.createSuggestionComment(user, suggestionBoardId, commentRequestDto);
-        return ResponseEntity.created(URI.create("/api/comment/" + suggestionComment.getId())).build();
+        return ResponseEntity.created(URI.create("/api/suggestionboardcomment/" + suggestionComment.getId())).build();
     }
 
     @ApiOperation(value = "건의사항 댓글 단일 조회 API", notes = "특정 건의사항의 댓글을 단일 조회 한다.")

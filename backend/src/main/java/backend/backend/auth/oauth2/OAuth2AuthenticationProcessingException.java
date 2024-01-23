@@ -1,8 +1,8 @@
 package backend.backend.auth.oauth2;
 
 
-import backend.backend.exception.AuthenticationException;
-import backend.backend.exception.ErrorCode;
+import backend.backend.common.exception.AuthenticationException;
+import backend.backend.common.exception.ErrorCode;
 
 public class OAuth2AuthenticationProcessingException extends AuthenticationException {
     public OAuth2AuthenticationProcessingException(String msg) {

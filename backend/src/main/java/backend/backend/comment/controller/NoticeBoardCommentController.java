@@ -34,7 +34,7 @@ public class NoticeBoardCommentController {
                                                                     @RequestBody CommentRequestDto commentRequestDto,
                                                                     @CurrentUser User user) {
         NoticeBoardComment createdComment = commentService.createComment(user, noticeBoardId, commentRequestDto);
-        return ResponseEntity.created(URI.create("/api/comment/" + createdComment.getId())).build();
+        return ResponseEntity.created(URI.create("/api/noticeboardcomment/" + createdComment.getId())).build();
     }
 
     @ApiOperation(value = "공지사항 단일 조회 API", notes = "공지사항 댓글을 단일 조회 한다.")

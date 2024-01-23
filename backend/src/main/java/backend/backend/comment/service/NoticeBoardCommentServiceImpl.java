@@ -1,9 +1,9 @@
 package backend.backend.comment.service;
 
 import backend.backend.comment.dto.CommentRequestDto;
-import backend.backend.exception.AuthException;
-import backend.backend.exception.ErrorCode;
-import backend.backend.exception.NotFoundException;
+import backend.backend.common.exception.AuthException;
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.NotFoundException;
 import backend.backend.comment.dto.NoticeBoardCommentResponse;
 import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.comment.repository.NoticeBoardCommentRepository;
