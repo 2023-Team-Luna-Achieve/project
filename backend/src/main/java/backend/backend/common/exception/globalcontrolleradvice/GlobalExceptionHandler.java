@@ -1,6 +1,8 @@
-package backend.backend.exception.globalcontrolleradvice;
+package backend.backend.common.exception.globalcontrolleradvice;
 
-import backend.backend.exception.*;
+import backend.backend.common.exception.BusinessException;
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
