@@ -47,7 +47,6 @@ public class UserController {
     public ResponseEntity<String> authorize(@Valid @RequestBody SignInRequest signInRequest) {
         Authentication authentication = settingAuthentication(signInRequest.getEmail(), signInRequest.getPassword());
         String accessToken = tokenProvider.createAccessToken(authentication);
-//        new AuthResponse(accessToken);
 
         String refreshToken = tokenProvider.createRefreshToken();
 

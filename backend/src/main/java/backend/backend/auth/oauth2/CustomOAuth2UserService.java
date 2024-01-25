@@ -3,7 +3,7 @@ package backend.backend.auth.oauth2;
 import backend.backend.auth.jwt.UserAdapter;
 import backend.backend.auth.oauth2.user.OAuth2UserInfo;
 import backend.backend.auth.oauth2.user.OAuth2UserInfoFactory;
-import backend.backend.exception.AuthenticationException;
+import backend.backend.common.exception.AuthenticationException;
 import backend.backend.user.entity.AuthProvider;
 import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;

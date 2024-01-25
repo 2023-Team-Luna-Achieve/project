@@ -1,8 +1,8 @@
 package backend.backend.noticeboard.service;
 
-import backend.backend.exception.AuthException;
-import backend.backend.exception.ErrorCode;
-import backend.backend.exception.NotFoundException;
+import backend.backend.common.exception.AuthException;
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.NotFoundException;
 import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.noticeboard.entity.NoticeBoard;
@@ -33,14 +33,13 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 
     @Override
-    public NoticeBoardResponseDto createNoticeBoard(User user, NoticeBoardRequestDto noticeBoardRequestDto) {
+    public Long createNoticeBoard(User user, NoticeBoardRequestDto noticeBoardRequestDto) {
         NoticeBoard noticeBoard = convertToEntity(user, noticeBoardRequestDto);
-        noticeBoard = noticeBoardRepository.save(noticeBoard);
-        return convertToDto(noticeBoard);
+        return  noticeBoardRepository.save(noticeBoard).getId();
     }
 
     @Override
-    public NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto) {
+    public void updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto) {
         NoticeBoard noticeBoard = noticeBoardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         if (user.isNotPossibleModifyOrDeletePermission(noticeBoard.getUser().getId())) {
@@ -51,7 +50,6 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
         noticeBoard.setContext(noticeBoardDto.getContext());
 
         noticeBoardRepository.save(noticeBoard);
-        return convertToDto(noticeBoard);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package backend.backend.comment.entity;
 
 import backend.backend.comment.dto.CommentRequestDto;
+import backend.backend.common.domain.BaseEntity;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.user.entity.User;
 import lombok.AllArgsConstructor;

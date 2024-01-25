@@ -1,4 +1,4 @@
-package backend.backend.exception;
+package backend.backend.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

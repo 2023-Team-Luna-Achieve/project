@@ -3,12 +3,12 @@ package backend.backend.reservation.controller;
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
+import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.service.ReservationService;
 import backend.backend.user.entity.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,15 +28,22 @@ public class ReservationController {
     @ApiOperation(value = "예약 생성 API", notes = "예약 생성을 진행한다")
     @PostMapping
     public ResponseEntity<Void> createReservation(@CurrentUser User currentUser, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        ReservationResponse reservation = reservationService.createReservation(currentUser, request);
-        return ResponseEntity.created(URI.create("/api/reservation/" + reservation.getId())).build();
+        Long reservationId = reservationService.createReservation(currentUser, request);
+        return ResponseEntity.created(URI.create("/api/reservation/" + reservationId)).build();
+    }
+
+    @ApiOperation(value = "유저기준 예약 조회 API", notes = "로그인된 유저 기준 전체 예약 조회를 진행한다")
+    @GetMapping("/my")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@CurrentUser User currentUser) {
+        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(currentUser.getId());
+        return ResponseEntity.ok(reservations);
     }
 
     //예약 내역 조회
     @ApiOperation(value = "유저기준 예약 조회 API", notes = "로그인된 유저 기준 전체 예약 조회를 진행한다")
-    @GetMapping("/check")
-    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@CurrentUser User currentUser) {
-        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(currentUser.getId());
+    @GetMapping("/meetingroom/{roomId}")
+    public ResponseEntity<List<ReservationResponse>> getReservationsByRoomId(@PathVariable Long roomId) {
+        List<ReservationResponse> reservations = reservationService.getReservationsByMeetingRoomId(roomId);
         return ResponseEntity.ok(reservations);
     }
 

@@ -10,9 +10,9 @@ public interface NoticeBoardService {
 
     NoticeBoardResponseDto getNoticeBoardById(Long id);
 
-    NoticeBoardResponseDto createNoticeBoard(User user, NoticeBoardRequestDto noticeBoardDto);
+    Long createNoticeBoard(User user, NoticeBoardRequestDto noticeBoardDto);
 
-    NoticeBoardResponseDto updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto);
+    void updateNoticeBoard(Long id, User user, NoticeBoardRequestDto noticeBoardDto);
 
     void deleteNoticeBoard(Long id, User user);
 }

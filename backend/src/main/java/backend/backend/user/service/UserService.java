@@ -2,13 +2,13 @@ package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.repository.RefreshTokenRepository;
-import backend.backend.exception.*;
+import backend.backend.common.exception.AuthenticationException;
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.UnVerifiedAccountException;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

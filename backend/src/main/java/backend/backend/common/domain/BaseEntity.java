@@ -1,4 +1,4 @@
-package backend.backend.comment.entity;
+package backend.backend.common.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public abstract class BaseEntity {
     // Entity가 생성되어 저장될 때 시간이 자동 저장됩니다.
     @CreatedDate
     private LocalDateTime createdDate;

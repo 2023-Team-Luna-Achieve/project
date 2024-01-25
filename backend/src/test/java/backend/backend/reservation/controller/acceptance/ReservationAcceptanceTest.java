@@ -15,9 +15,7 @@ import backend.backend.user.dto.SignUpRequest;
 import backend.backend.user.entity.Affiliation;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -26,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 
 @DisplayName("Reservation 인수 테스트")
 @ActiveProfiles("test")
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 public class ReservationAcceptanceTest extends AcceptanceTest {
 
     @Autowired
@@ -63,18 +62,40 @@ public class ReservationAcceptanceTest extends AcceptanceTest {
 
 
     @DisplayName("동아리방을 예약한다")
+    @Order(1)
     @Test
     void requestMakeReservation() {
         AuthResponse authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
-        LocalDateTime startTime = LocalDateTime.parse("2023-12-09T15:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime endTime = LocalDateTime.parse("2023-12-09T17:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime startTime = LocalDateTime.parse("2024-02-09T15:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime endTime = LocalDateTime.parse("2024-02-10T17:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
         ReservationRequest reservationRequest = new ReservationRequest(startTime, endTime, 5, 1L);
 
         ExtractableResponse<Response> makeReservationResponse = ReservationAcceptanceStep.requestMakeReservation(reservationRequest, authResponse);
         AcceptanceStep.assertThatStatusIsCreated(makeReservationResponse);
     }
 
+    @DisplayName("유저기준 예약을 찾는다.")
+    @Order(2)
+    @Test
+    void requestReservationByUserId() {
+        AuthResponse authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
+
+        ExtractableResponse<Response> makeReservationResponse = ReservationAcceptanceStep.requestReservationByUser(authResponse);
+        AcceptanceStep.assertThatStatusIsOk(makeReservationResponse);
+    }
+
+    @DisplayName("미팅룸 기준 예약을 찾는다.")
+    @Order(3)
+    @Test
+    void requestReservationByMeetingRoomId() {
+        AuthResponse authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);
+
+        ExtractableResponse<Response> makeReservationResponse = ReservationAcceptanceStep.requestReservationByRoom(authResponse, 1L);
+        AcceptanceStep.assertThatStatusIsOk(makeReservationResponse);
+    }
+
     @DisplayName("동아리방을 예약을 취소한다.")
+    @Order(4)
     @Test
     void requestDeleteReservation() {
         AuthResponse authResponse = AuthAcceptanceStep.createTokenByLogin(signInRequest);

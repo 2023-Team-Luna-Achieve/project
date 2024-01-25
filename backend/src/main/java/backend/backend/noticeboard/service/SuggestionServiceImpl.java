@@ -1,8 +1,8 @@
 package backend.backend.noticeboard.service;
 
-import backend.backend.exception.AuthException;
-import backend.backend.exception.ErrorCode;
-import backend.backend.exception.NotFoundException;
+import backend.backend.common.exception.AuthException;
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.NotFoundException;
 import backend.backend.noticeboard.dto.SuggestionRequestDto;
 import backend.backend.noticeboard.dto.SuggestionResponseDto;
 import backend.backend.noticeboard.entity.SuggestionBoard;

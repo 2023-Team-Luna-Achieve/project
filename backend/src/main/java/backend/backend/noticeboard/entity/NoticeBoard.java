@@ -1,6 +1,7 @@
 package backend.backend.noticeboard.entity;
 
 //import backend.backend.noticeboardcomment.entity.Comment;
+import backend.backend.common.domain.BaseEntity;
 import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeBoard {
+public class NoticeBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "noticeBoard_id")
