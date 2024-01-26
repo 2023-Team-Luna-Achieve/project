@@ -1,0 +1,37 @@
+services:
+  grafana: # 그라파나 서비스 추가
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  prometheus: # 프로메테우스 서비스 추가
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./backend/devops/monitoring/prometheus:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    privileged: true
+    ports:
+      - "9000:8082"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /proc/cpuinfo:/host/proc/cpuinfo:ro
+      - /dev/disk:/dev/disk/:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
