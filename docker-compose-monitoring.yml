@@ -3,6 +3,8 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+    volumes:
+      - ./devops/monitoring/grafana-data:/var/lib/grafana
     depends_on:
       - prometheus
 
@@ -11,7 +13,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./backend/devops/monitoring/prometheus:/etc/prometheus
+      - ./devops/monitoring/prometheus:/etc/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
 
