@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+//    private final ActuatorProperties actuatorProperties;
     private static final String ADMIN = "ADMIN";
     private final TokenProvider tokenProvider;
     private final JwtExtractUtil jwtExtractUtil;
@@ -90,6 +91,7 @@ public class SecurityConfig {
                 .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
                 .antMatchers("/api/user/refresh").permitAll() // 로그인
                 .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/actuator/*").permitAll()
 //                .antMatchers("/api/notice")
 //                .hasRole(ADMIN)
                 .anyRequest().authenticated()// 그 외 인증 없이 접근X
