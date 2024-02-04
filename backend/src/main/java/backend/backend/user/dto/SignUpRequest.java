@@ -1,6 +1,7 @@
 package backend.backend.user.dto;
 
 import backend.backend.user.entity.Affiliation;
+import backend.backend.user.entity.AuthProvider;
 import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import lombok.*;
@@ -31,6 +32,7 @@ public class SignUpRequest {
                 .password(password)
                 .email(email)
                 .affiliation(affiliation)
+                .provider(AuthProvider.local)
                 .role(Role.ROLE_USER)
                 .build();
     }

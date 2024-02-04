@@ -62,38 +62,6 @@ public class SecurityConfig {
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
-//
-//    @Bean
-//    public SecurityFilterChain actuatorSecurity(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-//        return http
-//                .requestMatchers().antMatchers("/actuator/prometheus")
-//                .and()
-//                .httpBasic()
-//                .and().userDetailsService(userDetailsService(passwordEncoder))
-//                .cors().and()
-//                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/actuator/**").hasRole(actuatorProperties.getRoleName())
-//                .anyRequest().denyAll();
-//    }
-//
-//    private CustomUserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-//
-//        User user = User.builder()
-//                .name(actuatorProperties.getUser())
-//                .password(passwordEncoder.encode(actuatorProperties.getPassword()))
-//                .email(actuatorProperties.getEmail())
-//                .role(Role.ROLE_USER)
-//                .build();
-//
-//        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
-//
-//        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager(customUserDetails);
-//        return inMemoryUserDetailsManager;
-//    }
-//
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

@@ -63,10 +63,11 @@ public class TokenProvider implements InitializingBean {
 
     public String createRefreshToken() {
         Date now = new Date();
+        Date validity = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
         return Jwts.builder()
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenValidityInMilliseconds))
-                .signWith(SignatureAlgorithm.HS256, key)
+                .setExpiration(validity)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

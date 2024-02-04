@@ -31,11 +31,11 @@ public class CustomUserDetails implements OAuth2User, UserDetails {
         return new CustomUserDetails(user);
     }
 
-    public static CustomUserDetails create(User user, Map<String, Object> attributes) {
-        CustomUserDetails userDetails = CustomUserDetails.create(user);
-        userDetails.setAttributes(attributes);
-        return userDetails;
-    }
+//    public static CustomUserDetails create(User user, Map<String, Object> attributes) {
+//        CustomUserDetails userDetails = CustomUserDetails.create(user);
+//        userDetails.setAttributes(attributes);
+//        return userDetails;
+//  o  }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -38,7 +38,7 @@ public class RefreshTokenService {
 
     public User findRefreshTokenOwner(String refreshToken) {
         RefreshToken token = findRefreshToken(refreshToken);
-        return userRepository.findById(token.getId()).orElseThrow(
+        return userRepository.findById(token.getUserId()).orElseThrow(
                 () -> new NotFoundException(ErrorCode.USER_NOT_FOUND)
         );
     }
