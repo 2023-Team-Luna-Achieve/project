@@ -2,6 +2,7 @@ package backend.backend.auth.jwt.token;
 
 
 import backend.backend.auth.jwt.UserAdapter;
+import backend.backend.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -13,7 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -61,6 +62,18 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
+    public String createAccessTokenByRefreshToken(User user) {
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim(AUTHORITIES_KEY, user.getRole())
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
+                .compact();
+    }
+
     public String createRefreshToken() {
         Date now = new Date();
         Date validity = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -71,27 +84,22 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
+    public Long getExpiration(String token) {
+        Date now = new Date();
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        Date expiration = claims.getExpiration();
+        return expiration.getTime() - now.getTime() / 1000;
     }
 
     public String getUserEmailFromToken(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 

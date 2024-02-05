@@ -26,7 +26,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-//    private final ActuatorProperties actuatorProperties;
     private static final String ADMIN = "ADMIN";
     private final TokenProvider tokenProvider;
     private final JwtExtractUtil jwtExtractUtil;
@@ -77,19 +76,15 @@ public class SecurityConfig {
                 .headers()
                 .frameOptions()
                 .sameOrigin()
-
-                // 세션을 사용하지 않기 때문에 STATELESS로 설정
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                .authorizeHttpRequests()
                 .antMatchers("/").permitAll() // oauth2 로그인 테스트
                 .antMatchers("/api/user/sign-in").permitAll() // 로그인
                 .antMatchers("/api/user/sign-up").permitAll() // 회원가입
-                .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
-                .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
-                .antMatchers("/api/user/refresh").permitAll() // 로그인
+                .antMatchers("/api/user/refresh").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/actuator/*").permitAll()
 //                .antMatchers("/api/notice")
