@@ -82,6 +82,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers("/").permitAll() // oauth2 로그인 테스트
+                .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
+                .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
                 .antMatchers("/api/user/sign-in").permitAll() // 로그인
                 .antMatchers("/api/user/sign-up").permitAll() // 회원가입
                 .antMatchers("/api/user/refresh").permitAll()
