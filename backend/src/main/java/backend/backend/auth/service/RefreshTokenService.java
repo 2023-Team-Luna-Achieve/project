@@ -9,11 +9,13 @@ import backend.backend.common.exception.NotFoundRefreshTokenException;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -44,6 +46,7 @@ public class RefreshTokenService {
     }
 
     private RefreshToken findRefreshToken(String refreshToken) {
+        log.info("refreshToken: "  + refreshToken);
         return refreshTokenRepository.findRefreshTokenByToken(refreshToken)
                 .orElseThrow(() -> new NotFoundRefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
     }

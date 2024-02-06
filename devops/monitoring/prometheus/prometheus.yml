@@ -17,7 +17,7 @@ scrape_configs:
       - targets: ['cadvisor:8082']
 
   - job_name: 'backend'
-    metrics_path: '/prometheus/metrics'
+    metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'achieve-project.store:8080', 'achieve-project.store:8081']
 

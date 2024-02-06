@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,9 +61,9 @@ public class UserController {
 
     @PostMapping("/sign-out")
     @ApiOperation(value = "로그아웃 API", notes = "로그아웃을 진행한다")
-    public ResponseEntity<String> signOut(@CurrentUser User user) {
+    public ResponseEntity<Void> signOut(@CurrentUser User user) {
         userService.signOut(user);
-        return ResponseEntity.ok().body("로그아웃 되었습니다."); // jwt 변경 후 임시 로그아웃
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "access 토큰 재발급 API",
@@ -74,8 +75,7 @@ public class UserController {
         refreshTokenService.validateRefreshToken(refreshToken);
         User refreshTokenOwner = refreshTokenService.findRefreshTokenOwner(refreshToken);
 
-        Authentication authentication = settingAuthentication(refreshTokenOwner.getEmail(), refreshTokenOwner.getPassword());
-        String accessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = tokenProvider.createAccessTokenByRefreshToken(refreshTokenOwner);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build();

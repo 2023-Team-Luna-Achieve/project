@@ -43,6 +43,7 @@ public class UserService {
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }
 
+    @Transactional
     public void signOut(User user) {
         refreshTokenRepository.deleteAllByUserId(user.getId());
     }
