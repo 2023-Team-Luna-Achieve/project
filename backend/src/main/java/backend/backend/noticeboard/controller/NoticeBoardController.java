@@ -5,15 +5,15 @@ import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.noticeboard.service.NoticeBoardService;
 import backend.backend.user.entity.User;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@Api(tags = "Notice Board API", description = "공지사항 게시판")
+@Tag(name = "Notice Board API", description = "공지사항 게시판")
 @RequiredArgsConstructor
 @RequestMapping("/api/noticeboard")
 @RestController
@@ -22,14 +22,13 @@ public class NoticeBoardController {
     private final NoticeBoardService noticeBoardService;
 
     // 상아님 코드 전체조회 코드
-    @ApiOperation(value = "공지사항 전체조회 API", notes = "공지사항 조희를 진행한다(페이지네이션)")
+    @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다(페이지네이션)")
     @GetMapping("/cursor/{id}")
     public NoticeBoardResponseDto.PagedNoticeBoardResponseDto getAllNoticeBoards(@PathVariable Long id) {
         return noticeBoardService.getNoticeBoards(10,id);
     }
 
-    //특정 글 조회?
-    @ApiOperation(value = "공지사항 단일 조회 API", notes = "공지사항 단일 조회를 진행한다")
+    @Operation(summary = "공지사항 단일 조회 API", description = "공지사항 단일 조회를 진행한다")
     @GetMapping("/{id}")
     public ResponseEntity<NoticeBoardResponseDto> getNoticeBoardById(@PathVariable Long id) {
         NoticeBoardResponseDto noticeBoardDto = noticeBoardService.getNoticeBoardById(id);
@@ -37,7 +36,7 @@ public class NoticeBoardController {
     }
 
     //글 생성
-    @ApiOperation(value = "공지사항 작성 API", notes = "공지사항 작성을 진행한다. \n " +
+    @Operation(summary = "공지사항 작성 API", description = "공지사항 작성을 진행한다. \n " +
             "category는 Notice, LostItem, Suggestion 3가지만 입력한다")
     @PostMapping
     public ResponseEntity<NoticeBoardResponseDto> createNoticeBoard(@RequestBody NoticeBoardRequestDto noticeBoardRequestDto, @CurrentUser User user) {
@@ -46,7 +45,7 @@ public class NoticeBoardController {
     }
 
     //글 수정
-    @ApiOperation(value = "공지사항 수정 API", notes = "공지사항 수정을 진행한다")
+    @Operation(summary = "공지사항 수정 API", description = "공지사항 수정을 진행한다")
     @PutMapping("/{noticeBoardId}")
     public ResponseEntity<NoticeBoardResponseDto> updateNoticeBoard(
             @PathVariable Long noticeBoardId,
@@ -58,7 +57,7 @@ public class NoticeBoardController {
     }
 
     //공지사항 글 삭제
-    @ApiOperation(value = "공지사항 삭제 API", notes = "공지사항 삭제를 진행한다")
+    @Operation(summary = "공지사항 삭제 API", description = "공지사항 삭제를 진행한다")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNoticeBoard(@PathVariable Long id, @CurrentUser User user) {
         noticeBoardService.deleteNoticeBoard(id, user);
