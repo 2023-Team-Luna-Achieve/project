@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.security.auth.message.AuthException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.token.TokenProvider;

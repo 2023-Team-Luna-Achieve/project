@@ -5,7 +5,7 @@ import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.user.entity.User;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter

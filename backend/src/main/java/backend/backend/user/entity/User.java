@@ -4,9 +4,9 @@ import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.common.domain.BaseEntity;
 import backend.backend.noticeboard.entity.NoticeBoard;
 import backend.backend.reservation.entity.Reservation;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Getter
@@ -16,8 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {
-    @Id @GeneratedValue
-    @Column(name = "user_id")
+    @Id
+    @GeneratedValue @Column(name = "user_id")
     private Long id;
     private String name;
 

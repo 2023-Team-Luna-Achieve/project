@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,21 +39,21 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    @Bean
-    public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring().mvcMatchers(
-                "/v2/api-docs",
-                "/swagger-resources",
-                "/swagger-resources/**",
-                "/configuration/ui",
-                "/configuration/security",
-                "/swagger-ui.html",
-                "/webjars/**",
-                /* swagger v3 */
-                "/v3/api-docs/**",
-                "/swagger-ui/**"
-        );
-    }
+//    @Bean
+//    public WebSecurityCustomizer configure() {
+//        return (web) -> web.ignoring(),(
+//                "/v2/api-docs",
+//                "/swagger-resources",
+//                "/swagger-resources/**",
+//                "/configuration/ui",
+//                "/configuration/security",
+//                "/swagger-ui.html",
+//                "/webjars/**",
+//                /* swagger v3 */
+//                "/v3/api-docs/**",
+//                "/swagger-ui/**"
+//        );
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -64,49 +67,49 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.cors() // CORS 설정 활성화
-                .and()
-                .csrf().disable() // CSRF 보호를 무시할 경로 패턴
-                .formLogin().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+        return http // CORS 설정 활성화
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptionHandlingConfigurer -> {
+                            exceptionHandlingConfigurer.authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                            exceptionHandlingConfigurer.accessDeniedHandler(jwtAccessDeniedHandler);
+                        }
+                )
 
-                .and()
-                .headers()
-                .frameOptions()
-                .sameOrigin()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()
-                .antMatchers("/").permitAll() // oauth2 로그인 테스트
-                .antMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
-                .antMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
-                .antMatchers("/api/user/sign-in").permitAll() // 로그인
-                .antMatchers("/api/user/sign-up").permitAll() // 회원가입
-                .antMatchers("/api/user/refresh").permitAll()
-                .antMatchers("/favicon.ico").permitAll()
-                .antMatchers("/actuator/*").permitAll()
-//                .antMatchers("/api/notice")
-//                .hasRole(ADMIN)
-                .anyRequest().authenticated()// 그 외 인증 없이 접근X
-                .and()
+                .headers(httpSecurityHeadersConfigurer ->
+                        httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                )
+                .sessionManagement(SessionManagementConfigurer ->
+                        SessionManagementConfigurer.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        ))
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+                    authorizationManagerRequestMatcherRegistry
+                            .requestMatchers("/").permitAll() // oauth2
+                            .requestMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
+                            .requestMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
+                            .requestMatchers("/api/user/sign-in").permitAll() // 로그인
+                            .requestMatchers("/api/user/sign-up").permitAll() // 회원가입
+                            .requestMatchers("/api/user/refresh").permitAll()
+                            .requestMatchers("/favicon.ico").permitAll()
+                            .requestMatchers("/actuator/*").permitAll()
+                            .anyRequest().authenticated();
+                    //               .requestMatchers("/api/notice")
+                    //               .hasRole(ADMIN)
+                })
+                .oauth2Login(oAuth2LoginConfigurer -> {
+                    oAuth2LoginConfigurer.authorizationEndpoint(authorizationEndpointConfig -> {
+                        authorizationEndpointConfig.baseUri("/api/oauth2/authorize");
+                        authorizationEndpointConfig.authorizationRequestRepository(cookieAuthorizationRequestRepository());
+                    });
+                    oAuth2LoginConfigurer.redirectionEndpoint(redirectionEndpointConfig ->
+                            redirectionEndpointConfig.baseUri("/api/oauth2/callback/*"));
+                    oAuth2LoginConfigurer.userInfoEndpoint(userInfoEndpointConfig ->
+                            userInfoEndpointConfig.userService(customOAuth2UserService));
+                    oAuth2LoginConfigurer.successHandler(oAuth2AuthenticationSuccessHandler);
+                    oAuth2LoginConfigurer.failureHandler(oAuth2AuthenticationFailureHandler);
+                })
                 .addFilterBefore(new JwtFilter(jwtExtractUtil, customUserDetailsService, tokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/api/oauth2/authorize")
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/api/oauth2/callback/*")
-                .and()
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService)
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler)
-                .and().build();
+                .build();
     }
 }
