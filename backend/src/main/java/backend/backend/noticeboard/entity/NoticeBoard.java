@@ -1,6 +1,5 @@
 package backend.backend.noticeboard.entity;
 
-//import backend.backend.noticeboardcomment.entity.Comment;
 import backend.backend.common.domain.BaseEntity;
 import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.user.entity.User;

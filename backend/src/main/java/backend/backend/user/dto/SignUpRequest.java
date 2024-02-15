@@ -5,7 +5,6 @@ import backend.backend.user.entity.AuthProvider;
 import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import lombok.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;

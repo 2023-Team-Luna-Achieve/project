@@ -64,22 +64,8 @@ public class NoticeBoardCommentServiceImpl implements NoticeBoardCommentService 
         commentRepository.deleteById(commentId);
     }
 
-//    @Override
     private NoticeBoardComment findNoticeBoardCommentById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
-    }
-
-    // 기타 필요한 메소드 정의
-
-    private NoticeBoardCommentResponse convertToDto(NoticeBoardComment comment) {
-        if (comment == null) {
-            return null;
-        }
-        return new NoticeBoardCommentResponse(
-                comment.getId(),
-                comment.getUser().getName(),
-                comment.getContext()
-        );
     }
 }
