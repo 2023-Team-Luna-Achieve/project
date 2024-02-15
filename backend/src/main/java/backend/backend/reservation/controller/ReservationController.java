@@ -3,7 +3,6 @@ package backend.backend.reservation.controller;
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
-import backend.backend.reservation.entity.Reservation;
 import backend.backend.reservation.service.ReservationService;
 import backend.backend.user.entity.User;
 import io.swagger.annotations.Api;

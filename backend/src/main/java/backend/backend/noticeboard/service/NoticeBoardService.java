@@ -4,7 +4,6 @@ import backend.backend.noticeboard.dto.NoticeBoardRequestDto;
 import backend.backend.noticeboard.dto.NoticeBoardResponseDto;
 import backend.backend.user.entity.User;
 public interface NoticeBoardService {
-//    Page<NoticeBoardResponseDto> getAllNoticeBoards(Pageable pageable, Long offset);
 
     NoticeBoardResponseDto.PagedNoticeBoardResponseDto getNoticeBoards(int size, Long lastNoticeBoardId);
 
