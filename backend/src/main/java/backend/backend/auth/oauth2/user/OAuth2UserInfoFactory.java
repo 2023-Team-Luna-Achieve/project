@@ -11,16 +11,16 @@ public class OAuth2UserInfoFactory {
     }
 
     public static OAuth2UserInfo getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
-        if (registrationId.equalsIgnoreCase(AuthProvider.GOOGLE.toString())) {
+        if (registrationId.equalsIgnoreCase(AuthProvider.google.toString())) {
             return new GoogleOAuth2UserInfo(attributes);
         }
 
-        if (registrationId.equalsIgnoreCase(AuthProvider.NAVER.toString())) {
+        if (registrationId.equalsIgnoreCase(AuthProvider.naver.toString())) {
             Map<String, Object> naverAttributes = (Map<String, Object>) attributes.get("response");
             return new NaverOauth2UserInfo(naverAttributes);
         }
 
-        if (registrationId.equalsIgnoreCase(AuthProvider.KAKAO.toString())) {
+        if (registrationId.equalsIgnoreCase(AuthProvider.kakao.toString())) {
             return new KakaoOauth2UserInfo(attributes);
         }
 

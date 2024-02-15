@@ -3,12 +3,12 @@ package backend.backend.noticeboard.entity;
 import backend.backend.common.domain.BaseEntity;
 import backend.backend.comment.entity.NoticeBoardComment;
 import backend.backend.user.entity.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 

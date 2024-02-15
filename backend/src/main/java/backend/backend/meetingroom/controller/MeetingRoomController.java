@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,9 +14,9 @@ import javax.annotation.PostConstruct;
 public class MeetingRoomController {
     private final MeetingRoomService meetingRoomService;
 
-    @PostConstruct
-    public void initMeetingRoom() {
-        MeetingRoom meetingRoom = new MeetingRoom("Palo Alto");
-        meetingRoomService.save(meetingRoom);
-    }
+//    @PostConstruct
+//    public void initMeetingRoom() {
+//        MeetingRoom meetingRoom = new MeetingRoom("Palo Alto");
+//        meetingRoomService.save(meetingRoom);
+//    }
 }
