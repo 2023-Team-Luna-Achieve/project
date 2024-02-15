@@ -39,22 +39,6 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-//    @Bean
-//    public WebSecurityCustomizer configure() {
-//        return (web) -> web.ignoring(),(
-//                "/v2/api-docs",
-//                "/swagger-resources",
-//                "/swagger-resources/**",
-//                "/configuration/ui",
-//                "/configuration/security",
-//                "/swagger-ui.html",
-//                "/webjars/**",
-//                /* swagger v3 */
-//                "/v3/api-docs/**",
-//                "/swagger-ui/**"
-//        );
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -91,6 +75,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/sign-in").permitAll() // 로그인
                             .requestMatchers("/api/user/sign-up").permitAll() // 회원가입
                             .requestMatchers("/api/user/refresh").permitAll()
+                            .requestMatchers("/v3/**", "swagger-ui/**").permitAll()
                             .requestMatchers("/favicon.ico").permitAll()
                             .requestMatchers("/actuator/*").permitAll()
                             .anyRequest().authenticated();

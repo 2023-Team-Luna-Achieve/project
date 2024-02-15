@@ -8,8 +8,8 @@ import backend.backend.auth.service.RefreshTokenService;
 import backend.backend.user.dto.*;
 import backend.backend.user.entity.User;
 import backend.backend.user.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
-@Api(tags = "User API", description = "회원가입, 로그아웃")
+@Tag(name = "User API", description = "회원가입, 로그아웃")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -34,14 +34,14 @@ public class UserController {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @ApiOperation(value = "회원가입 API", notes = "회원가입 이전에 이메일 인증을 먼저 진행")
+    @Operation(tags = "회원가입 API", description = "회원가입 이전에 이메일 인증을 먼저 진행")
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         Long userId = userService.createUserIfEmailNotExists(signUpRequest);
         return ResponseEntity.created(URI.create("/api/user/" + userId)).build();
     }
 
-    @ApiOperation(value = "로그인 API", notes = "로그인을 진행한다. (헤더로 보낸 jwt 토큰 확인)")
+    @Operation(tags = "로그인 API", description = "로그인을 진행한다. (헤더로 보낸 jwt 토큰 확인)")
     @PostMapping("/sign-in")
     public ResponseEntity<String> authorize(@Valid @RequestBody SignInRequest signInRequest) {
         Authentication authentication = settingAuthentication(signInRequest.getEmail(), signInRequest.getPassword());
@@ -58,14 +58,14 @@ public class UserController {
     }
 
     @PostMapping("/sign-out")
-    @ApiOperation(value = "로그아웃 API", notes = "로그아웃을 진행한다")
+    @Operation(tags = "로그아웃 API", description = "로그아웃을 진행한다")
     public ResponseEntity<Void> signOut(@CurrentUser User user) {
         userService.signOut(user);
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation(value = "access 토큰 재발급 API",
-            notes = "access 토큰 만료시 refresh 토큰을 사용하여 엑세스 토큰을 재발급 한다. " +
+    @Operation(tags = "access 토큰 재발급 API",
+            description = "access 토큰 만료시 refresh 토큰을 사용하여 엑세스 토큰을 재발급 한다. " +
                     "refresh 토큰또한 만료된 경우 다시 로그인한다. ")
     @PostMapping("/refresh")
     public ResponseEntity<String> getAccessTokenUsingRefresh(HttpServletRequest request) {

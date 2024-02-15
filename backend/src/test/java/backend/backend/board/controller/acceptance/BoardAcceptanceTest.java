@@ -6,8 +6,7 @@ import backend.backend.auth.dto.VerificationRequest;
 import backend.backend.board.controller.acceptance.step.BoardAcceptanceStep;
 import backend.backend.common.acceptance.AcceptanceTest;
 import backend.backend.common.acceptance.step.AcceptanceStep;
-import backend.backend.noticeboard.dto.SuggestionRequestDto;
-import backend.backend.noticeboard.entity.Category;
+import backend.backend.board.entity.Category;
 import backend.backend.user.controller.step.AuthAcceptanceStep;
 import backend.backend.user.controller.step.UserAcceptanceStep;
 import backend.backend.user.dto.AuthResponse;
@@ -66,7 +65,7 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(1)
     @Test
     void requestMakeSuggestionBoard() {
-        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("생성 테스트입니다", Category.Suggestion, "생성 테스트 글쓰기 입니다");
+        SuggestionRequest suggestionRequestDto = new SuggestionRequest("생성 테스트입니다", Category.Suggestion, "생성 테스트 글쓰기 입니다");
         ExtractableResponse<Response> makeSuggestionBoardResponse = BoardAcceptanceStep.requestMakeSuggestionBoard(suggestionRequestDto, authResponse1);
         AcceptanceStep.assertThatStatusIsCreated(makeSuggestionBoardResponse);
     }
@@ -75,7 +74,7 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(2)
     @Test
     void requestUpdateExceptionSuggestionBoard() {
-        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
+        SuggestionRequest suggestionRequestDto = new SuggestionRequest("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
         ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateSuggestionBoard(1L, suggestionRequestDto, authResponse2);
         AcceptanceStep.assertThatStatusIsForbidden(updateSuggestionBoardResponse);
     }
@@ -84,7 +83,7 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(3)
     @Test
     void requestUpdateSuggestionBoard() {
-        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
+        SuggestionRequest suggestionRequestDto = new SuggestionRequest("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
         ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateSuggestionBoard(1L, suggestionRequestDto, authResponse1);
         AcceptanceStep.assertThatStatusIsOk(updateSuggestionBoardResponse);
     }

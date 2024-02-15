@@ -1,10 +1,11 @@
 package backend.backend.user.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignInResponse {
     private String message;
     private UserDto user;

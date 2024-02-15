@@ -9,6 +9,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "C_001","유저가 존재하지 않습니다"),
     RESERVATION_NOT_FOUND(404, "C_002","예약이 존재하지 않습니다"),
     BOARD_NOT_FOUND(404, "C_003","작성글이 존재하지 않습니다"),
+    CLUB_ROOM_NOT_FOUND(404, "C_003","동아리방이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(404, "C_004","작성글이 존재하지 않습니다"),
     REFRESH_TOKEN_NOT_FOUND(404, "C_005","refresh 토큰이 존재하지 않습니다"),
     DUPLICATED_EMAIL(409, "AU_001", "이미 가입된 Email입니다."),
