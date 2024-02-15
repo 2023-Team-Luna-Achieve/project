@@ -6,8 +6,8 @@ import backend.backend.noticeboard.dto.SuggestionResponseDto;
 import backend.backend.noticeboard.entity.SuggestionBoard;
 import backend.backend.noticeboard.service.SuggestionService;
 import backend.backend.user.entity.User;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
-@Api(tags = "Suggestion Board API", description = "건의사항 게시판")
+@Tag(name = "Suggestion Board API", description = "건의사항 게시판")
 @RestController
 @RequestMapping("/api/suggestionboard")
 @RequiredArgsConstructor
@@ -26,14 +25,14 @@ public class SuggestionController {
     private final SuggestionService suggestionService;
 
     // 서인님 코드 전체조회 코드
-    @ApiOperation(value = "건의사항 전체 조회 API (서인님 페이지네이션)", notes = "건의사항 전체 조회를 진행한다")
+    @Operation(summary = "건의사항 전체 조회 API (서인님 페이지네이션)", description = "건의사항 전체 조회를 진행한다")
     @GetMapping
     public Page<SuggestionResponseDto> getAllSuggestions(Pageable pageable, @RequestParam(value = "offset", required = false) Long offset) {
         return suggestionService.getSuggestions(pageable, offset);
     }
 
     // 건의사항 글 생성 - 수정완료
-    @ApiOperation(value = "건의사항 작성 API", notes = "건의사항 작성을 진행한다")
+    @Operation(tags = "건의사항 작성 API", description = "건의사항 작성을 진행한다")
     @PostMapping
     public ResponseEntity<Void> createSuggestion(@CurrentUser User currentUser, @RequestBody SuggestionRequestDto suggestionRequestDto) {
         SuggestionBoard suggestion = suggestionService.createSuggestion(currentUser, suggestionRequestDto);
@@ -62,7 +61,7 @@ public class SuggestionController {
 //    }
 
     // 특정 글 조회 - 수정중
-    @ApiOperation(value = "건의사항 단일 조회 API", notes = "건의사항 단일 조회를 진행한다")
+    @Operation(summary = "건의사항 단일 조회 API", description = "건의사항 단일 조회를 진행한다")
     @GetMapping("/{suggestion_id}")
     public ResponseEntity<SuggestionResponseDto> getSuggestionById(@PathVariable Long suggestion_id) {
         SuggestionResponseDto suggestionDto = suggestionService.getSuggestionById(suggestion_id);
@@ -70,7 +69,7 @@ public class SuggestionController {
     }
 
     // 글 수정 - 수정중
-    @ApiOperation(value = "건의사항 수정 API", notes = "건의사항 수정을 진행한다")
+    @Operation(tags = "건의사항 수정 API", description = "건의사항 수정을 진행한다")
     @PatchMapping("/{suggestion_id}")
     public ResponseEntity<Void> updateSuggestion(
             @CurrentUser User user,
@@ -82,7 +81,7 @@ public class SuggestionController {
     }
 
     // 건의사항 글 삭제 - 수정완료
-    @ApiOperation(value = "건의사항 삭제 API", notes = "건의사항 삭제를 진행한다")
+    @Operation(tags = "건의사항 삭제 API", description = "건의사항 삭제를 진행한다")
     @DeleteMapping("/{suggestion_id}")
     public ResponseEntity<Void> deleteSuggestion(@CurrentUser User user, @PathVariable Long suggestion_id) { // id vs suggestion_id ??
         suggestionService.deleteSuggestion(user, suggestion_id);
