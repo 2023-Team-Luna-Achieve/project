@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.token.TokenProvider;
-import backend.backend.auth.repository.RefreshTokenRepository;
 import backend.backend.auth.service.RefreshTokenService;
 import backend.backend.auth.util.CookieUtils;
 import backend.backend.common.exception.ErrorCode;
