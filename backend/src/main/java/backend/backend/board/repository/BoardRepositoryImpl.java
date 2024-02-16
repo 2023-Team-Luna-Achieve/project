@@ -18,9 +18,10 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public SingleRecordResponse<BoardResponse> findBoardsByOrderByIdDesc(String cursor) {
+    public SingleRecordResponse<BoardResponse> findNoticeBoardsByOrderByIdDesc(String cursor) {
         List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
                         board.id,
+                        board.sequenceNumber,
                         board.user.name,
                         board.category,
                         board.title,
@@ -29,8 +30,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 ))
                 .from(board)
                 .where(
-                        ltBoardId(cursor),
-                        eqCategory()
+                        ltBoardSequenceNumber(cursor),
+                        eqNoticeCategory()
                 )
                 .orderBy(board.id.desc())
                 .limit(11)
@@ -39,8 +40,62 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return convertToSingleRecord(boards);
     }
 
-    private BooleanExpression eqCategory() {
+    @Override
+    public SingleRecordResponse<BoardResponse> findSuggestionBoardsByOrderByIdDesc(String cursor) {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount
+                ))
+                .from(board)
+                .where(
+                        ltBoardSequenceNumber(cursor),
+                        eqSuggestionCategory()
+                )
+                .orderBy(board.id.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards);
+    }
+
+    @Override
+    public SingleRecordResponse<BoardResponse> findLostItemBoardsByOrderByIdDesc(String cursor) {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount
+                ))
+                .from(board)
+                .where(
+                        ltBoardSequenceNumber(cursor),
+                        eqLostItemCategory()
+                )
+                .orderBy(board.id.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards);
+    }
+
+    private BooleanExpression eqSuggestionCategory()  {
+        return board.category.eq(Category.SUGGESTION);
+    }
+
+    private BooleanExpression eqNoticeCategory() {
         return board.category.eq(Category.NOTICE);
+    }
+
+    private BooleanExpression eqLostItemCategory()  {
+        return board.category.eq(Category.LOST_ITEM);
     }
 
     SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards) {
@@ -48,7 +103,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         String cursor = generateCursor(boards);
         return SingleRecordResponse.of(boards, hasNext, cursor);
     }
-
 
     private boolean existNextPage(List<BoardResponse> boards) {
         if (boards.size() > 10) {
@@ -61,11 +115,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private String generateCursor(List<BoardResponse> boards) {
         BoardResponse boardResponse = boards.get(boards.size() - 1);
-        return String.valueOf(boardResponse.boardId());
+        return String.valueOf(boardResponse.sequenceNumber());
     }
 
-    BooleanExpression ltBoardId(String cursor) {
-        return board.id.lt(Long.valueOf(cursor));
+    BooleanExpression ltBoardSequenceNumber(String cursor) {
+        return board.sequenceNumber.lt(Long.valueOf(cursor));
     }
 }
 

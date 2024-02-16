@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class Board extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
+
+    @ColumnDefault("0")
+    private Long sequenceNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -34,10 +38,12 @@ public class Board extends BaseEntity {
 
     private String context;
 
+    @ColumnDefault("0")
     private int viewCount;
 
     @Builder
-    public Board(User user, String title, Category category, String context) {
+    public Board(User user, Long sequenceNumber, String title, Category category, String context) {
+        this.sequenceNumber = sequenceNumber;
         this.user = user;
         this.title = title;
         this.category = category;

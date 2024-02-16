@@ -1,5 +1,6 @@
 package backend.backend.board.service;
 
+import backend.backend.board.entity.Category;
 import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.common.exception.AuthException;
 import backend.backend.common.exception.ErrorCode;
@@ -28,7 +29,8 @@ public class BoardService {
     }
 
     public Long createBoard(User user, BoardRequest boardRequest) {
-        Board board = boardRequest.toEntity(user);
+        Long boardsSequenceNumber = boardRepository.countBoardsByCategory(boardRequest.category());
+        Board board = boardRequest.toEntity(user, boardsSequenceNumber + 1);
         return  boardRepository.save(board).getId();
     }
 
@@ -53,7 +55,15 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
     //커서기반 페이지네이션
-    public SingleRecordResponse<BoardResponse> getBoards(String cursor) {
-        return boardRepository.findBoardsByOrderByIdDesc(cursor);
+    public SingleRecordResponse<BoardResponse> getBoards(Category category, String cursor) {
+        if (category.equals(Category.NOTICE)) {
+            return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor);
+        }
+
+        if (category.equals(Category.SUGGESTION)) {
+            return boardRepository.findSuggestionBoardsByOrderByIdDesc(cursor);
+        }
+
+        return  boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
     }
 }

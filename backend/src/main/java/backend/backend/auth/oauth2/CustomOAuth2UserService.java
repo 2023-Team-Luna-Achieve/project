@@ -9,6 +9,7 @@ import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -62,9 +63,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         String provider = oAuth2UserRequest.getClientRegistration().getRegistrationId();
-
         User user = User.builder()
-                .provider(AuthProvider.valueOf(provider.toUpperCase()))
+                .provider(AuthProvider.valueOf(provider))
                 .providerId(oAuth2UserInfo.getId())
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())

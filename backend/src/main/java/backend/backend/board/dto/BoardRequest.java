@@ -9,8 +9,9 @@ public record BoardRequest(
         Category category,
         String context
 ) {
-    public Board toEntity(User user) {
+    public Board toEntity(User user, Long boardsSequenceNumber) {
         return Board.builder()
+                .sequenceNumber(boardsSequenceNumber)
                 .user(user)
                 .title(title)
                 .category(category)

@@ -2,7 +2,7 @@ package backend.backend.user.entity;
 
 public enum AuthProvider {
     local,
-    GOOGLE,
+//    GOOGLE,
     google,
     naver,
 //    naver,

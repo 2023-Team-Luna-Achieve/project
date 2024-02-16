@@ -3,6 +3,7 @@ package backend.backend.board.controller;
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.board.dto.BoardRequest;
 import backend.backend.board.dto.BoardResponse;
+import backend.backend.board.entity.Category;
 import backend.backend.board.service.BoardService;
 import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.user.entity.User;
@@ -24,8 +25,9 @@ public class BoardController {
 
     @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다")
     @GetMapping
-    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "cursor") String cursor) {
-        return ResponseEntity.ok().body(boardService.getBoards(cursor));
+    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category,
+                                                                            @RequestParam(required = false) String cursor) {
+        return ResponseEntity.ok().body(boardService.getBoards(category, cursor));
     }
 
     @Operation(summary = "공지사항 단일 조회 API", description = "공지사항 단일 조회를 진행한다")
@@ -48,10 +50,9 @@ public class BoardController {
     @Operation(summary = "공지사항 수정 API", description = "공지사항 수정을 진행한다")
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(
-            @PathVariable Long boardId,
             @CurrentUser User user,
-            @RequestBody BoardRequest boardRequest)
-    {
+            @PathVariable Long boardId,
+            @RequestBody BoardRequest boardRequest) {
         boardService.updateBoard(boardId, user, boardRequest);
         return ResponseEntity.ok().build();
     }

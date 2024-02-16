@@ -15,8 +15,7 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class SuggestionComment extends BaseEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
