@@ -1,8 +1,8 @@
 package backend.backend.user.entity;
 
-import backend.backend.comment.entity.NoticeBoardComment;
+import backend.backend.comment.entity.Comment;
 import backend.backend.common.domain.BaseEntity;
-import backend.backend.noticeboard.entity.NoticeBoard;
+import backend.backend.board.entity.Board;
 import backend.backend.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,11 +13,11 @@ import java.util.List;
 @Setter
 @Builder
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class User extends BaseEntity {
-    @Id
-    @GeneratedValue @Column(name = "user_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
     private String name;
 
@@ -32,10 +32,10 @@ public class User extends BaseEntity {
     private Affiliation affiliation;
 
     @OneToMany(mappedBy = "user")
-    private List<NoticeBoard> noticeBoards;
+    private List<Board> boards;
 
     @OneToMany(mappedBy = "user")
-    private List<NoticeBoardComment> comments;
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservation;
@@ -48,7 +48,7 @@ public class User extends BaseEntity {
         return role.name();
     }
 
-    public boolean isNotPossibleModifyOrDeletePermission(Long userId) {
+    public boolean hasAuthority(Long userId) {
         return !this.id.equals(userId);
     }
 }

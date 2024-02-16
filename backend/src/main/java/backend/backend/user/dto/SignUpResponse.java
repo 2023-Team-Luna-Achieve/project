@@ -1,11 +1,12 @@
 package backend.backend.user.dto;
 
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpResponse {
     private int status;
     private boolean success;

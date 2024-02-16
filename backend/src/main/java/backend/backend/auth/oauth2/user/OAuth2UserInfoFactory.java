@@ -2,9 +2,11 @@ package backend.backend.auth.oauth2.user;
 
 import backend.backend.auth.oauth2.OAuth2AuthenticationProcessingException;
 import backend.backend.user.entity.AuthProvider;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+@Slf4j
 public class OAuth2UserInfoFactory {
     private OAuth2UserInfoFactory() {
         throw new IllegalStateException("OAuth2UserInfoFactory의 인스턴스는 생성할 수 없습니다.");

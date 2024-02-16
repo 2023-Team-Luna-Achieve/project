@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class SignUpRequest {
     @NotBlank(message = "이름은 공백일 수 없습니다.")

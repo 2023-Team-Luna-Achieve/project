@@ -4,10 +4,10 @@ import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailRequest;
 import backend.backend.auth.dto.VerificationRequest;
 import backend.backend.board.controller.acceptance.step.BoardAcceptanceStep;
+import backend.backend.board.dto.BoardRequest;
 import backend.backend.common.acceptance.AcceptanceTest;
 import backend.backend.common.acceptance.step.AcceptanceStep;
-import backend.backend.noticeboard.dto.SuggestionRequestDto;
-import backend.backend.noticeboard.entity.Category;
+import backend.backend.board.entity.Category;
 import backend.backend.user.controller.step.AuthAcceptanceStep;
 import backend.backend.user.controller.step.UserAcceptanceStep;
 import backend.backend.user.dto.AuthResponse;
@@ -66,8 +66,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(1)
     @Test
     void requestMakeSuggestionBoard() {
-        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("생성 테스트입니다", Category.Suggestion, "생성 테스트 글쓰기 입니다");
-        ExtractableResponse<Response> makeSuggestionBoardResponse = BoardAcceptanceStep.requestMakeSuggestionBoard(suggestionRequestDto, authResponse1);
+        BoardRequest boardRequest = new BoardRequest("생성 테스트입니다", Category.SUGGESTION, "생성 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> makeSuggestionBoardResponse = BoardAcceptanceStep.requestCreateBoard(boardRequest, authResponse1);
         AcceptanceStep.assertThatStatusIsCreated(makeSuggestionBoardResponse);
     }
 
@@ -75,8 +75,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(2)
     @Test
     void requestUpdateExceptionSuggestionBoard() {
-        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
-        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateSuggestionBoard(1L, suggestionRequestDto, authResponse2);
+        BoardRequest boardRequest = new BoardRequest("수정 테스트입니다", Category.SUGGESTION, "수정 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateBoard(1L, boardRequest, authResponse2);
         AcceptanceStep.assertThatStatusIsForbidden(updateSuggestionBoardResponse);
     }
 
@@ -84,8 +84,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(3)
     @Test
     void requestUpdateSuggestionBoard() {
-        SuggestionRequestDto suggestionRequestDto = new SuggestionRequestDto("수정 테스트입니다", Category.Suggestion, "수정 테스트 글쓰기 입니다");
-        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateSuggestionBoard(1L, suggestionRequestDto, authResponse1);
+        BoardRequest boardRequest = new BoardRequest("수정 테스트입니다", Category.SUGGESTION, "수정 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateBoard(1L, boardRequest, authResponse1);
         AcceptanceStep.assertThatStatusIsOk(updateSuggestionBoardResponse);
     }
 
@@ -93,7 +93,7 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(4)
     @Test
     void requestDeleteExceptionSuggestionBoard() {
-        ExtractableResponse<Response> deleteSuggestionBoardResponse = BoardAcceptanceStep.requestDeleteSuggestionBoard(1L, authResponse2);
+        ExtractableResponse<Response> deleteSuggestionBoardResponse = BoardAcceptanceStep.requestDeleteBoard(1L, authResponse2);
         AcceptanceStep.assertThatStatusIsForbidden(deleteSuggestionBoardResponse);
     }
 
@@ -101,7 +101,7 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(5)
     @Test
     void requestDeleteSuggestionBoard() {
-        ExtractableResponse<Response> deleteSuggestionBoardResponse = BoardAcceptanceStep.requestDeleteSuggestionBoard(1L, authResponse1);
+        ExtractableResponse<Response> deleteSuggestionBoardResponse = BoardAcceptanceStep.requestDeleteBoard(1L, authResponse1);
         AcceptanceStep.assertThatStatusIsDeleted(deleteSuggestionBoardResponse);
     }
 }

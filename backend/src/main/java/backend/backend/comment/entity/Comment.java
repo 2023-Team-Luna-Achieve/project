@@ -1,13 +1,9 @@
 package backend.backend.comment.entity;
 
-import backend.backend.comment.dto.CommentRequestDto;
 import backend.backend.common.domain.BaseEntity;
-import backend.backend.noticeboard.entity.NoticeBoard;
+import backend.backend.board.entity.Board;
 import backend.backend.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
@@ -16,17 +12,17 @@ import jakarta.persistence.*;
 @Getter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class NoticeBoardComment extends BaseEntity {
+public class Comment extends BaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "noticeBoard_id")
-    private NoticeBoard noticeBoard;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -34,8 +30,8 @@ public class NoticeBoardComment extends BaseEntity {
 
     private String context;
 
-    public NoticeBoardComment update(CommentRequestDto commentRequestDto) {
-        this.context = commentRequestDto.getContext();
+    public Comment update(String context) {
+        this.context = context;
         return this;
     }
 }

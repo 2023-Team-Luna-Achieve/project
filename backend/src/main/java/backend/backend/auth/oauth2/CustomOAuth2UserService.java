@@ -9,6 +9,7 @@ import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     @Override
@@ -61,14 +62,15 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
     }
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
-        User user = new User();
         String provider = oAuth2UserRequest.getClientRegistration().getRegistrationId();
+        User user = User.builder()
+                .provider(AuthProvider.valueOf(provider))
+                .providerId(oAuth2UserInfo.getId())
+                .name(oAuth2UserInfo.getName())
+                .email(oAuth2UserInfo.getEmail())
+                .role(Role.ROLE_USER)
+                .build();
 
-        user.setProvider(AuthProvider.valueOf(provider.toUpperCase()));
-        user.setProviderId(oAuth2UserInfo.getId());
-        user.setName(oAuth2UserInfo.getName());
-        user.setEmail(oAuth2UserInfo.getEmail());
-        user.setRole(Role.ROLE_USER);
         return userRepository.save(user);
     }
 

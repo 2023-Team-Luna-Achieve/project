@@ -3,7 +3,7 @@ package backend.backend.auth.dto;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class VerificationRequest {
     private String email;

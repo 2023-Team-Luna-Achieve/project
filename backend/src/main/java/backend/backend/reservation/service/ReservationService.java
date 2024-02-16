@@ -39,7 +39,7 @@ public class ReservationService {
     @Transactional
     public Reservation makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
-                .orElse(new MeetingRoom());
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CLUB_ROOM_NOT_FOUND)) ;
 
         reservationTimeValidator(request);
         // 이미 예약된 시간인지 확인
@@ -130,7 +130,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
 
-        if (user.isNotPossibleModifyOrDeletePermission(reservation.getUser().getId())) {
+        if (user.hasAuthority(reservation.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
 

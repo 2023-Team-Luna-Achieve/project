@@ -1,13 +1,9 @@
 package backend.backend.comment.entity;
 
-import backend.backend.comment.dto.CommentRequestDto;
 import backend.backend.common.domain.BaseEntity;
-import backend.backend.noticeboard.entity.SuggestionBoard;
+import backend.backend.board.entity.Board;
 import backend.backend.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
@@ -15,18 +11,17 @@ import jakarta.persistence.*;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class SuggestionComment extends BaseEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "suggestionBoard_id")
-    private SuggestionBoard suggestionBoard;
+    private Board suggestionBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -34,8 +29,8 @@ public class SuggestionComment extends BaseEntity {
 
     private String context;
 
-    public SuggestionComment update(CommentRequestDto commentRequestDto) {
-        this.context = commentRequestDto.getContext();
+    public SuggestionComment update(String context) {
+        this.context = context;
         return this;
     }
 }

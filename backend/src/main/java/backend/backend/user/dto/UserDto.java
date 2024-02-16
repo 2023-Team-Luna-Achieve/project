@@ -3,12 +3,13 @@ package backend.backend.user.dto;
 import backend.backend.user.entity.Affiliation;
 import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDto {
     private Long id;
     private String name;
