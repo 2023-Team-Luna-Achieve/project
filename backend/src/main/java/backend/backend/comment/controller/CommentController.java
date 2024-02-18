@@ -5,6 +5,7 @@ import backend.backend.comment.dto.CommentRequest;
 import backend.backend.comment.dto.CommentResponse;
 import backend.backend.comment.entity.Comment;
 import backend.backend.comment.service.CommentService;
+import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @Tag(name = "Notice Board Comment API", description = "공지사항 댓글")
 @RequiredArgsConstructor
@@ -24,8 +24,9 @@ public class CommentController {
 
     @Operation(summary = "공지사항 댓글 전체 조회 API", description = "특정 공지사항의 댓글을 전체조회 한다.")
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<List<CommentResponse>> getAllCommentsByBoardId(@PathVariable Long boardId) {
-        return ResponseEntity.ok(commentService.getAllCommentsByBoardId(boardId));
+    public ResponseEntity<SingleRecordResponse<CommentResponse>> getAllCommentsByBoardId(@RequestParam(required = false) String cursor,
+                                                                                         @PathVariable Long boardId) {
+        return ResponseEntity.ok(commentService.getAllCommentsByBoardId(boardId, cursor));
     }
 
     @Operation(summary = "공지사항 댓글 생성 API", description = "특정 공지사항의 댓글을 생성 한다.")

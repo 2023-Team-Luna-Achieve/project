@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom {
 
     @Query("SELECT c FROM Comment c JOIN FETCH c.user WHERE c.board.id = :boardId")
     List<Comment> findAllByBoardId(@Param("boardId") Long boardId);

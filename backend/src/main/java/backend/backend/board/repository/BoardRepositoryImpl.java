@@ -33,7 +33,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqNoticeCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -56,7 +56,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqSuggestionCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -79,7 +79,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqLostItemCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
