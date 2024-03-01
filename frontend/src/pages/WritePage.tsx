@@ -62,7 +62,7 @@ const WritePage: React.FC = () => {
 
   const handleSave = () => {
     axios
-      .post('http://localhost:8080/board/notice', { title, category, context })
+      .post('/board/notice', { title, category, context })
       .then((response) => {
         console.log('글이 성공적으로 저장되었습니다!', response.data);
         alert('글이 성공적으로 등록되었습니다!');
