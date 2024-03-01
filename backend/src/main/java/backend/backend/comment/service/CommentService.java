@@ -2,6 +2,7 @@ package backend.backend.comment.service;
 
 import backend.backend.comment.dto.CommentRequest;
 import backend.backend.comment.entity.Comment;
+import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.common.exception.AuthException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
@@ -13,9 +14,6 @@ import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -23,17 +21,16 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
-    public List<CommentResponse> getAllCommentsByBoardId(Long boardId) {
-        return commentRepository.findAllByBoardId(boardId).stream()
-                .map(CommentResponse::of)
-                .collect(Collectors.toList());
+    public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
+        return commentRepository.findCommentsByBoardId(boardId, cursor);
     }
 
     public Comment createComment(User user, Long boardId, CommentRequest commentRequest) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
-        Comment comment = commentRequest.toEntity(user, board);
+        Long sequenceNumber  = (long) board.getComments().size();
+        Comment comment = commentRequest.toEntity(user, board, sequenceNumber);
 
         return commentRepository.save(comment);
     }
