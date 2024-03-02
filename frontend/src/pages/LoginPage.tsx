@@ -74,7 +74,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/api/users/signin', {
+      const response = await axios.post('/api/user/sign-in', {
         email,
         password,
       });
@@ -92,7 +92,7 @@ const LoginPage: React.FC = () => {
 
   const handleLoginVerification = async () => {
     try {
-      const confirmResponse = await axios.get('/api/users/login-confirm');
+      const confirmResponse = await axios.get('/api/user/login-confirm');
 
       console.log('로그인 검증 성공:', confirmResponse.data);
     } catch (error) {
