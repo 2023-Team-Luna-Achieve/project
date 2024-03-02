@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from '../util/axiosConfig';
 import Modal from '../components/Modal';
-import { useSetRecoilState } from 'recoil';
-import { isLoggedInState } from '../recoil/recoilState';
+import { useSetRecoilState } from 'recoil'; // Recoil 추가
+import { accessTokenState, refreshTokenState } from '../recoil/recoilState';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -61,7 +61,8 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setLoggedInState = useSetRecoilState(isLoggedInState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
+  const setRefreshToken = useSetRecoilState(refreshTokenState);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -79,24 +80,29 @@ const LoginPage: React.FC = () => {
         password,
       });
 
-      console.log('로그인 성공:', response.data);
+      // 서버에서 'Authorization', 'Refresh-Token' 헤더를 확인
+      const accessTokenFromHeader = response.headers['Authorization'];
+      const refreshTokenFromHeader = response.headers['Refresh-Token'];
 
-      setLoggedInState(true);
+      console.log('응답 헤더:', response.headers); // 새로 추가된 부분
+      console.log('accessTokenFromHeader:', accessTokenFromHeader);
+      console.log('refreshTokenFromHeader:', refreshTokenFromHeader);
 
-      await handleLoginVerification();
-      setIsModalOpen(true);
+      // 액세스 토큰과 리프레시 토큰을 상태나 로컬 스토리지에 저장
+      if (accessTokenFromHeader) {
+        // 'Bearer ' 부분을 제거하고 액세스 토큰만 저장
+        const accessToken = accessTokenFromHeader.replace('Bearer ', '');
+        setAccessToken(accessToken);
+        localStorage.setItem('accessToken', accessToken);
+      }
+
+      if (refreshTokenFromHeader) {
+        setRefreshToken(refreshTokenFromHeader);
+        localStorage.setItem('refreshToken', refreshTokenFromHeader);
+      }
+      // setIsModalOpen(true);
     } catch (error) {
       console.error('로그인 실패:', error);
-    }
-  };
-
-  const handleLoginVerification = async () => {
-    try {
-      const confirmResponse = await axios.get('/api/user/login-confirm');
-
-      console.log('로그인 검증 성공:', confirmResponse.data);
-    } catch (error) {
-      console.error('로그인 검증 실패:', error);
     }
   };
 
