@@ -81,8 +81,8 @@ const LoginPage: React.FC = () => {
       });
 
       // 서버에서 'Authorization', 'Refresh-Token' 헤더를 확인
-      const accessTokenFromHeader = response.headers['Authorization'];
-      const refreshTokenFromHeader = response.headers['Refresh-Token'];
+      const accessTokenFromHeader = response.headers['authorization'];
+      const refreshTokenFromHeader = response.headers['refresh-token'];
 
       console.log('응답 헤더:', response.headers); // 새로 추가된 부분
       console.log('accessTokenFromHeader:', accessTokenFromHeader);
