@@ -61,6 +61,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Recoil 상태 업데이트를 위한 세터 함수 초기화를 최상위로 이동
   const setAccessToken = useSetRecoilState(accessTokenState);
   const setRefreshToken = useSetRecoilState(refreshTokenState);
 
@@ -74,23 +75,21 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     try {
       const response = await axios.post('/api/user/sign-in', {
         email,
         password,
       });
 
-      // 서버에서 'Authorization', 'Refresh-Token' 헤더를 확인
+      console.log('응답 헤더:', response.headers);
       const accessTokenFromHeader = response.headers['authorization'];
       const refreshTokenFromHeader = response.headers['refresh-token'];
-
-      console.log('응답 헤더:', response.headers); // 새로 추가된 부분
       console.log('accessTokenFromHeader:', accessTokenFromHeader);
       console.log('refreshTokenFromHeader:', refreshTokenFromHeader);
 
-      // 액세스 토큰과 리프레시 토큰을 상태나 로컬 스토리지에 저장
-      if (accessTokenFromHeader) {
-        // 'Bearer ' 부분을 제거하고 액세스 토큰만 저장
+      // 액세스 토큰과 리프레시 토큰을 상태 및 로컬 스토리지에 저장
+      if (accessTokenFromHeader && accessTokenFromHeader.startsWith('Bearer ')) {
         const accessToken = accessTokenFromHeader.replace('Bearer ', '');
         setAccessToken(accessToken);
         localStorage.setItem('accessToken', accessToken);
@@ -100,7 +99,8 @@ const LoginPage: React.FC = () => {
         setRefreshToken(refreshTokenFromHeader);
         localStorage.setItem('refreshToken', refreshTokenFromHeader);
       }
-      // setIsModalOpen(true);
+
+      setIsModalOpen(true); // 모달 열기
     } catch (error) {
       console.error('로그인 실패:', error);
     }
@@ -108,7 +108,7 @@ const LoginPage: React.FC = () => {
 
   const closeModalAndRedirect = () => {
     setIsModalOpen(false);
-    navigate('/main');
+    navigate('/main'); // 로그인 성공 후 리디렉션
   };
 
   return (
