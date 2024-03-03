@@ -108,7 +108,7 @@ const ReservationPage: React.FC = () => {
       const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
 
       try {
-        const response = await axios.post('http://localhost:8080/api/reservation', {
+        const response = await axios.post('/api/reservation', {
           reservationStartTime: isoStartTime,
           reservationEndTime: isoEndTime,
           members: selectedMembers.value,
@@ -131,7 +131,7 @@ const ReservationPage: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/api/users/login-confirm')
+      .get('/api/users/login-confirm')
       .then((response) => {
         setIsLoggedIn(response.data.loggedIn);
       })

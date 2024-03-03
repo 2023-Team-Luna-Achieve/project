@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
 
@@ -23,6 +23,10 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ children, isOpen, onClose }) => {
+  useEffect(() => {
+    ReactModal.setAppElement('#root');
+  }, []);
+
   return (
     <StyledModal isOpen={isOpen} onRequestClose={onClose} shouldCloseOnOverlayClick shouldCloseOnEsc>
       {children}
