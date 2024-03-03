@@ -14,6 +14,7 @@ public class  WebConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns("*")
                 .allowedMethods("*") // 모든 HTTP Method 허용
                 .allowedHeaders("*") // 모든 Header 허용
-                .allowedOrigins("http://localhost:5173");
+                .allowedOrigins("http://localhost:5173")
+                .exposedHeaders("Authorization", "Refresh-Token");
     }
 }
