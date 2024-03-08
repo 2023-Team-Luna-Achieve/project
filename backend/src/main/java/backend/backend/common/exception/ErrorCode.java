@@ -17,6 +17,7 @@ public enum ErrorCode {
     UNAUTHORIZED_EMAIL(400, "AU_003", "인증되지 않은 Email입니다."),
     INVALID_CODE(400, "AU_004", "코드가 옳지 못합니다."),
     ALREADY_VERIFIED_EMAIL(400, "AU_005", "이미 인증된 이메일입니다."),
+    NEED_AUTH_CODE_SEND(400, "AU_005", "인증코드를 다시 요청하세요."),
     NEED_LOGIN(401, "AU_006", "로그인이 필요합니다"),
     NOT_LOGIN(401, "AU_007", "로그인이 되어있지 않습니다"),
     UNAUTHORIZED_REDIRECT_URI(400, "AU_009", "인증되지 않은 REDIRECT_URI입니다."),

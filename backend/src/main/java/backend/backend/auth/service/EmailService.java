@@ -2,8 +2,11 @@ package backend.backend.auth.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
+import backend.backend.common.exception.*;
+import backend.backend.user.entity.User;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -12,10 +15,6 @@ import jakarta.mail.internet.MimeMessage;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationResponse;
-import backend.backend.common.exception.AlreadyVerifiedException;
-import backend.backend.common.exception.AuthenticationException;
-import backend.backend.common.exception.ErrorCode;
-import backend.backend.common.exception.InvalidVerificationCodeException;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
@@ -151,11 +150,15 @@ public class EmailService {
     @Transactional
     public VerificationResponse verifyEmail(String email, String code) {
         String verificationCode = redisUtil.getData(email);
-        if (verificationCode.equals("verified")) {
+        if (verificationCode == null) {
+            throw new EmailAuthCodeSendException(ErrorCode.NEED_AUTH_CODE_SEND);
+        }
+
+        if (verificationCode.equals("verified") || userRepository.existsByEmail(email)) {
             throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }
 
-        if ( Objects.equals(code, verificationCode)) {
+        if (code.equals(verificationCode)) {
             redisUtil.setDataAfterVerification(email, "verified", 10 * 60L);
             return new VerificationResponse("이메일 인증이 완료되었습니다.");
         }
