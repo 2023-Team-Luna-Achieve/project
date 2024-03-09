@@ -27,7 +27,7 @@ public class ReservationController {
     @Operation(tags = "예약 생성 API", description = "예약 생성을 진행한다")
     @PostMapping
     public ResponseEntity<Void> createReservation(@CurrentUser User currentUser, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        Long reservationId = reservationService.createReservation(currentUser, request);
+        Long reservationId = reservationService.makeReservation(currentUser, request);
         return ResponseEntity.created(URI.create("/api/reservation/" + reservationId)).build();
     }
 

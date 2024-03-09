@@ -6,7 +6,7 @@ import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.InvalidReservationTimeException;
 import backend.backend.common.exception.NotFoundException;
 import backend.backend.meetingroom.entity.MeetingRoom;
-import backend.backend.meetingroom.service.MeetingRoomService;
+import backend.backend.meetingroom.repository.MeetingRoomRepository;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.entity.Reservation;
@@ -29,25 +29,22 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final MeetingRoomService meetingRoomService;
+    private final MeetingRoomRepository meetingRoomService;
     private final EmailService emailService;
 
-    public Long createReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        return makeReservation(user, request).getId();
-    }
 
     @Transactional
-    public Reservation makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+    public Long makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLUB_ROOM_NOT_FOUND)) ;
 
-        reservationTimeValidator(request);
         // 이미 예약된 시간인지 확인
+        reservationTimeValidator(request);
 
         Reservation reservation = request.toEntity(user, meetingRoom);
 
         emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
-        return reservationRepository.save(reservation);
+        return reservationRepository.save(reservation).getId();
     }
 
     private void reservationTimeValidator(ReservationRequest request) {
