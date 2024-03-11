@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom{
     List<Reservation> findByUserId(Long userId);
+    List<Reservation> findAllByMeetingRoomId(Long meetingRoomId);
     List<Reservation> findByMeetingRoomId(Long roomId);
-    List<Reservation> findByMeetingRoomIdAndReservationStartTimeBetweenOrReservationEndTimeBetween(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime startTime1, LocalDateTime endTime1);
+    boolean existsReservationByMeetingRoomIdAndAndReservationStartTime(Long meetingRoomId, LocalDateTime startTime);
+    List<Reservation> findReservationsByMeetingRoomIdAndReservationStartTime(Long meetingRoomId, LocalDateTime dateTime);
 }

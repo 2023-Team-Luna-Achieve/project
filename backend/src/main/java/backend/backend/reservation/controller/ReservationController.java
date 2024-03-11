@@ -1,6 +1,7 @@
 package backend.backend.reservation.controller;
 
 import backend.backend.auth.jwt.CurrentUser;
+import backend.backend.reservation.dto.MeetingRoomReservationAvailTimeResponse;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.service.ReservationService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.mail.MessagingException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.List;
@@ -61,5 +63,11 @@ public class ReservationController {
                                                   @CurrentUser User user) {
         reservationService.cancelReservation(user, reservationId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "각 동아리방 별 예약 가능 시간 조회 API", description = "각 방별 예약 가능 시간을 전체조회 한다.")
+    @GetMapping("/{meetingRoomId}/avail")
+    public ResponseEntity<List<MeetingRoomReservationAvailTimeResponse>> getAvailReservationTime(@PathVariable Long meetingRoomId) {
+        return ResponseEntity.ok().body(reservationService.getReserveAvailTimes(meetingRoomId));
     }
 }
