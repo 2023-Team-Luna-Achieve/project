@@ -17,7 +17,6 @@ public class MeetingRoomService {
         meetingRoomRepository.save(meetingRoom);
     }
 
-
     public List<MeetingRoomResponse> getMeetingRooms() {
         List<MeetingRoom> meetingRooms = meetingRoomRepository.findAll();
         return meetingRooms.stream()

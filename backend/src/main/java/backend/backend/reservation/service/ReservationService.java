@@ -49,8 +49,12 @@ public class ReservationService {
     }
 
     private void reservationTimeValidator(ReservationRequest request) {
-        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime())) {
+        if (isTimeOneNotOneSec(request.getReservationStartTime())) {
             throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
+        }
+
+        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime())) {
+            throw new InvalidReservationTimeException(ErrorCode.ALREADY_RESERVED_TIME);
         }
 
         if (request.getReservationStartTime().isBefore(LocalDateTime.now())) {
@@ -64,6 +68,16 @@ public class ReservationService {
 
     private boolean isTimeSlotAlreadyReserved(Long meetingRoomId, LocalDateTime startTime) {
         return reservationRepository.existsReservationByMeetingRoomIdAndAndReservationStartTime(meetingRoomId, startTime);
+    }
+
+    private boolean isTimeOneNotOneSec(LocalDateTime startTime) {
+        System.out.println("sec = " + startTime.getSecond());
+        System.out.println("sec = " + startTime.getMinute());
+
+        if (startTime.getMinute() > 0 || startTime.getSecond() != 1) {
+            return true;
+        }
+        return false;
     }
 
     public ReservationResponse convertToResponse(Reservation reservation) {

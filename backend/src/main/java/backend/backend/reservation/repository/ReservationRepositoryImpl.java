@@ -24,6 +24,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         ))
                 .from(reservation)
                 .where(goeNowDateTimeLoeNextDateTime(meetingRoomId, startTime, endTime))
+                .orderBy(reservation.reservationStartTime.asc())
                 .fetch();
     }
 
