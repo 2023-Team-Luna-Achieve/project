@@ -26,10 +26,8 @@ public class Reservation extends BaseEntity {
     private LocalDateTime reservationStartTime;
     private LocalDateTime reservationEndTime;
     private int members;
-    private LocalDateTime created_at;
-    private LocalDateTime deleted_at;
 
-    @OneToOne
-    @JoinColumn(name = "meetingRoom_id")
+    @ManyToOne
+    @JoinColumn(name = "meeting_room_id")
     private MeetingRoom meetingRoom;
 }

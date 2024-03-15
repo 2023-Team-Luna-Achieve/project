@@ -1,6 +1,7 @@
 package backend.backend.reservation.controller;
 
 import backend.backend.auth.jwt.CurrentUser;
+import backend.backend.reservation.dto.MeetingRoomReservationAvailTimeResponse;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.service.ReservationService;
@@ -12,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.mail.MessagingException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Reservation API", description = "예약")
@@ -27,7 +30,7 @@ public class ReservationController {
     @Operation(tags = "예약 생성 API", description = "예약 생성을 진행한다")
     @PostMapping
     public ResponseEntity<Void> createReservation(@CurrentUser User currentUser, @RequestBody ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        Long reservationId = reservationService.createReservation(currentUser, request);
+        Long reservationId = reservationService.makeReservation(currentUser, request);
         return ResponseEntity.created(URI.create("/api/reservation/" + reservationId)).build();
     }
 
@@ -61,5 +64,12 @@ public class ReservationController {
                                                   @CurrentUser User user) {
         reservationService.cancelReservation(user, reservationId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "각 동아리방 별 예약 가능 시간 조회 API", description = "각 방별 예약 가능 시간을 전체조회 한다.")
+    @GetMapping("/avail/{meetingRoomId}")
+    public ResponseEntity<List<MeetingRoomReservationAvailTimeResponse>> getAvailReservationTime(@PathVariable Long meetingRoomId,
+                                                                                                 @RequestParam(required = false) String dateTime) {
+        return ResponseEntity.ok().body(reservationService.getReserveAvailTimes(meetingRoomId, dateTime));
     }
 }

@@ -5,8 +5,9 @@ import backend.backend.common.exception.AuthException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.InvalidReservationTimeException;
 import backend.backend.common.exception.NotFoundException;
+import backend.backend.reservation.dto.MeetingRoomReservationAvailTimeResponse;
 import backend.backend.meetingroom.entity.MeetingRoom;
-import backend.backend.meetingroom.service.MeetingRoomService;
+import backend.backend.meetingroom.repository.MeetingRoomRepository;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.entity.Reservation;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.mail.MessagingException;
+
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,30 +31,30 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final MeetingRoomService meetingRoomService;
+    private final MeetingRoomRepository meetingRoomService;
     private final EmailService emailService;
 
-    public Long createReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        return makeReservation(user, request).getId();
-    }
 
     @Transactional
-    public Reservation makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
+    public Long makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
         MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.CLUB_ROOM_NOT_FOUND)) ;
-
-        reservationTimeValidator(request);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CLUB_ROOM_NOT_FOUND));
         // 이미 예약된 시간인지 확인
+        reservationTimeValidator(request);
 
         Reservation reservation = request.toEntity(user, meetingRoom);
 
         emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
-        return reservationRepository.save(reservation);
+        return reservationRepository.save(reservation).getId();
     }
 
     private void reservationTimeValidator(ReservationRequest request) {
-        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime(), request.getReservationEndTime())) {
+        if (isTimeOneNotOneSec(request.getReservationStartTime())) {
             throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
+        }
+
+        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime())) {
+            throw new InvalidReservationTimeException(ErrorCode.ALREADY_RESERVED_TIME);
         }
 
         if (request.getReservationStartTime().isBefore(LocalDateTime.now())) {
@@ -64,12 +66,16 @@ public class ReservationService {
         }
     }
 
-    private boolean isTimeSlotAlreadyReserved(Long meetingRoomId, LocalDateTime startTime, LocalDateTime endTime) {
-        // 주어진 회의실과 시간 범위에 대해 이미 예약된 예약이 있는지 확인
-        List<Reservation> existingReservations = reservationRepository.findByMeetingRoomIdAndReservationStartTimeBetweenOrReservationEndTimeBetween(
-                meetingRoomId, startTime, endTime, startTime, endTime
-        );
-        return !existingReservations.isEmpty();
+    private boolean isTimeSlotAlreadyReserved(Long meetingRoomId, LocalDateTime startTime) {
+        return reservationRepository.existsReservationByMeetingRoomIdAndAndReservationStartTime(meetingRoomId, startTime);
+    }
+
+    private boolean isTimeOneNotOneSec(LocalDateTime startTime) {
+
+        if (startTime.getMinute() > 0 || startTime.getSecond() != 1) {
+            return true;
+        }
+        return false;
     }
 
     public ReservationResponse convertToResponse(Reservation reservation) {
@@ -135,5 +141,29 @@ public class ReservationService {
         }
 
         reservationRepository.delete(reservation);
+    }
+
+    public List<MeetingRoomReservationAvailTimeResponse> getReserveAvailTimes(Long meetingRoomId, String dateTime) {
+        String todayTimeFormatter = timeFormatter(dateTime);
+        LocalDateTime previewReservationTimeStart = LocalDateTime.parse(todayTimeFormatter);
+        LocalDateTime previewReservationTimeEnd = tomorrowTimeFormatter(todayTimeFormatter);
+        return reservationRepository.findReservationsByRoomIdAndReservedTime(meetingRoomId, previewReservationTimeStart, previewReservationTimeEnd);
+    }
+
+    private LocalDateTime tomorrowTimeFormatter(String time) {
+        return LocalDateTime.parse(time).plusDays(2);
+    }
+
+    private String timeFormatter(String dateTime) {
+        String timeSubstring = dateTime.substring(11);
+        String dateSubstring = dateTime.substring(0, 11);
+
+        for (int i = 0; i < timeSubstring.length(); i++) {
+            char c = timeSubstring.charAt(i);
+            if (c != '0' && c != ':' && c != '.') {
+                timeSubstring = timeSubstring.replace(String.valueOf(timeSubstring.charAt(i)), "0");
+            }
+        }
+        return dateSubstring + timeSubstring;
     }
 }
