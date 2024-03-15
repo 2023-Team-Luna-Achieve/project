@@ -71,8 +71,6 @@ public class ReservationService {
     }
 
     private boolean isTimeOneNotOneSec(LocalDateTime startTime) {
-        System.out.println("sec = " + startTime.getSecond());
-        System.out.println("sec = " + startTime.getMinute());
 
         if (startTime.getMinute() > 0 || startTime.getSecond() != 1) {
             return true;
@@ -145,8 +143,8 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    public List<MeetingRoomReservationAvailTimeResponse> getReserveAvailTimes(Long meetingRoomId) {
-        String todayTimeFormatter = timeFormatter();
+    public List<MeetingRoomReservationAvailTimeResponse> getReserveAvailTimes(Long meetingRoomId, String dateTime) {
+        String todayTimeFormatter = timeFormatter(dateTime);
         LocalDateTime previewReservationTimeStart = LocalDateTime.parse(todayTimeFormatter);
         LocalDateTime previewReservationTimeEnd = tomorrowTimeFormatter(todayTimeFormatter);
         return reservationRepository.findReservationsByRoomIdAndReservedTime(meetingRoomId, previewReservationTimeStart, previewReservationTimeEnd);
@@ -156,10 +154,9 @@ public class ReservationService {
         return LocalDateTime.parse(time).plusDays(2);
     }
 
-    private String timeFormatter() {
-        String now = String.valueOf(LocalDateTime.now());
-        String timeSubstring = now.substring(11);
-        String dateSubstring = now.substring(0, 11);
+    private String timeFormatter(String dateTime) {
+        String timeSubstring = dateTime.substring(11);
+        String dateSubstring = dateTime.substring(0, 11);
 
         for (int i = 0; i < timeSubstring.length(); i++) {
             char c = timeSubstring.charAt(i);
