@@ -5,6 +5,7 @@ import backend.backend.board.entity.Board;
 import backend.backend.user.entity.User;
 
 public record CommentRequest(
+        Long boardId,
         String context
 ) {
 

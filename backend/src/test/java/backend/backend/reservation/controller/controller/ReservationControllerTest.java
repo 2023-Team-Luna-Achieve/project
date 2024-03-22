@@ -62,7 +62,7 @@ public class ReservationControllerTest {
         LocalDateTime endTime = LocalDateTime.parse("2023-02-10T17:49:52.978Z", DateTimeFormatter.ISO_DATE_TIME);
         ReservationRequest reservationRequest = new ReservationRequest(startTime, endTime, 5, 1L);
 
-        given(reservationService.createReservation(any(), any())).willReturn(1L);
+        given(reservationService.makeReservation(any(), any())).willReturn(1L);
 
         mockMvc.perform(post("/api/reservation")
                         .content(objectMapper.writeValueAsString(reservationRequest))

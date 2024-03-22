@@ -18,7 +18,7 @@ import java.net.URI;
 @Tag(name = "Notice Board Comment API", description = "공지사항 댓글")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/comments/")
+@RequestMapping("/api/comments")
 public class CommentController {
     private final CommentService commentService;
 
@@ -30,11 +30,10 @@ public class CommentController {
     }
 
     @Operation(summary = "공지사항 댓글 생성 API", description = "특정 공지사항의 댓글을 생성 한다.")
-    @PostMapping("/{boardId}")
-    public ResponseEntity<CommentResponse> createComment(@PathVariable("boardId") Long boardId,
-                                                         @RequestBody CommentRequest commentRequest,
+    @PostMapping
+    public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest,
                                                          @CurrentUser User user) {
-        Comment createdComment = commentService.createComment(user, boardId, commentRequest);
+        Comment createdComment = commentService.createComment(user, commentRequest);
         return ResponseEntity.created(URI.create("/api/comments/" + createdComment.getId())).build();
     }
 

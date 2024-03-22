@@ -22,11 +22,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
                         board.id,
                         board.sequenceNumber,
-                        board.user.name,
-                        board.category,
                         board.title,
                         board.context,
-                        board.viewCount
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
                 ))
                 .from(board)
                 .where(

@@ -22,7 +22,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.id,
                         comment.sequenceNumber,
                         comment.user.name,
-                        comment.context
+                        comment.context,
+                        comment.createdAt
                 ))
                 .from(comment)
                 .where(ltCommentSequenceNumber(cursor),
