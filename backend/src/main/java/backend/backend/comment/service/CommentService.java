@@ -25,8 +25,8 @@ public class CommentService {
         return commentRepository.findCommentsByBoardId(boardId, cursor);
     }
 
-    public Comment createComment(User user, Long boardId, CommentRequest commentRequest) {
-        Board board = boardRepository.findById(boardId)
+    public Comment createComment(User user, CommentRequest commentRequest) {
+        Board board = boardRepository.findById(commentRequest.boardId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
         Long sequenceNumber  = (long) board.getComments().size();

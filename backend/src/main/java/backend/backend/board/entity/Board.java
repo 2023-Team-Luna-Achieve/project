@@ -36,6 +36,7 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(length = 1000)
     private String context;
 
     @ColumnDefault("0")
