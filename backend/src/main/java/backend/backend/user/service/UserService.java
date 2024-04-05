@@ -53,7 +53,13 @@ public class UserService {
         refreshTokenRepository.deleteAllByUserId(user.getId());
     }
 
-    public User findById(Long id) {
+    @Transactional(readOnly = true)
+    public UserResponse getUserInfo(User user) {
+        User loggesdUser = findUserById(user.getId());
+        return UserResponse.from(loggesdUser);
+    }
+
+    public User findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
     }

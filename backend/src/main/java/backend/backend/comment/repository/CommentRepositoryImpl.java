@@ -40,12 +40,14 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return comment.board.id.eq(boardId);
     }
 
-    //
     private BooleanExpression ltCommentSequenceNumber(String cursor) {
         return comment.sequenceNumber.lt(Long.valueOf(cursor));
     }
 
     private SingleRecordResponse<CommentResponse> convertToSingleRecord(List<CommentResponse> comments) {
+        if (comments.isEmpty()) {
+            return SingleRecordResponse.of(comments, false, "0");
+        }
         boolean hasNext = existNextPage(comments);
         String cursor = generateCursor(comments);
         return SingleRecordResponse.of(comments, hasNext, cursor);

@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+#    volumes:
+#      - ./devops/monitoring/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+#      - ./devops/monitoring/grafana/grafana-data:/var/lib/grafana
+    user: root
+    depends_on:
+      - prometheus
+
+  prometheus: # 프로메테우스 서비스 추가
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./devops/monitoring/prometheus:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
