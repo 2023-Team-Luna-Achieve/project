@@ -22,6 +22,9 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
+        if (cursor.equals("0")) {
+            return commentRepository.findCommentsByBoardId(boardId, commentRepository.getLastSequenceNumber(boardId));
+        }
         return commentRepository.findCommentsByBoardId(boardId, cursor);
     }
 
