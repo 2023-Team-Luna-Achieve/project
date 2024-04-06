@@ -22,6 +22,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.id,
                         comment.sequenceNumber,
                         comment.user.name,
+                        comment.user.email,
+                        comment.user.affiliation,
                         comment.context,
                         comment.createdAt
                 ))
@@ -40,7 +42,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return comment.board.id.eq(boardId);
     }
 
-    //
     private BooleanExpression ltCommentSequenceNumber(String cursor) {
         return comment.sequenceNumber.lt(Long.valueOf(cursor));
     }
