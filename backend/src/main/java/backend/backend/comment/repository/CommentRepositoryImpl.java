@@ -47,6 +47,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     }
 
     private SingleRecordResponse<CommentResponse> convertToSingleRecord(List<CommentResponse> comments) {
+        if (comments.isEmpty()) {
+            return SingleRecordResponse.of(comments, false, "0");
+        }
         boolean hasNext = existNextPage(comments);
         String cursor = generateCursor(comments);
         return SingleRecordResponse.of(comments, hasNext, cursor);

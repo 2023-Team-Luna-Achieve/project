@@ -1,8 +1,8 @@
 on:
   push:
     branches: [ "feature" ]
-  pull_request:
-    branches: [ "feature" ]
+#  pull_request:
+#    branches: [ "feature" ]
 
 name: Deploy achieve project to Amazon EC2
 env:

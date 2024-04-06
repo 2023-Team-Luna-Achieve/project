@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 public record BoardResponse(
         Long boardId,
         Long sequenceNumber,
+        String author,
+        String authorEmail,
+        Category category,
         String title,
         String context,
         int viewCount,
@@ -18,6 +21,9 @@ public record BoardResponse(
         return new BoardResponse(
                 board.getId(),
                 board.getSequenceNumber(),
+                board.getUser().getName(),
+                board.getUser().getEmail(),
+                board.getCategory(),
                 board.getTitle(),
                 board.getContext(),
                 board.getViewCount(),

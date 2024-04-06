@@ -10,6 +10,7 @@ services:
       MYSQL_PASSWORD: 1234
     volumes:
       - mysql_data:/var/lib/mysql
+#      - ./backend/init_db/init.sql:/docker-entrypoint-initdb.d/init.sql
     command:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
@@ -64,6 +65,24 @@ services:
     ports:
       - 6380:6379
     restart: always
+
+#  influxdb:
+#    image: influxdb:1.8
+#    ports:
+#      - "8086:8086"
+#    environment:
+#      - INFLUXDB_DB=k6
+#
+#  k6:
+#    image: grafana/k6:latest
+#    platform: linux/amd64
+#    ports:
+#      - "6565:6565"
+#    environment:
+#      - K6_OUT=influxdb=http://influxdb:8086/k6
+#    volumes:
+#      - ./devops/monitoring/k6:/scripts
+#    command: run /scripts/load.js
 
 #  nginx:
 #    container_name: nginx
