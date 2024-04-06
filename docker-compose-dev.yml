@@ -37,25 +37,25 @@ services:
     volumes:
       - ./backend:/app
       - ./backend/target/classes:/app/classes
-
-  frontend:
-    container_name: frontend
-    build:
-      context: frontend
-      dockerfile: dockerfile
-    command: [ "npm", "run", "dev" ]
-    volumes:
-      - ./frontend:/frontend
-      - /frontend/node_modules
-      - ./frontend/.npm/_cacache:/frontend/.npm/_cacache
-      - build_folder:/frontend/dist
-    ports:
-      - "5173:5173"
-    tty: true
-    environment:
-      - npm_config_cache=/frontend/.npm/_cacache
-    depends_on:
-      - backend
+#
+#  frontend:
+#    container_name: frontend
+#    build:
+#      context: frontend
+#      dockerfile: dockerfile
+#    command: [ "npm", "run", "dev" ]
+#    volumes:
+#      - ./frontend:/frontend
+#      - /frontend/node_modules
+#      - ./frontend/.npm/_cacache:/frontend/.npm/_cacache
+#      - build_folder:/frontend/dist
+#    ports:
+#      - "5173:5173"
+#    tty: true
+#    environment:
+#      - npm_config_cache=/frontend/.npm/_cacache
+#    depends_on:
+#      - backend
 
   redis:
     hostname: redis
