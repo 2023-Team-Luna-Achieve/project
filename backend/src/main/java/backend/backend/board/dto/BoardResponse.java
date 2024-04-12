@@ -3,24 +3,32 @@ package backend.backend.board.dto;
 import backend.backend.board.entity.Board;
 import backend.backend.board.entity.Category;
 
+import java.time.LocalDateTime;
+
 public record BoardResponse(
         Long boardId,
         Long sequenceNumber,
         String author,
+        String authorEmail,
         Category category,
         String title,
         String context,
-        int viewCount
+        int viewCount,
+        int commentCount,
+        LocalDateTime createdAt
 ) {
-    public static BoardResponse from(Board Board) {
+    public static BoardResponse from(Board board) {
         return new BoardResponse(
-                Board.getId(),
-                Board.getSequenceNumber(),
-                Board.getUser().getName(),
-                Board.getCategory(),
-                Board.getTitle(),
-                Board.getContext(),
-                Board.getViewCount()
+                board.getId(),
+                board.getSequenceNumber(),
+                board.getUser().getName(),
+                board.getUser().getEmail(),
+                board.getCategory(),
+                board.getTitle(),
+                board.getContext(),
+                board.getViewCount(),
+                board.getComments().size(),
+                board.getCreatedAt()
         );
     }
 }

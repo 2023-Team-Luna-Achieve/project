@@ -25,7 +25,6 @@ public class ReservationRequest {
                 .reservationEndTime(reservationEndTime)
                 .members(members)
                 .meetingRoom(meetingRoom)
-                .created_at(LocalDateTime.now())
                 .build();
     }
 }

@@ -18,15 +18,44 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public SingleRecordResponse<BoardResponse> findFirstNoticeBoardsByIdDesc() {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.user.email,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
+                ))
+                .from(board)
+                .where(
+//                        ltBoardSequenceNumber(cursor),
+                        eqNoticeCategory()
+                )
+                .orderBy(board.sequenceNumber.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards);
+    }
+
+    @Override
     public SingleRecordResponse<BoardResponse> findNoticeBoardsByOrderByIdDesc(String cursor) {
         List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
                         board.id,
                         board.sequenceNumber,
                         board.user.name,
+                        board.user.email,
                         board.category,
                         board.title,
                         board.context,
-                        board.viewCount
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
                 ))
                 .from(board)
                 .where(
@@ -46,10 +75,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.id,
                         board.sequenceNumber,
                         board.user.name,
+                        board.user.email,
                         board.category,
                         board.title,
                         board.context,
-                        board.viewCount
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
                 ))
                 .from(board)
                 .where(
@@ -69,10 +101,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.id,
                         board.sequenceNumber,
                         board.user.name,
+                        board.user.email,
                         board.category,
                         board.title,
                         board.context,
-                        board.viewCount
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
                 ))
                 .from(board)
                 .where(

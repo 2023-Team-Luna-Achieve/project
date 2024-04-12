@@ -22,7 +22,10 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.id,
                         comment.sequenceNumber,
                         comment.user.name,
-                        comment.context
+                        comment.user.email,
+                        comment.user.affiliation,
+                        comment.context,
+                        comment.createdAt
                 ))
                 .from(comment)
                 .where(ltCommentSequenceNumber(cursor),
@@ -39,12 +42,14 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return comment.board.id.eq(boardId);
     }
 
-    //
     private BooleanExpression ltCommentSequenceNumber(String cursor) {
         return comment.sequenceNumber.lt(Long.valueOf(cursor));
     }
 
     private SingleRecordResponse<CommentResponse> convertToSingleRecord(List<CommentResponse> comments) {
+        if (comments.isEmpty()) {
+            return SingleRecordResponse.of(comments, false, "0");
+        }
         boolean hasNext = existNextPage(comments);
         String cursor = generateCursor(comments);
         return SingleRecordResponse.of(comments, hasNext, cursor);

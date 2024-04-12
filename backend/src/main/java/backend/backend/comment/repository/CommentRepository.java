@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom {
 
-    @Query("SELECT c FROM Comment c JOIN FETCH c.user WHERE c.board.id = :boardId")
-    List<Comment> findAllByBoardId(@Param("boardId") Long boardId);
-    // 추가적인 쿼리 메서드가 필요하다면 여기에 추가할 수 있습니다.
+    @Query("SELECT MAX(c.sequenceNumber + 1) FROM Comment c WHERE c.board.id = :boardId")
+    String getLastSequenceNumber(@Param("boardId") Long boardId);
 }

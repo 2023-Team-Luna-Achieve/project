@@ -25,8 +25,7 @@ public class BoardController {
 
     @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다")
     @GetMapping
-    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category,
-                                                                            @RequestParam(required = false) String cursor) {
+    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category, @RequestParam(required = false) String cursor) {
         return ResponseEntity.ok().body(boardService.getBoards(category, cursor));
     }
 

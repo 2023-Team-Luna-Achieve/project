@@ -57,6 +57,10 @@ public class BoardService {
     //커서기반 페이지네이션
     public SingleRecordResponse<BoardResponse> getBoards(Category category, String cursor) {
         if (category.equals(Category.NOTICE)) {
+            if (cursor.equals("0")) {
+                return boardRepository.findFirstNoticeBoardsByIdDesc();
+            }
+
             return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor);
         }
 
