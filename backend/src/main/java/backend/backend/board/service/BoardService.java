@@ -70,4 +70,20 @@ public class BoardService {
 
         return  boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
     }
+
+    public SingleRecordResponse<BoardResponse> getMyBoards(Long userId, Category category, String cursor) {
+        if (category.equals(Category.NOTICE)) {
+            if (cursor.equals("0")) {
+                return boardRepository.findMyNoticeBoardsByIdDesc(userId);
+            }
+
+            return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor);
+        }
+
+        if (category.equals(Category.SUGGESTION)) {
+            return boardRepository.findSuggestionBoardsByOrderByIdDesc(cursor);
+        }
+
+        return  boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
+    }
 }

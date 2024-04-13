@@ -33,7 +33,33 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 ))
                 .from(board)
                 .where(
-//                        ltBoardSequenceNumber(cursor),
+                        eqNoticeCategory()
+                )
+                .orderBy(board.sequenceNumber.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards);
+    }
+
+
+    @Override
+    public SingleRecordResponse<BoardResponse> findMyNoticeBoardsByIdDesc(Long userId) {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.user.email,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
+                ))
+                .from(board)
+                .where(
+                        eqAuthorId(userId),
                         eqNoticeCategory()
                 )
                 .orderBy(board.sequenceNumber.desc())
@@ -123,6 +149,10 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private BooleanExpression eqSuggestionCategory()  {
         return board.category.eq(Category.SUGGESTION);
+    }
+
+    private BooleanExpression eqAuthorId(Long userId) {
+        return board.user.id.eq(userId);
     }
 
     private BooleanExpression eqNoticeCategory() {

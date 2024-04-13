@@ -8,6 +8,8 @@ public interface BoardRepositoryCustom {
 
     SingleRecordResponse<BoardResponse> findFirstNoticeBoardsByIdDesc();
 
+    SingleRecordResponse<BoardResponse> findMyNoticeBoardsByIdDesc(Long userId);
+
     SingleRecordResponse<BoardResponse> findSuggestionBoardsByOrderByIdDesc(String cursor);
 
     SingleRecordResponse<BoardResponse> findLostItemBoardsByOrderByIdDesc(String cursor);
