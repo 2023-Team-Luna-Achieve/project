@@ -66,7 +66,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(boards);
+        return convertToSingleRecord(boards, userId);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return convertToSingleRecord(boards);
     }
 
-    private BooleanExpression eqSuggestionCategory()  {
+    private BooleanExpression eqSuggestionCategory() {
         return board.category.eq(Category.SUGGESTION);
     }
 
@@ -159,8 +159,22 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return board.category.eq(Category.NOTICE);
     }
 
-    private BooleanExpression eqLostItemCategory()  {
+    private BooleanExpression eqLostItemCategory() {
         return board.category.eq(Category.LOST_ITEM);
+    }
+
+    @Override
+    public int getMyBoardsCount(Long userId) {
+        return Integer.parseInt(String.valueOf(queryFactory.select(board.count())
+                .from(board)
+                .where(eqAuthorId(userId)).fetchOne()));
+    }
+
+    SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards, Long userId) {
+        boolean hasNext = existNextPage(boards);
+        String cursor = generateCursor(boards);
+        int count = getMyBoardsCount(userId);
+        return SingleRecordResponse.of(boards, count, hasNext, cursor);
     }
 
     SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards) {
