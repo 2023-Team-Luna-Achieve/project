@@ -37,14 +37,6 @@ public class BoardController {
         return ResponseEntity.ok().body(boardService.getMyBoards(user.getId(), category, cursor));
     }
 
-//    @Operation(summary = "본인이 작성한 공지사항 API", description = "작성한 공지사항 조희를 진행한다")
-//    @GetMapping("/my")
-//    public ResponseEntity<CountResponse> getMyBoardsCount(@CurrentUser User user,
-//                                                                              @RequestParam(value = "category") Category category,
-//                                                                              @RequestParam(required = false) String cursor) {
-//        return ResponseEntity.ok().body(boardService.getMyBoards(user.getId(), category, cursor));
-//    }
-
     @Operation(summary = "공지사항 단일 조회 API", description = "공지사항 단일 조회를 진행한다")
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardResponse> getBoardById(@PathVariable Long boardId) {

@@ -6,6 +6,8 @@ import backend.backend.board.entity.Board;
 import backend.backend.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,8 +42,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservation;
 
+    @ColumnDefault("0")
+    private int reservationCount;
+
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
+
     private String providerId;
 
     public String roleName() {
@@ -50,5 +56,9 @@ public class User extends BaseEntity {
 
     public boolean hasAuthority(Long userId) {
         return !this.id.equals(userId);
+    }
+
+    public void addReservationCount() {
+        this.reservationCount ++;
     }
 }
