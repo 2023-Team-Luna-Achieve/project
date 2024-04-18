@@ -6,11 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom{
-    List<Reservation> findByUserId(Long userId);
+    boolean existsReservationByUserId(Long userId);
+    Optional<Reservation> findReservationsByUserId(Long userId);
     List<Reservation> findAllByMeetingRoomId(Long meetingRoomId);
-    List<Reservation> findByMeetingRoomId(Long roomId);
-    boolean existsReservationByMeetingRoomIdAndAndReservationStartTime(Long meetingRoomId, LocalDateTime startTime);
-    List<Reservation> findReservationsByMeetingRoomIdAndReservationStartTime(Long meetingRoomId, LocalDateTime dateTime);
+    boolean existsReservationByMeetingRoomIdAndReservationStartTime(Long meetingRoomId, LocalDateTime startTime);
 }

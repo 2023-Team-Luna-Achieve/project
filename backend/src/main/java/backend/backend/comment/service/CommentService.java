@@ -14,6 +14,8 @@ import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -22,10 +24,11 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
+        String largestCommentSequenceNumber = commentRepository.getLastSequenceNumber(boardId);
         if (cursor.equals("0")) {
-            return commentRepository.findCommentsByBoardId(boardId, commentRepository.getLastSequenceNumber(boardId));
+            return commentRepository.findCommentsByBoardId(boardId, Objects.requireNonNullElse(largestCommentSequenceNumber, "0"));
         }
-        return commentRepository.findCommentsByBoardId(boardId, cursor);
+        return commentRepository.findCommentsByBoardId(boardId, largestCommentSequenceNumber);
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {

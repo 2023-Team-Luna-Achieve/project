@@ -33,14 +33,90 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 ))
                 .from(board)
                 .where(
-//                        ltBoardSequenceNumber(cursor),
                         eqNoticeCategory()
                 )
-                .orderBy(board.sequenceNumber.desc())
+                .orderBy(board.id.desc())
                 .limit(11)
                 .fetch();
 
         return convertToSingleRecord(boards);
+    }
+
+    @Override
+    public SingleRecordResponse<BoardResponse> findFirstSuggestionBoardsByIdDesc() {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.user.email,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
+                ))
+                .from(board)
+                .where(
+                        eqSuggestionCategory()
+                )
+                .orderBy(board.id.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards);
+    }
+
+    @Override
+    public SingleRecordResponse<BoardResponse> findFirstLostBoardsByIdDesc() {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.user.email,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
+                ))
+                .from(board)
+                .where(
+                        eqLostItemCategory()
+                )
+                .orderBy(board.id.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards);
+    }
+
+
+    @Override
+    public SingleRecordResponse<BoardResponse> findMyNoticeBoardsByIdDesc(Long userId) {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.user.email,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
+                ))
+                .from(board)
+                .where(
+                        eqAuthorId(userId),
+                        eqNoticeCategory()
+                )
+                .orderBy(board.id.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards, userId);
     }
 
     @Override
@@ -62,7 +138,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqNoticeCategory()
                 )
-                .orderBy(board.sequenceNumber.desc())
+                .orderBy(board.id.desc())
                 .limit(11)
                 .fetch();
 
@@ -88,11 +164,37 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqSuggestionCategory()
                 )
-                .orderBy(board.sequenceNumber.desc())
+                .orderBy(board.id.desc())
                 .limit(11)
                 .fetch();
 
         return convertToSingleRecord(boards);
+    }
+
+    @Override
+    public SingleRecordResponse<BoardResponse> findMySuggestionBoardsByIdDesc(Long userId) {
+        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+                        board.id,
+                        board.sequenceNumber,
+                        board.user.name,
+                        board.user.email,
+                        board.category,
+                        board.title,
+                        board.context,
+                        board.viewCount,
+                        board.comments.size(),
+                        board.createdAt
+                ))
+                .from(board)
+                .where(
+                        eqAuthorId(userId),
+                        eqSuggestionCategory()
+                )
+                .orderBy(board.id.desc())
+                .limit(11)
+                .fetch();
+
+        return convertToSingleRecord(boards, userId);
     }
 
     @Override
@@ -114,26 +216,47 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqLostItemCategory()
                 )
-                .orderBy(board.sequenceNumber.desc())
+                .orderBy(board.id.desc())
                 .limit(11)
                 .fetch();
 
         return convertToSingleRecord(boards);
     }
 
-    private BooleanExpression eqSuggestionCategory()  {
+    private BooleanExpression eqSuggestionCategory() {
         return board.category.eq(Category.SUGGESTION);
+    }
+
+    private BooleanExpression eqAuthorId(Long userId) {
+        return board.user.id.eq(userId);
     }
 
     private BooleanExpression eqNoticeCategory() {
         return board.category.eq(Category.NOTICE);
     }
 
-    private BooleanExpression eqLostItemCategory()  {
+    private BooleanExpression eqLostItemCategory() {
         return board.category.eq(Category.LOST_ITEM);
     }
 
+    @Override
+    public int getMyBoardsCount(Long userId) {
+        return Integer.parseInt(String.valueOf(queryFactory.select(board.count())
+                .from(board)
+                .where(eqAuthorId(userId)).fetchOne()));
+    }
+
+    SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards, Long userId) {
+        boolean hasNext = existNextPage(boards);
+        String cursor = generateCursor(boards);
+        int count = getMyBoardsCount(userId);
+        return SingleRecordResponse.of(boards, count, hasNext, cursor);
+    }
+
     SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards) {
+        if (boards.isEmpty()) {
+            return SingleRecordResponse.of(boards, false, "0");
+        }
         boolean hasNext = existNextPage(boards);
         String cursor = generateCursor(boards);
         return SingleRecordResponse.of(boards, hasNext, cursor);

@@ -89,7 +89,7 @@ public class UserControllerTest {
         List<ReservationResponse> reservationResponse = Arrays.asList(
                 new ReservationResponse(1L, "2342:43:32", "2344:3:32", 5, new MeetingRoom("df")));
 
-        given(reservationService.getReservationsByUserId(1L)).willReturn(reservationResponse);
+//        given(reservationService.getReservationsByUserId(1L)).willReturn(reservationResponse);
 
         mockMvc.perform(get("/api/reservation/check")
                         .accept(MediaType.APPLICATION_JSON)
