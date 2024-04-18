@@ -45,7 +45,7 @@ public class BoardController {
     }
 
     @Operation(summary = "공지사항 작성 API", description = "공지사항 작성을 진행한다. \n " +
-            "category는 Notice, LostItem, Suggestion 3가지만 입력한다")
+            "category는 NOTICE, LOST_ITEM, SUGGESTION 3가지만 입력한다")
     @PostMapping
     public ResponseEntity<BoardResponse> createBoard(@CurrentUser User user,
                                                      @RequestBody BoardRequest boardRequest) {

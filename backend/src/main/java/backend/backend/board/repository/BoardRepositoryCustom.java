@@ -13,6 +13,12 @@ public interface BoardRepositoryCustom {
 
     SingleRecordResponse<BoardResponse> findSuggestionBoardsByOrderByIdDesc(String cursor);
 
+    SingleRecordResponse<BoardResponse> findMySuggestionBoardsByIdDesc(Long userId);
+
+    SingleRecordResponse<BoardResponse> findFirstSuggestionBoardsByIdDesc();
+
+    SingleRecordResponse<BoardResponse> findFirstLostBoardsByIdDesc();
+
     SingleRecordResponse<BoardResponse> findLostItemBoardsByOrderByIdDesc(String cursor);
 
     int getMyBoardsCount(Long userId);
