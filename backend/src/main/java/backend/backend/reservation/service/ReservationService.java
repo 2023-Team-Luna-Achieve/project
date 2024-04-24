@@ -139,7 +139,11 @@ public class ReservationService {
 
     public ReservationResponse getReservationsByUserId(Long userId) {
         return convertToResponse(reservationRepository.findReservationsByUserId(userId)
-                .orElseThrow(() -> new ReservationNotExistException(ErrorCode.RESERVATION_NOT_FOUND)));
+                .orElseGet(ReservationService::defaultReservation));
+    }
+
+    public static Reservation defaultReservation() {
+        return new Reservation(null, null, LocalDateTime.now(), LocalDateTime.now(), 0, null);
     }
 
     public ReservationCountResponse getReservationsCountByUserId(Long userId) {

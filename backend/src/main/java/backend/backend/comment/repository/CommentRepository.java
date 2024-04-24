@@ -8,5 +8,5 @@ import org.springframework.data.repository.query.Param;
 public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom {
 
     @Query("SELECT MAX(c.sequenceNumber + 1) FROM Comment c WHERE c.board.id = :boardId")
-    String getLastSequenceNumber(@Param("boardId") Long boardId);
+    String getMaxSequenceNumber(@Param("boardId") Long boardId);
 }

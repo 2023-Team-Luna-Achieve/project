@@ -24,19 +24,19 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-        String largestCommentSequenceNumber = commentRepository.getLastSequenceNumber(boardId);
+        String maxCommentSequenceNumber = commentRepository.getMaxSequenceNumber(boardId);
         if (cursor.equals("0")) {
-            return commentRepository.findCommentsByBoardId(boardId, Objects.requireNonNullElse(largestCommentSequenceNumber, "0"));
+            return commentRepository.findCommentsByBoardId(boardId, Objects.requireNonNullElse(maxCommentSequenceNumber, "0"));
         }
-        return commentRepository.findCommentsByBoardId(boardId, largestCommentSequenceNumber);
+        return commentRepository.findCommentsByBoardId(boardId, maxCommentSequenceNumber);
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {
         Board board = boardRepository.findById(commentRequest.boardId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
-        Long sequenceNumber  = (long) board.getComments().size();
-        Comment comment = commentRequest.toEntity(user, board, sequenceNumber);
+        Long maxSequenceNumber = Long.parseLong(commentRepository.getMaxSequenceNumber(board.getId()));
+        Comment comment = commentRequest.toEntity(user, board, maxSequenceNumber);
 
         return commentRepository.save(comment);
     }
@@ -48,7 +48,7 @@ public class CommentService {
 
     public void updateComment(User user, Long commentId, CommentRequest commentRequest) {
         Comment comment = findCommentById(commentId);
-        if(user.hasAuthority(comment.getUser().getId())) {
+        if (user.hasAuthority(comment.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
         comment.update(commentRequest.context());
@@ -56,7 +56,7 @@ public class CommentService {
 
     public void deleteComment(User user, Long commentId) {
         Comment comment = findCommentById(commentId);
-        if(user.hasAuthority(comment.getUser().getId())) {
+        if (user.hasAuthority(comment.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
         commentRepository.deleteById(commentId);

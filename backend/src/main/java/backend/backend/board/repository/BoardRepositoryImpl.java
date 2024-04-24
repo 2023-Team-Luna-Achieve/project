@@ -35,7 +35,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .where(
                         eqNoticeCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -60,7 +60,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .where(
                         eqSuggestionCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -85,7 +85,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .where(
                         eqLostItemCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -112,7 +112,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         eqAuthorId(userId),
                         eqNoticeCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -138,7 +138,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqNoticeCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -164,7 +164,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqSuggestionCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -190,7 +190,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         eqAuthorId(userId),
                         eqSuggestionCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 
@@ -216,7 +216,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         ltBoardSequenceNumber(cursor),
                         eqLostItemCategory()
                 )
-                .orderBy(board.id.desc())
+                .orderBy(board.sequenceNumber.desc())
                 .limit(11)
                 .fetch();
 

@@ -31,7 +31,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .where(ltCommentSequenceNumber(cursor),
                         eqBoardId(boardId)
                 )
-                .orderBy(comment.sequenceNumber.desc())
+                .orderBy(comment.sequenceNumber.asc())
                 .limit(11)
                 .fetch();
 

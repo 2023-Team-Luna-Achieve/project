@@ -21,4 +21,15 @@ public class ReservationResponse {
         this.members = members;
         this.meetingRoom = meetingRoom;
     }
+
+    public ReservationResponse(Long id, String startTime, String endTime, int members) {
+        this.id = id;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.members = members;
+    }
+
+    public ReservationResponse() {
+
+    }
 }
