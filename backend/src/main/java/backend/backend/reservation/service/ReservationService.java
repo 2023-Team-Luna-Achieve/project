@@ -146,6 +146,7 @@ public class ReservationService {
         return new Reservation(null, null, LocalDateTime.now(), LocalDateTime.now(), 0, null);
     }
 
+
     public ReservationCountResponse getReservationsCountByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ReservationNotExistException(ErrorCode.RESERVATION_NOT_FOUND));
         return ReservationCountResponse.of(user.getReservationCount());
