@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from '../../util/axiosConfig';
 import { useRecoilState } from 'recoil';
-import { isLoggedInState } from '../../recoil/recoilState';
+import { accessTokenState } from '../../recoil/recoilState';
 
 const StyledHeaderBorder = styled.div`
   border-bottom: 1px solid #dddddd;
 `;
+
 const StyledHeader = styled.div`
   display: flex;
   justify-content: center;
@@ -16,6 +16,7 @@ const StyledHeader = styled.div`
   font-size: 20px;
   width: 100%;
 `;
+
 const StyledNav = styled.nav`
   ul {
     list-style: none;
@@ -33,28 +34,25 @@ const StyledNav = styled.nav`
 `;
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const navigate = useNavigate();
-  useEffect(() => {
-    axios
-      .get('http://localhost:8080/api/users/login-confirm')
-      .then((response) => {
-        if (response.data.loggedIn) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
-      })
-      .catch((error) => {
-        console.error('로그인 상태 확인 중 에러:', error);
-        setIsLoggedIn(false);
-      });
-  }, [setIsLoggedIn]);
 
+  // 로컬 스토리지에서 accessToken을 가져와 설정
+  useEffect(() => {
+    const storedToken = localStorage.getItem('accessToken');
+    if (storedToken) {
+      setAccessToken(storedToken);
+    }
+  }, [setAccessToken]);
+
+  // handleReservationClick에서 액세스 토큰을 콘솔 로그에 출력
   const handleReservationClick = () => {
-    // 로그인이 안 되어 있으면 LoginPage로 이동
-    if (!isLoggedIn) {
+    console.log('Access Token:', accessToken);
+    // 액세스 토큰이 없으면 로그인 페이지로 이동
+    if (!accessToken) {
       navigate('/Login');
+    } else {
+      navigate('/Select');
     }
   };
 
@@ -74,18 +72,13 @@ const Header = () => {
                 Reservation
               </Link>
             </li>
-            {isLoggedIn && (
-              <li>
-                <Link to="/Select">Reservation</Link>
-              </li>
-            )}
             <li>
               <Link to="/Notice">Notice</Link>
             </li>
             <li>
               <Link to="/Community">Community</Link>
             </li>
-            {isLoggedIn ? (
+            {accessToken ? (
               <li>
                 <Link to="/Mypage">Mypage</Link>
               </li>
@@ -105,6 +98,5 @@ const Header = () => {
     </StyledHeaderBorder>
   );
 };
-export default Header;
 
-export {};
+export default Header;
