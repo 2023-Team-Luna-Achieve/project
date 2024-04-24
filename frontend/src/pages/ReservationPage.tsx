@@ -7,6 +7,8 @@ import axios from '../util/axiosConfig';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../recoil/recoilState';
 
 const ReservationPageWrapper = styled.div``;
 
@@ -24,7 +26,7 @@ const Title = styled.h1`
   color: #3a3a3a;
   text-align: center;
   margin-top: 60px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 `;
 
 const CalendarSelectContainer = styled.div`
@@ -72,10 +74,10 @@ const Button = styled.button`
 `;
 
 const ReservationPage: React.FC = () => {
-  const navigate = useNavigate(); // useNavigate를 사용하여 navigate 변수 설정
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const accessToken = useRecoilValue(accessTokenState); // Recoil 상태에서 accessToken을 가져옴
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 초기 상태를 Date | null로 수정
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
   const [selectedMembers, setSelectedMembers] = useState<{ value: number; label: string } | null>({
@@ -130,23 +132,11 @@ const ReservationPage: React.FC = () => {
   };
 
   useEffect(() => {
-    axios
-      .get('/api/users/login-confirm')
-      .then((response) => {
-        setIsLoggedIn(response.data.loggedIn);
-      })
-      .catch((error) => {
-        console.error('로그인 상태 확인 중 에러:', error);
-        setIsLoggedIn(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    // 로그인 상태를 확인하고 리디렉션
-    if (!isLoggedIn) {
-      navigate('/Login'); // 로그인 페이지로 리디렉션
+    // 로그인 상태 확인 및 리디렉션
+    if (!accessToken) {
+      navigate('/Login');
     }
-  }, [isLoggedIn, navigate]);
+  }, [accessToken, navigate]);
 
   return (
     <ReservationPageWrapper>
