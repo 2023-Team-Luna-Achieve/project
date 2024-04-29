@@ -35,12 +35,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final RefreshTokenService refreshTokenService;
 
-//    OAuth2AuthenticationSuccessHandler(TokenProvider tokenProvider,
-//                                       HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
-//        this.tokenProvider = tokenProvider;
-//        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
-//    }
-
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws

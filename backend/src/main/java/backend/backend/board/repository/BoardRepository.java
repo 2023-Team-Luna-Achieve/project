@@ -13,5 +13,5 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
     Optional<Board> findByIdWithUsername(@Param("id") Long id);
 
     @Query("SELECT MAX(b.sequenceNumber) from Board b where b.category = :category")
-    Long getMaxSequenceNumber(Category category);
+    Optional<Long> getMaxSequenceNumber(Category category);
 }

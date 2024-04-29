@@ -29,7 +29,7 @@ public class BoardService {
     }
 
     public Long createBoard(User user, BoardRequest boardRequest) {
-        Long maxBoardsSequenceNumber = boardRepository.getMaxSequenceNumber(boardRequest.category());
+        Long maxBoardsSequenceNumber = boardRepository.getMaxSequenceNumber(boardRequest.category()).orElseGet(() -> 0L);
         Board board = boardRequest.toEntity(user, maxBoardsSequenceNumber + 1);
         return boardRepository.save(board).getId();
     }

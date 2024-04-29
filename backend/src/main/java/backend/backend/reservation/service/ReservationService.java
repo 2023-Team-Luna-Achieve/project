@@ -143,7 +143,7 @@ public class ReservationService {
     }
 
     public static Reservation defaultReservation() {
-        return new Reservation(null, null, LocalDateTime.now(), LocalDateTime.now(), 0, null);
+        return new Reservation(0L, null, LocalDateTime.now(), LocalDateTime.now(), 0, null);
     }
 
 

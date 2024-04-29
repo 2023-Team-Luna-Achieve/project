@@ -250,7 +250,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         boolean hasNext = existNextPage(boards);
         String cursor = generateCursor(boards);
         int count = getMyBoardsCount(userId);
-        return SingleRecordResponse.of(boards, count, hasNext, cursor);
+        return SingleRecordResponse.of(boards, hasNext, cursor);
     }
 
     SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards) {

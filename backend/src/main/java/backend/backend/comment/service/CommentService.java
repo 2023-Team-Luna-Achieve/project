@@ -24,10 +24,7 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-        String maxCommentSequenceNumber = commentRepository.getMaxSequenceNumber(boardId);
-        if (cursor.equals("0")) {
-            return commentRepository.findCommentsByBoardId(boardId, Objects.requireNonNullElse(maxCommentSequenceNumber, "0"));
-        }
+        String maxCommentSequenceNumber = commentRepository.getMaxSequenceNumber(boardId).orElseGet(() -> "0");
         return commentRepository.findCommentsByBoardId(boardId, maxCommentSequenceNumber);
     }
 
@@ -35,7 +32,7 @@ public class CommentService {
         Board board = boardRepository.findById(commentRequest.boardId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
-        Long maxSequenceNumber = Long.parseLong(commentRepository.getMaxSequenceNumber(board.getId()));
+        Long maxSequenceNumber = Long.parseLong(commentRepository.getMaxSequenceNumber(board.getId()).orElseGet(() -> "0"));
         Comment comment = commentRequest.toEntity(user, board, maxSequenceNumber);
 
         return commentRepository.save(comment);
@@ -56,9 +53,11 @@ public class CommentService {
 
     public void deleteComment(User user, Long commentId) {
         Comment comment = findCommentById(commentId);
+        System.out.println("user: " + comment.getUser());
         if (user.hasAuthority(comment.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
+        System.out.println("ddd");
         commentRepository.deleteById(commentId);
     }
 
