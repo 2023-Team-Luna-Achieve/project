@@ -95,8 +95,7 @@ const ReservationPage: React.FC = () => {
   const handleReservation = async () => {
     if (selectedDate && startTime && endTime && selectedMembers?.value !== undefined) {
       const reservationStartTime = new Date(selectedDate);
-      reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]));
-
+      reservationStartTime.setHours(Number(startTime.split(':')[0]), Number(startTime.split(':')[1]), 1);
       const reservationEndTime = new Date(selectedDate);
       reservationEndTime.setHours(Number(endTime.split(':')[0]), Number(endTime.split(':')[1]));
 
@@ -108,14 +107,21 @@ const ReservationPage: React.FC = () => {
       // ISO 문자열 생성 후 .000Z 제거
       const isoStartTime = reservationStartTime.toISOString().replace(/\.000Z$/, '');
       const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
-
       try {
-        const response = await axios.post('/api/reservation', {
-          reservationStartTime: isoStartTime,
-          reservationEndTime: isoEndTime,
-          members: selectedMembers.value,
-          meetingRoomId: 1,
-        });
+        const response = await axios.post(
+          '/api/reservation',
+          {
+            reservationStartTime: isoStartTime,
+            reservationEndTime: isoEndTime,
+            members: selectedMembers.value,
+            meetingRoomId: 1,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
 
         if (response.status === 201) {
           console.log('예약에 성공 했습니다.');

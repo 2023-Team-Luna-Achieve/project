@@ -2,11 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-const backgroundImageUrl = 'https://i.postimg.cc/TPRSF0MG/2023-10-15-8-26-50.png';
-
 const StyledReservationPage = styled.div`
   position: relative;
-  background-image: url(${backgroundImageUrl});
   background-size: cover;
   background-position: center;
   width: 100%;
