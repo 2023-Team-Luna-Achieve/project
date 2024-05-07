@@ -2,6 +2,7 @@ package backend.backend.reservation.controller;
 
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.reservation.dto.MeetingRoomReservationAvailTimeResponse;
+import backend.backend.reservation.dto.ReservationCountResponse;
 import backend.backend.reservation.dto.ReservationRequest;
 import backend.backend.reservation.dto.ReservationResponse;
 import backend.backend.reservation.service.ReservationService;
@@ -16,7 +17,6 @@ import jakarta.mail.MessagingException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Reservation API", description = "예약")
@@ -36,17 +36,19 @@ public class ReservationController {
 
     @Operation(tags = "유저기준 예약 조회 API", description = "로그인된 유저 기준 전체 예약 조회를 진행한다")
     @GetMapping("/my")
-    public ResponseEntity<List<ReservationResponse>> getReservationsByUserId(@CurrentUser User currentUser) {
-        List<ReservationResponse> reservations = reservationService.getReservationsByUserId(currentUser.getId());
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<ReservationResponse> getReservationsByUserId(@CurrentUser User currentUser) {
+        return ResponseEntity.ok().body(reservationService.getReservationsByUserId(currentUser.getId()));
     }
 
-    //예약 내역 조회
-    @Operation(tags = "유저기준 예약 조회 API", description = "로그인된 유저 기준 전체 예약 조회를 진행한다")
+    @GetMapping("/reservation-count")
+    public ResponseEntity<ReservationCountResponse> getReservationCount(@CurrentUser User currentUser) {
+        return ResponseEntity.ok().body(reservationService.getReservationsCountByUserId(currentUser.getId()));
+    }
+
+    @Operation(tags = "미팅룸 아이디 기준 예약 조회 API", description = "미팅룸 기준 전체 예약 조회를 진행한다")
     @GetMapping("/meetingroom/{roomId}")
     public ResponseEntity<List<ReservationResponse>> getReservationsByRoomId(@PathVariable Long roomId) {
-        List<ReservationResponse> reservations = reservationService.getReservationsByMeetingRoomId(roomId);
-        return ResponseEntity.ok(reservations);
+        return ResponseEntity.ok().body(reservationService.getReservationsByMeetingRoomId(roomId));
     }
 
     //전체 예약 내역 조회

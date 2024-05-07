@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from '../util/axiosConfig';
 import Modal from '../components/Modal';
-import { useSetRecoilState } from 'recoil';
-import { isLoggedInState } from '../recoil/recoilState';
+import { useSetRecoilState } from 'recoil'; // Recoil 추가
+import { accessTokenState, refreshTokenState } from '../recoil/recoilState';
 
 const FormContainer = styled.div`
   max-width: 600px;
@@ -61,7 +61,9 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setLoggedInState = useSetRecoilState(isLoggedInState);
+  // Recoil 상태 업데이트를 위한 세터 함수 초기화를 최상위로 이동
+  const setAccessToken = useSetRecoilState(accessTokenState);
+  const setRefreshToken = useSetRecoilState(refreshTokenState);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -73,36 +75,40 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     try {
-      const response = await axios.post('http://localhost:8080/api/users/signin', {
+      const response = await axios.post('/api/user/sign-in', {
         email,
         password,
       });
 
-      console.log('로그인 성공:', response.data);
+      console.log('응답 헤더:', response.headers);
+      const accessTokenFromHeader = response.headers['authorization'];
+      const refreshTokenFromHeader = response.headers['refresh-token'];
+      console.log('accessTokenFromHeader:', accessTokenFromHeader);
+      console.log('refreshTokenFromHeader:', refreshTokenFromHeader);
 
-      setLoggedInState(true);
+      // 액세스 토큰과 리프레시 토큰을 상태 및 로컬 스토리지에 저장
+      if (accessTokenFromHeader && accessTokenFromHeader.startsWith('Bearer ')) {
+        const accessToken = accessTokenFromHeader.replace('Bearer ', '');
+        setAccessToken(accessToken);
+        localStorage.setItem('accessToken', accessToken);
+      }
 
-      await handleLoginVerification();
-      setIsModalOpen(true);
+      if (refreshTokenFromHeader) {
+        setRefreshToken(refreshTokenFromHeader);
+        localStorage.setItem('refreshToken', refreshTokenFromHeader);
+      }
+
+      setIsModalOpen(true); // 모달 열기
     } catch (error) {
       console.error('로그인 실패:', error);
     }
   };
 
-  const handleLoginVerification = async () => {
-    try {
-      const confirmResponse = await axios.get('http://localhost:8080/api/users/login-confirm');
-
-      console.log('로그인 검증 성공:', confirmResponse.data);
-    } catch (error) {
-      console.error('로그인 검증 실패:', error);
-    }
-  };
-
   const closeModalAndRedirect = () => {
     setIsModalOpen(false);
-    navigate('/main');
+    navigate('/main'); // 로그인 성공 후 리디렉션
   };
 
   return (

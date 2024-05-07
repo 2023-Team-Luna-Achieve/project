@@ -79,6 +79,12 @@ public class UserController {
                 .build();
     }
 
+    @Operation(tags = "로그인된 유저 정보 API", description = "현재 유저 정보를 반환한다.. " )
+    @GetMapping("/info")
+    public ResponseEntity<UserResponse> getAccessTokenUsingRefresh(@CurrentUser User user) {
+        return ResponseEntity.ok().body(userService.getUserInfo(user));
+    }
+
     private Authentication settingAuthentication(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(email, password);

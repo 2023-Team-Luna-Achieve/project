@@ -1,6 +1,7 @@
 package backend.backend.comment.dto;
 
 import backend.backend.comment.entity.Comment;
+import backend.backend.user.entity.Affiliation;
 
 import java.time.LocalDateTime;
 
@@ -8,6 +9,8 @@ public record CommentResponse(
     Long id,
     Long sequenceNumber,
     String authorName,
+    String email,
+    Affiliation affiliation,
     String context,
     LocalDateTime createdAt
 ) {
@@ -17,6 +20,8 @@ public record CommentResponse(
                 comment.getId(),
                 comment.getSequenceNumber(),
                 comment.getUser().getName(),
+                comment.getUser().getEmail(),
+                comment.getUser().getAffiliation(),
                 comment.getContext(),
                 comment.getCreatedAt()
         );

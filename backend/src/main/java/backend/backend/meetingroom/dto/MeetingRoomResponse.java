@@ -1,7 +1,6 @@
 package backend.backend.meetingroom.dto;
 
 import backend.backend.meetingroom.entity.MeetingRoom;
-import lombok.Getter;
 
 public record MeetingRoomResponse(
         Long id,

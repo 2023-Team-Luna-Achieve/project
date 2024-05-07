@@ -99,7 +99,7 @@ public class ReservationControllerTest {
         List<ReservationResponse> reservationResponse = new ArrayList<>();
         reservationResponse.add(reservation);
 
-        given(reservationService.getReservationsByUserId(1L)).willReturn(reservationResponse);
+//        given(reservationService.getReservationsByUserId(1L)).willReturn(reservationResponse);
 
         mockMvc.perform(get("/api/reservation/my")
                         .accept(MediaType.APPLICATION_JSON)

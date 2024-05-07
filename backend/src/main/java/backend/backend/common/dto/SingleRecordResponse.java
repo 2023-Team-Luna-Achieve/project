@@ -7,6 +7,7 @@ public record SingleRecordResponse<T>(
         boolean hasNext,
         String cursor
 ) {
+
     public static <T> SingleRecordResponse<T> of(List<T> values, boolean hasNext, String cursor) {
         return new SingleRecordResponse<>(
                 values, hasNext, cursor

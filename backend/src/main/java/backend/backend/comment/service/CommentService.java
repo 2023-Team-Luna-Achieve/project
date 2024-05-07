@@ -14,6 +14,8 @@ import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -22,15 +24,16 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-        return commentRepository.findCommentsByBoardId(boardId, cursor);
+        String maxCommentSequenceNumber = commentRepository.getMaxSequenceNumber(boardId).orElseGet(() -> "0");
+        return commentRepository.findCommentsByBoardId(boardId, maxCommentSequenceNumber);
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {
         Board board = boardRepository.findById(commentRequest.boardId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
-        Long sequenceNumber  = (long) board.getComments().size();
-        Comment comment = commentRequest.toEntity(user, board, sequenceNumber);
+        Long maxSequenceNumber = Long.parseLong(commentRepository.getMaxSequenceNumber(board.getId()).orElseGet(() -> "0"));
+        Comment comment = commentRequest.toEntity(user, board, maxSequenceNumber);
 
         return commentRepository.save(comment);
     }
@@ -42,7 +45,7 @@ public class CommentService {
 
     public void updateComment(User user, Long commentId, CommentRequest commentRequest) {
         Comment comment = findCommentById(commentId);
-        if(user.hasAuthority(comment.getUser().getId())) {
+        if (user.hasAuthority(comment.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
         comment.update(commentRequest.context());
@@ -50,9 +53,11 @@ public class CommentService {
 
     public void deleteComment(User user, Long commentId) {
         Comment comment = findCommentById(commentId);
-        if(user.hasAuthority(comment.getUser().getId())) {
+        System.out.println("user: " + comment.getUser());
+        if (user.hasAuthority(comment.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
+        System.out.println("ddd");
         commentRepository.deleteById(commentId);
     }
 

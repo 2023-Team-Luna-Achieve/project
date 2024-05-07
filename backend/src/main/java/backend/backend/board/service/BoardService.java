@@ -29,9 +29,9 @@ public class BoardService {
     }
 
     public Long createBoard(User user, BoardRequest boardRequest) {
-        Long boardsSequenceNumber = boardRepository.countBoardsByCategory(boardRequest.category());
-        Board board = boardRequest.toEntity(user, boardsSequenceNumber + 1);
-        return  boardRepository.save(board).getId();
+        Long maxBoardsSequenceNumber = boardRepository.getMaxSequenceNumber(boardRequest.category()).orElseGet(() -> 0L);
+        Board board = boardRequest.toEntity(user, maxBoardsSequenceNumber + 1);
+        return boardRepository.save(board).getId();
     }
 
     @Transactional
@@ -54,16 +54,49 @@ public class BoardService {
         }
         boardRepository.deleteById(id);
     }
-    //커서기반 페이지네이션
+
     public SingleRecordResponse<BoardResponse> getBoards(Category category, String cursor) {
         if (category.equals(Category.NOTICE)) {
+            if (cursor.equals("0")) {
+                return boardRepository.findFirstNoticeBoardsByIdDesc();
+            }
+
             return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor);
         }
 
         if (category.equals(Category.SUGGESTION)) {
+            if (cursor.equals("0")) {
+                return boardRepository.findFirstSuggestionBoardsByIdDesc();
+            }
+
             return boardRepository.findSuggestionBoardsByOrderByIdDesc(cursor);
         }
 
-        return  boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
+
+        if (cursor.equals("0")) {
+            return boardRepository.findFirstLostBoardsByIdDesc();
+        }
+
+        return boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
+    }
+
+    public SingleRecordResponse<BoardResponse> getMyBoards(Long userId, Category category, String cursor) {
+        if (category.equals(Category.NOTICE)) {
+            if (cursor.equals("0")) {
+                return boardRepository.findMyNoticeBoardsByIdDesc(userId);
+            }
+
+            return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor); // my로 수정 필요
+        }
+
+        if (category.equals(Category.SUGGESTION)) {
+            if (cursor.equals("0")) {
+                return boardRepository.findMySuggestionBoardsByIdDesc(userId);
+            }
+
+            return boardRepository.findSuggestionBoardsByOrderByIdDesc(cursor);
+        }
+
+        return boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
     }
 }

@@ -25,9 +25,16 @@ public class BoardController {
 
     @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다")
     @GetMapping
-    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category,
-                                                                            @RequestParam(required = false) String cursor) {
+    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category, @RequestParam(required = false) String cursor) {
         return ResponseEntity.ok().body(boardService.getBoards(category, cursor));
+    }
+
+    @Operation(summary = "본인이 작성한 공지사항 API", description = "작성한 공지사항 조희를 진행한다")
+    @GetMapping("/my")
+    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllMyBoards(@CurrentUser User user,
+                                                                              @RequestParam(value = "category") Category category,
+                                                                              @RequestParam(required = false) String cursor) {
+        return ResponseEntity.ok().body(boardService.getMyBoards(user.getId(), category, cursor));
     }
 
     @Operation(summary = "공지사항 단일 조회 API", description = "공지사항 단일 조회를 진행한다")
@@ -38,7 +45,7 @@ public class BoardController {
     }
 
     @Operation(summary = "공지사항 작성 API", description = "공지사항 작성을 진행한다. \n " +
-            "category는 Notice, LostItem, Suggestion 3가지만 입력한다")
+            "category는 NOTICE, LOST_ITEM, SUGGESTION 3가지만 입력한다")
     @PostMapping
     public ResponseEntity<BoardResponse> createBoard(@CurrentUser User user,
                                                      @RequestBody BoardRequest boardRequest) {

@@ -22,7 +22,7 @@ const NewPage: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/board/${id}`);
+        const response = await axios.get(`/board/${id}`);
         setPost(response.data); // 서버로부터 받은 데이터를 상태에 저장합니다.
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -36,7 +36,7 @@ const NewPage: React.FC = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/board/${id}`);
+      await axios.delete(`/board/${id}`);
       navigate('/'); // 삭제 후 홈페이지로 이동
     } catch (error) {
       console.error('Error deleting post:', error);
