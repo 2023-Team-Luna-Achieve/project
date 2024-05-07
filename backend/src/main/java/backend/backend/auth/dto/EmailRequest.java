@@ -1,13 +1,7 @@
 package backend.backend.auth.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class EmailRequest {
-    private String email;
+public record EmailRequest(
+        String email
+) {
 }

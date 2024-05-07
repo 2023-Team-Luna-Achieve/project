@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
     private final EmailService emailService;
 
-    @Operation(summary = "로그인 메서드", description = "로그인 메서드입니다.")
+    @Operation(summary = "이메일 인증 번호 요청", description = "이메일 인증 번호 요청")
     @PostMapping("/request")
     public ResponseEntity<EmailSendResponse> emailVerificationRequest(@RequestBody EmailRequest emailRequest) throws Exception {
-        return ResponseEntity.ok().body(emailService.sendEmailIfNotExists(emailRequest.getEmail()));
+        return ResponseEntity.ok().body(emailService.sendEmailIfNotExists(emailRequest.email()));
     }
 
     @Operation(summary = "이메일 인증 API", description = "전송받은 인증번호로 이메일을 인증한다.")
     @PostMapping("/confirm")
     public ResponseEntity<VerificationResponse> emailVerification(@RequestBody VerificationRequest verificationRequest) throws Exception {
-        return ResponseEntity.ok().body(emailService.verifyEmail(verificationRequest.getEmail(), verificationRequest.getCode()));
+        return ResponseEntity.ok().body(emailService.verifyEmail(verificationRequest.email(), verificationRequest.code()));
     }
 }

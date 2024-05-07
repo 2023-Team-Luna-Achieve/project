@@ -21,6 +21,7 @@ import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,35 +38,40 @@ public class ReservationService {
 
     @Transactional
     public Long makeReservation(User user, ReservationRequest request) throws MessagingException, UnsupportedEncodingException {
-        MeetingRoom meetingRoom = meetingRoomService.findById(request.getMeetingRoomId())
+        MeetingRoom meetingRoom = meetingRoomService.findById(request.meetingRoomId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLUB_ROOM_NOT_FOUND));
 
         User reservUser = userRepository.findUserByEmail(user.getEmail());
 
-        reservationTimeValidator(request);
         checkUserHasReservation(user);
+        reservationTimeValidator(request);
 
         Reservation reservation = request.toEntity(user, meetingRoom);
         reservUser.addReservationCount();
 
-        emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
+        try {
+            emailService.sendReservationEmail(user.getEmail(), meetingRoom.getName());
+        } catch (IllegalArgumentException e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+
         return reservationRepository.save(reservation).getId();
     }
 
     private void reservationTimeValidator(ReservationRequest request) {
-        if (isReservationStartTimeFormatOneNotOneSec(request.getReservationStartTime())) {
+        if (isReservationStartTimeFormatOneNotOneSec(request.reservationStartTime())) {
             throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
         }
 
-        if (isTimeSlotAlreadyReserved(request.getMeetingRoomId(), request.getReservationStartTime())) {
+        if (isTimeSlotAlreadyReserved(request.meetingRoomId(), request.reservationStartTime())) {
             throw new InvalidReservationTimeException(ErrorCode.ALREADY_RESERVED_TIME);
         }
 
-        if (request.getReservationStartTime().isBefore(LocalDateTime.now())) {
+        if (request.reservationStartTime().isBefore(LocalDateTime.now())) {
             throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
         }
 
-        if (request.getReservationStartTime().isAfter(request.getReservationEndTime())) {
+        if (request.reservationStartTime().isAfter(request.reservationEndTime())) {
             throw new InvalidReservationTimeException(ErrorCode.INVALID_RESERVATION_TIME_REQUEST);
         }
     }
@@ -85,25 +91,14 @@ public class ReservationService {
     }
 
     public ReservationResponse convertToResponse(Reservation reservation) {
-        String startTimeAlert = startTimeMaker(reservation.getReservationStartTime());
-        String endTimeAlert = endTimeMaker(reservation.getReservationEndTime());
-        return new ReservationResponse(
-                reservation.getId(),
-                startTimeAlert,
-                endTimeAlert,
-                reservation.getMembers(),
-                reservation.getMeetingRoom()
-        );
+        String startTimeAlert = responseTimeMaker(reservation.getReservationStartTime());
+        String endTimeAlert = responseTimeMaker(reservation.getReservationEndTime());
+        return ReservationResponse.from(reservation, startTimeAlert, endTimeAlert);
     }
 
-    private String startTimeMaker(LocalDateTime reservationStartTime) {
+    private String responseTimeMaker(LocalDateTime reservationTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm:ss");
-        return reservationStartTime.format(formatter);
-    }
-
-    private String endTimeMaker(LocalDateTime reservationEndTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm:ss");
-        return reservationEndTime.format(formatter);
+        return reservationTime.format(formatter);
     }
 
     public List<ReservationResponse> getReservationsByMeetingRoomId(Long roomId) {
@@ -146,7 +141,6 @@ public class ReservationService {
         return new Reservation(0L, null, LocalDateTime.now(), LocalDateTime.now(), 0, null);
     }
 
-
     public ReservationCountResponse getReservationsCountByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ReservationNotExistException(ErrorCode.RESERVATION_NOT_FOUND));
         return ReservationCountResponse.of(user.getReservationCount());
@@ -154,7 +148,7 @@ public class ReservationService {
 
 
     public List<MeetingRoomReservationAvailTimeResponse> getReserveAvailTimes(Long meetingRoomId, String dateTime) {
-        String todayTimeFormatter = timeFormatter(dateTime);
+        String todayTimeFormatter = timeFormatterToOclockSharp(dateTime);
         LocalDateTime previewReservationTimeStart = LocalDateTime.parse(todayTimeFormatter);
         LocalDateTime previewReservationTimeEnd = tomorrowTimeFormatter(todayTimeFormatter);
         return reservationRepository.findReservationsByRoomIdAndReservedTime(meetingRoomId, previewReservationTimeStart, previewReservationTimeEnd);
@@ -164,7 +158,7 @@ public class ReservationService {
         return LocalDateTime.parse(time).plusDays(2);
     }
 
-    private String timeFormatter(String dateTime) {
+    private String timeFormatterToOclockSharp(String dateTime) {
         String timeSubstring = dateTime.substring(11);
         String dateSubstring = dateTime.substring(0, 11);
 

@@ -116,7 +116,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(boards, userId);
+        return convertToSingleRecord(boards);
     }
 
     @Override
@@ -194,7 +194,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(boards, userId);
+        return convertToSingleRecord(boards);
     }
 
     @Override
@@ -244,13 +244,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return Integer.parseInt(String.valueOf(queryFactory.select(board.count())
                 .from(board)
                 .where(eqAuthorId(userId)).fetchOne()));
-    }
-
-    SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards, Long userId) {
-        boolean hasNext = existNextPage(boards);
-        String cursor = generateCursor(boards);
-        int count = getMyBoardsCount(userId);
-        return SingleRecordResponse.of(boards, hasNext, cursor);
     }
 
     SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards) {
