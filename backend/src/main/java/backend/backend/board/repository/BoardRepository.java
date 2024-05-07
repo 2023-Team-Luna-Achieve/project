@@ -12,5 +12,6 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
     @Query("SELECT nb FROM Board nb LEFT JOIN FETCH nb.user WHERE nb.id = :id")
     Optional<Board> findByIdWithUsername(@Param("id") Long id);
 
-    Long countBoardsByCategory(Category category);
+    @Query("SELECT MAX(b.sequenceNumber) from Board b where b.category = :category")
+    Optional<Long> getMaxSequenceNumber(Category category);
 }

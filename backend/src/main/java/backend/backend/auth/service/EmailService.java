@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -120,7 +121,7 @@ public class EmailService {
     }
 
     //회원 가입용 이메일 전송
-    private void sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+    protected void sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.findUserByEmail(targetEmail) != null) {
             throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }
@@ -136,9 +137,10 @@ public class EmailService {
 
 
     // 에약용 메일 전송 메서드
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendReservationEmail(String targetEmail, String meetingRoomName) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = createReservationMessage(targetEmail, meetingRoomName);
-        try{//예외처리
+        try{
             emailSender.send(message);
         }catch(MailException es){
             es.printStackTrace();

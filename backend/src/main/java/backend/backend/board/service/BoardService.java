@@ -29,8 +29,8 @@ public class BoardService {
     }
 
     public Long createBoard(User user, BoardRequest boardRequest) {
-        Long boardsSequenceNumber = boardRepository.countBoardsByCategory(boardRequest.category());
-        Board board = boardRequest.toEntity(user, boardsSequenceNumber + 1);
+        Long maxBoardsSequenceNumber = boardRepository.getMaxSequenceNumber(boardRequest.category()).orElseGet(() -> 0L);
+        Board board = boardRequest.toEntity(user, maxBoardsSequenceNumber + 1);
         return boardRepository.save(board).getId();
     }
 

@@ -7,17 +7,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class ReservationRequest {
-
-    private LocalDateTime reservationStartTime;
-    private LocalDateTime reservationEndTime;
-    private int members;
-    private Long meetingRoomId;
-
+public record ReservationRequest(
+        LocalDateTime reservationStartTime,
+        LocalDateTime reservationEndTime,
+        int members,
+        Long meetingRoomId
+) {
     public Reservation toEntity(User user, MeetingRoom meetingRoom) {
         return Reservation.builder()
                 .user(user)
