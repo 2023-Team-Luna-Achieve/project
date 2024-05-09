@@ -24,7 +24,11 @@ public enum ErrorCode {
     FORBIDDEN(403, "AU_009", "다른 사용자의 작성 글을 삭제 혹은 수정할 권한이 없습니다."),
     INVALID_RESERVATION_TIME_REQUEST(400, "BE_001", "예약 시간의 형식이 올바르지 않습니다"),
     ALREADY_RESERVED_TIME(400, "BE_002", "이미 예약된 시간입니다"),
-    ALREADY_RESERVATION_EXIST(400, "BE_003", "이미 예약을 보유하고 있습니다");
+    ALREADY_RESERVATION_EXIST(400, "BE_003", "이미 예약을 보유하고 있습니다"),
+    FCM_TOKEN_NOT_FOUND(404, "FCM_001", "FCM token이 존재하지 않습니다"),
+    FAILED_FCM_ACCESS_TOKEN_REQUEST(500, "FCM_002", "FCM access token 발급을 실패했습니다"),
+    FAILED_FCM_REQUEST_ERROR(500, "FCM_003", "FCM 통신을 실패했습니다"),
+    FAILED_JSON_CONVERT(500, "J_001", "Json 변환에 실패했습니다.");
     private final int status;
     private final String code;
     private final String message;
