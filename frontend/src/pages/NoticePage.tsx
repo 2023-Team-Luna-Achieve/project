@@ -4,17 +4,15 @@ import axios from '../util/axiosConfig';
 import styled from 'styled-components';
 
 const PageContainer = styled.div`
-  background-color: #ececec;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
   max-width: 100%;
   margin: 0 auto;
   padding: 20px;
 `;
 
 const Box = styled.div`
-  width: 300px;
+  width: 100%; // 너비를 100%로 조정하여 한 줄에 하나씩 표시
   height: 180px;
   background-color: #ffffff;
   border: 1px solid #e4e4e4;
@@ -28,6 +26,7 @@ const Box = styled.div`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
+  width: 100%; // 박스에서 사용 가능한 모든 공간을 사용하도록 함
 `;
 
 const Title = styled.div`
@@ -57,6 +56,8 @@ const WriteButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
+  width: calc(33.333% - 14px); // 버튼이 하나의 슬롯을 차지하도록 조정
+  margin-right: 0; // 오른쪽에 배치한다고 가정
 `;
 
 const NoticePage: React.FC = () => {
@@ -113,7 +114,7 @@ const NoticePage: React.FC = () => {
       if (!values || values.length === 0) {
         setHasMore(false);
       } else {
-        setData((prevData) => [...prevData, ...values]);
+        setData(values); // 기존 데이터와 합치지 않고 새 데이터로 대체
         setCursor(newCursor);
         setHasMore(hasNext);
       }
