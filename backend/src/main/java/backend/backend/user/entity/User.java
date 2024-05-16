@@ -1,15 +1,10 @@
 package backend.backend.user.entity;
 
-import backend.backend.comment.entity.Comment;
 import backend.backend.common.domain.BaseEntity;
-import backend.backend.board.entity.Board;
-import backend.backend.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.util.List;
 
 @Getter
 @Builder

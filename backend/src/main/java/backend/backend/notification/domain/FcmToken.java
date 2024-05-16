@@ -28,7 +28,6 @@ public class FcmToken {
         return new FcmToken(userId, token);
     }
 
-
     public void update(String token) {
         this.token = token;
     }

@@ -46,7 +46,6 @@ public class RefreshTokenService {
     }
 
     private RefreshToken findRefreshToken(String refreshToken) {
-        log.info("refreshToken: "  + refreshToken);
         return refreshTokenRepository.findRefreshTokenByToken(refreshToken)
                 .orElseThrow(() -> new NotFoundRefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
     }
