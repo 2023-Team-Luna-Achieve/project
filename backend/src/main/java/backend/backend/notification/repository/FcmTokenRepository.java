@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
     Optional<FcmToken> findByUserId(Long userId);
+
+    boolean existsByUserId(Long userId);
 }
