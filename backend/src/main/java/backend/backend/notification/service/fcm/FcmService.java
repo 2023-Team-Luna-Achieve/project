@@ -1,4 +1,4 @@
-package backend.backend.notification.service;
+package backend.backend.notification.service.fcm;
 
 import backend.backend.common.constant.FcmNotificationConstant;
 import backend.backend.common.exception.BusinessException;
@@ -31,8 +31,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FcmService {
-    //    private static final String FIREBASE_ADMIN_KEY = "firebase/achieve-cc2aa-firebase-adminsdk-0ygsr-ff26214f49.json";
-//    private static final String GOOGLE_AUTH_URL = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String GOOGLE_AUTH_URL = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String FIREBASE_NOTIFICATION_REQUEST_URL = "https://fcm.googleapis.com/v1/projects/%s/messages:send";
     @Value("${fcm.project.id}")

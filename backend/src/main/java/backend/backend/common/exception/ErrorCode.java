@@ -31,7 +31,9 @@ public enum ErrorCode {
     FAILED_FCM_REQUEST_ERROR(500, "FCM_003", "FCM 통신을 실패했습니다"),
     FAILED_JSON_CONVERT(500, "J_001", "Json 변환에 실패했습니다."),
     FAILED_EMAIL_SEND(400, "E_001", "이메일이 옳바른지 확인해주세요."),
-    WRONG_EMAIL_(500, "E_002", "이메일 형식을 확인해주세요.");
+    WRONG_EMAIL_(500, "E_002", "이메일 형식을 확인해주세요."),
+    NOTIFICATION_NOT_FOUND(404, "N_001","알림이 존재하지 않습니다");
+
     private final int status;
     private final String code;
     private final String message;

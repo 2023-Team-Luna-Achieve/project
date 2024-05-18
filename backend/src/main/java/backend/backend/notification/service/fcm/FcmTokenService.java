@@ -1,5 +1,7 @@
-package backend.backend.notification.service;
+package backend.backend.notification.service.fcm;
 
+import backend.backend.common.exception.ErrorCode;
+import backend.backend.common.exception.NotFoundException;
 import backend.backend.notification.domain.FcmToken;
 import backend.backend.notification.dto.FcmAccessTokenCreateRequest;
 import backend.backend.notification.repository.FcmTokenRepository;

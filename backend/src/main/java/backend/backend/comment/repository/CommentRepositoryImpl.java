@@ -18,7 +18,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     @Override
     public SingleRecordResponse<CommentResponse> findCommentsByBoardId(Long boardId, String cursor) {
-        System.out.println("cursor" + cursor);
         List<CommentResponse> comments = queryFactory.select(Projections.constructor(CommentResponse.class,
                         comment.id,
                         comment.sequenceNumber,

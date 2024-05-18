@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class FcmNotification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "fcm_notification_id")
     private Long id;
 
     private String content;
@@ -26,13 +27,14 @@ public class FcmNotification extends BaseEntity {
     private boolean isRead;
 
     @Builder
-    public FcmNotification(String content, Long targetId, Long receiverId) {
+    public FcmNotification(String content, Long targetId, Long receiverId, boolean isRead) {
         this.content = content;
         this.targetId = targetId;
         this.receiverId = receiverId;
+        this.isRead = isRead;
     }
 
-    public FcmNotification(String content) {
-        this.content = content;
+    public void read() {
+        this.isRead = true;
     }
 }
