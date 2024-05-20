@@ -27,20 +27,13 @@ public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-        if (cursor.equals("0")) {
-            String maxSequenceNumber = commentRepository.getMinSequenceNumber(boardId).orElseGet(() -> "0");
-            return commentRepository.findCommentsByBoardId(boardId, maxSequenceNumber);
-        }
-
-        return commentRepository.findCommentsByBoardId(boardId, cursor);
+            return commentRepository.findCommentsByBoardId(boardId, cursor);
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {
         Board board = boardRepository.findById(commentRequest.boardId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-
-        Long maxSequenceNumber = Long.parseLong(commentRepository.getMaxSequenceNumber(board.getId()).orElseGet(() -> "0"));
-        Comment comment = commentRequest.toEntity(user, board, maxSequenceNumber);
+        Comment comment = commentRequest.toEntity(user, board);
         commentRepository.save(comment);
 
         sendFcmNotification(board, comment);

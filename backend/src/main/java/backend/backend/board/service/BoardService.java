@@ -29,8 +29,7 @@ public class BoardService {
     }
 
     public Long createBoard(User user, BoardRequest boardRequest) {
-        Long maxBoardsSequenceNumber = boardRepository.getMaxSequenceNumber(boardRequest.category()).orElseGet(() -> 0L);
-        Board board = boardRequest.toEntity(user, maxBoardsSequenceNumber + 1);
+        Board board = boardRequest.toEntity(user);
         return boardRepository.save(board).getId();
     }
 
@@ -55,48 +54,11 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
-    public SingleRecordResponse<BoardResponse> getBoards(Category category, String cursor) {
-        if (category.equals(Category.NOTICE)) {
-            if (cursor.equals("0")) {
-                return boardRepository.findFirstNoticeBoardsByIdDesc();
-            }
-
-            return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor);
-        }
-
-        if (category.equals(Category.SUGGESTION)) {
-            if (cursor.equals("0")) {
-                return boardRepository.findFirstSuggestionBoardsByIdDesc();
-            }
-
-            return boardRepository.findSuggestionBoardsByOrderByIdDesc(cursor);
-        }
-
-
-        if (cursor.equals("0")) {
-            return boardRepository.findFirstLostBoardsByIdDesc();
-        }
-
-        return boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
+    public SingleRecordResponse<BoardResponse> findBoards(Category category, String cursor) {
+        return boardRepository.findBoardsByCategory(cursor, category);
     }
 
-    public SingleRecordResponse<BoardResponse> getMyBoards(Long userId, Category category, String cursor) {
-        if (category.equals(Category.NOTICE)) {
-            if (cursor.equals("0")) {
-                return boardRepository.findMyNoticeBoardsByIdDesc(userId);
-            }
-
-            return boardRepository.findNoticeBoardsByOrderByIdDesc(cursor); // my로 수정 필요
-        }
-
-        if (category.equals(Category.SUGGESTION)) {
-            if (cursor.equals("0")) {
-                return boardRepository.findMySuggestionBoardsByIdDesc(userId);
-            }
-
-            return boardRepository.findSuggestionBoardsByOrderByIdDesc(cursor);
-        }
-
-        return boardRepository.findLostItemBoardsByOrderByIdDesc(cursor);
+    public SingleRecordResponse<BoardResponse> findMyBoards(Long userId, Category category, String cursor) {
+        return boardRepository.findMyBoardsByCategory(userId, cursor, category);
     }
 }

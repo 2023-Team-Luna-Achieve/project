@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 public record CommentResponse(
     Long id,
-    Long sequenceNumber,
     String authorName,
     String email,
     Affiliation affiliation,
@@ -18,7 +17,6 @@ public record CommentResponse(
     public static CommentResponse from(Comment comment) {
         return new CommentResponse(
                 comment.getId(),
-                comment.getSequenceNumber(),
                 comment.getUser().getName(),
                 comment.getUser().getEmail(),
                 comment.getUser().getAffiliation(),

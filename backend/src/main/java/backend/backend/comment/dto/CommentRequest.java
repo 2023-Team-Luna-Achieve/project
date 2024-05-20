@@ -12,10 +12,9 @@ public record CommentRequest(
         String context
 ) {
 
-    public Comment toEntity(User user, Board board, Long sequenceNumber) {
+    public Comment toEntity(User user, Board board) {
         return Comment.builder()
                 .user(user)
-                .sequenceNumber(sequenceNumber)
                 .board(board)
                 .context(context)
                 .build();

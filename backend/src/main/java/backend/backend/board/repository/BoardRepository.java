@@ -11,7 +11,4 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
     @Query("SELECT nb FROM Board nb LEFT JOIN FETCH nb.user WHERE nb.id = :id")
     Optional<Board> findByIdWithUsername(@Param("id") Long id);
-
-    @Query("SELECT MAX(b.sequenceNumber) from Board b where b.category = :category")
-    Optional<Long> getMaxSequenceNumber(Category category);
 }

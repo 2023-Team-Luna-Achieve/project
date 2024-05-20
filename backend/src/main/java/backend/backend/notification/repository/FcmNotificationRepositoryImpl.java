@@ -16,7 +16,7 @@ public class FcmNotificationRepositoryImpl implements FcmNotificationRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public SingleRecordResponse<FcmNotificationResponse> getNotifications(Long userId, String cursor) {
+    public SingleRecordResponse<FcmNotificationResponse> findNotifications(Long userId, String cursor) {
         List<FcmNotificationResponse> fcmNotifications = queryFactory.select(Projections.constructor(FcmNotificationResponse.class,
                         fcmNotification.id,
                         fcmNotification.content,

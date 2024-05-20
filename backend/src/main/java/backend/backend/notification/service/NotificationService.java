@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationService {
     private final FcmNotificationRepository fcmNotificationRepository;
 
-    public SingleRecordResponse<FcmNotificationResponse> getNotifications(User user, String cursor) {
-        return fcmNotificationRepository.getNotifications(user.getId(), cursor);
+    public SingleRecordResponse<FcmNotificationResponse> findNotifications(User user, String cursor) {
+        return fcmNotificationRepository.findNotifications(user.getId(), cursor);
     }
 
     @Transactional
