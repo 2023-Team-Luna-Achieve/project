@@ -34,7 +34,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(comments);
+        return SingleRecordResponse.convertToSingleRecord(comments);
     }
 
     private BooleanExpression eqBoardId(Long boardId) {
@@ -43,28 +43,5 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     private BooleanExpression ltCommentId(String cursor) {
         return comment.id.gt(Long.valueOf(cursor));
-    }
-
-    private SingleRecordResponse<CommentResponse> convertToSingleRecord(List<CommentResponse> comments) {
-        if (comments.isEmpty()) {
-            return SingleRecordResponse.of(comments, false, "0");
-        }
-        boolean hasNext = existNextPage(comments);
-        String cursor = generateCursor(comments);
-        return SingleRecordResponse.of(comments, hasNext, cursor);
-    }
-
-    private String generateCursor(List<CommentResponse> comments) {
-        CommentResponse commentResponse = comments.get(comments.size() - 1);
-        return String.valueOf(commentResponse.id());
-    }
-
-    private boolean existNextPage(List<CommentResponse> comments) {
-        if (comments.size() > 10) {
-            comments.remove(10);
-            return true;
-        }
-
-        return false;
     }
 }

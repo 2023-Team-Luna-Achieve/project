@@ -40,8 +40,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(boards);
+        return SingleRecordResponse.convertToSingleRecord(boards);
     }
+
 
     @Override
     public SingleRecordResponse<BoardResponse> findBoardsByCategory(String cursor, Category category) {
@@ -65,7 +66,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(boards);
+        return SingleRecordResponse.convertToSingleRecord(boards);
     }
 
     private BooleanExpression eqAuthorId(Long userId) {
@@ -82,29 +83,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         }
 
         return board.category.eq(Category.LOST_ITEM);
-    }
-
-    SingleRecordResponse<BoardResponse> convertToSingleRecord(List<BoardResponse> boards) {
-        if (boards.isEmpty()) {
-            return SingleRecordResponse.of(boards, false, "0");
-        }
-        boolean hasNext = existNextPage(boards);
-        String cursor = generateCursor(boards);
-        return SingleRecordResponse.of(boards, hasNext, cursor);
-    }
-
-    private boolean existNextPage(List<BoardResponse> boards) {
-        if (boards.size() > 10) {
-            boards.remove(10);
-            return true;
-        }
-
-        return false;
-    }
-
-    private String generateCursor(List<BoardResponse> boards) {
-        BoardResponse boardResponse = boards.get(boards.size() - 1);
-        return String.valueOf(boardResponse.boardId());
     }
 
     BooleanExpression ltBoardId(String cursor) {

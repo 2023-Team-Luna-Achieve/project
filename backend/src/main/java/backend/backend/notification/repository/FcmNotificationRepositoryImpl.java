@@ -31,7 +31,7 @@ public class FcmNotificationRepositoryImpl implements FcmNotificationRepositoryC
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(fcmNotifications);
+        return SingleRecordResponse.convertToSingleRecord(fcmNotifications);
     }
 
     private BooleanExpression ltCursor(String cursor) {
@@ -46,25 +46,28 @@ public class FcmNotificationRepositoryImpl implements FcmNotificationRepositoryC
         return fcmNotification.receiverId.eq(userId);
     }
 
-    private SingleRecordResponse<FcmNotificationResponse> convertToSingleRecord(List<FcmNotificationResponse> fcmNotificationResponses) {
-        if (fcmNotificationResponses.isEmpty()) {
-            return SingleRecordResponse.of(fcmNotificationResponses, false, "0");
-        }
-        boolean hasNext = existNextPage(fcmNotificationResponses);
-        String cursor = generateCursor(fcmNotificationResponses);
-        return SingleRecordResponse.of(fcmNotificationResponses, hasNext, cursor);
-    }
 
-    boolean existNextPage(List<FcmNotificationResponse> fcmNotificationResponses) {
-        if (fcmNotificationResponses.size() > 10) {
-            fcmNotificationResponses.remove(10);
-            return true;
-        }
 
-        return false;
-    }
 
-    String generateCursor(List<FcmNotificationResponse> fcmNotificationResponses) {
-        return String.valueOf(fcmNotificationResponses.get(fcmNotificationResponses.size() - 1).notificationId());
-    }
+//    public <T extends Identifiable> SingleRecordResponse<T> convertToSingleRecord(List<T> responses) {
+//        if (responses.isEmpty()) {
+//            return SingleRecordResponse.of(responses, false, "0");
+//        }
+//        boolean hasNext = existNextPage(responses);
+//        String cursor = generateCursor(responses);
+//        return SingleRecordResponse.of(responses, hasNext, cursor);
+//    }
+//
+//    private <T> boolean existNextPage(List<T> responses) {
+//        if (responses.size() > 10) {
+//            responses.remove(10);
+//            return true;
+//        }
+//
+//        return false;
+//    }
+//
+//    private <T extends Identifiable> String generateCursor(List<T> responses) {
+//        return String.valueOf(responses.get(responses.size() - 1).getId());
+//    }
 }
