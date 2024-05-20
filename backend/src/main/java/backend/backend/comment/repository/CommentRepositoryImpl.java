@@ -43,7 +43,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     }
 
     private BooleanExpression ltCommentSequenceNumber(String cursor) {
-        return comment.sequenceNumber.lt(Long.valueOf(cursor));
+        return comment.sequenceNumber.gt(Long.valueOf(cursor));
     }
 
     private SingleRecordResponse<CommentResponse> convertToSingleRecord(List<CommentResponse> comments) {

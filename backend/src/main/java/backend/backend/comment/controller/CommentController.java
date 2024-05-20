@@ -9,13 +9,16 @@ import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
 @Tag(name = "Notice Board Comment API", description = "공지사항 댓글")
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/comments")
@@ -31,7 +34,7 @@ public class CommentController {
 
     @Operation(summary = "공지사항 댓글 생성 API", description = "특정 공지사항의 댓글을 생성 한다.")
     @PostMapping
-    public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest,
+    public ResponseEntity<CommentResponse> createComment(@RequestBody @Valid CommentRequest commentRequest,
                                                          @CurrentUser User user) {
         Comment createdComment = commentService.createComment(user, commentRequest);
         return ResponseEntity.created(URI.create("/api/comments/" + createdComment.getId())).build();
@@ -46,7 +49,7 @@ public class CommentController {
     @PutMapping("/{commentId}")
     public ResponseEntity<Void> updateComment(@PathVariable Long commentId,
                                               @CurrentUser User user,
-                                              @RequestBody CommentRequest commentRequestDto) {
+                                              @RequestBody @Valid CommentRequest commentRequestDto) {
         commentService.updateComment(user, commentId, commentRequestDto);
         return ResponseEntity.ok().build();
     }

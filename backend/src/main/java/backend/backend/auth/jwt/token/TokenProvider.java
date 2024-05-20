@@ -10,16 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -50,10 +45,8 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         UserAdapter principal = (UserAdapter) authentication.getPrincipal();
-
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
-
         return Jwts.builder()
                 .setSubject(principal.getUsername())
                 .claim(AUTHORITIES_KEY, authorities) // 정보 저장
@@ -65,7 +58,6 @@ public class TokenProvider implements InitializingBean {
     public String createAccessTokenByRefreshToken(User user) {
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
-
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim(AUTHORITIES_KEY, user.getRole())

@@ -52,6 +52,8 @@ function getPath() {
     });
 }
 
+<<<<<<< HEAD
+=======
 // function getPathResults() {
 //     let pathResultRes = http.get(`${BASE_URL}/api/boards?category=NOTICE&cursor=0`, {
 //         headers: { 'Authorization': jwtToken },
@@ -62,6 +64,7 @@ function getPath() {
 //     });
 // }
 
+>>>>>>> 9002738fdf36aaddef61b074f9dd15b99ef75b6f
 export default function () {
     logIn(); // 로그인을 먼저 수행
     getPath();

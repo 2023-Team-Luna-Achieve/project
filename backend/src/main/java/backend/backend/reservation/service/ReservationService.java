@@ -1,7 +1,9 @@
 package backend.backend.reservation.service;
 
 import backend.backend.auth.service.EmailService;
+import backend.backend.common.event.ReservationReminderEvent;
 import backend.backend.common.exception.*;
+import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.reservation.dto.MeetingRoomReservationAvailTimeResponse;
 import backend.backend.meetingroom.entity.MeetingRoom;
 import backend.backend.meetingroom.repository.MeetingRoomRepository;
@@ -13,6 +15,8 @@ import backend.backend.reservation.repository.ReservationRepository;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,17 +24,20 @@ import jakarta.mail.MessagingException;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final FcmTokenRepository fcmTokenRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final MeetingRoomRepository meetingRoomService;
     private final UserRepository userRepository;
     private final EmailService emailService;
@@ -90,16 +97,6 @@ public class ReservationService {
         return startTime.getMinute() > 0 || startTime.getSecond() != 1;
     }
 
-    public ReservationResponse convertToResponse(Reservation reservation) {
-        String startTimeAlert = responseTimeMaker(reservation.getReservationStartTime());
-        String endTimeAlert = responseTimeMaker(reservation.getReservationEndTime());
-        return ReservationResponse.from(reservation, startTimeAlert, endTimeAlert);
-    }
-
-    private String responseTimeMaker(LocalDateTime reservationTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH:mm:ss");
-        return reservationTime.format(formatter);
-    }
 
     public List<ReservationResponse> getReservationsByMeetingRoomId(Long roomId) {
         List<Reservation> roomReservations = reservationRepository.findAllByMeetingRoomId(roomId);
@@ -109,7 +106,7 @@ public class ReservationService {
         }
 
         return roomReservations.stream()
-                .map(this::convertToResponse)
+                .map(ReservationResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -117,7 +114,7 @@ public class ReservationService {
     public List<ReservationResponse> getAllReservations() {
         List<Reservation> allReservations = reservationRepository.findAll();
         return allReservations.stream()
-                .map(this::convertToResponse)
+                .map(ReservationResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -132,20 +129,17 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    public ReservationResponse getReservationsByUserId(Long userId) {
-        return convertToResponse(reservationRepository.findReservationsByUserId(userId)
-                .orElseGet(ReservationService::defaultReservation));
-    }
 
-    public static Reservation defaultReservation() {
-        return new Reservation(0L, null, LocalDateTime.now(), LocalDateTime.now(), 0, null);
+    public ReservationResponse getReservationsByUserId(Long userId) {
+        Optional<Reservation> reservation = reservationRepository.findReservationByUserId(userId);
+        return reservation.map(ReservationResponse::from).orElseGet(ReservationResponse::empty);
     }
 
     public ReservationCountResponse getReservationsCountByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ReservationNotExistException(ErrorCode.RESERVATION_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
         return ReservationCountResponse.of(user.getReservationCount());
     }
-
 
     public List<MeetingRoomReservationAvailTimeResponse> getReserveAvailTimes(Long meetingRoomId, String dateTime) {
         String todayTimeFormatter = timeFormatterToOclockSharp(dateTime);
@@ -169,5 +163,28 @@ public class ReservationService {
             }
         }
         return dateSubstring + timeSubstring;
+    }
+
+    @Transactional
+    public void reservationReminderNotification() {
+        LocalDateTime reservationStartTimeToFind = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(1).withNano(0);
+        List<Reservation> reservations = reservationRepository.findReservationByReservationStartTime(reservationStartTimeToFind);
+        if (!reservations.isEmpty()) {
+            sendReminderNotification(reservations);
+        }
+    }
+
+    void sendReminderNotification(List<Reservation> reservations) {
+        for (Reservation reservation : reservations) {
+            if (fcmTokenRepository.existsByUserId(reservation.getUser().getId())) {
+                eventPublisher.publishEvent(new ReservationReminderEvent(reservation.getUser().getName(), reservation.getId(), reservation.getUser().getId()));
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteExpiredReservations() {
+        LocalDateTime reservationEndTimeToDelete = LocalDateTime.now().plusHours(2);
+        reservationRepository.deleteReservationsByReservationStartTimeBefore(reservationEndTimeToDelete);
     }
 }

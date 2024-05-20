@@ -1,12 +1,9 @@
 package backend.backend.auth.service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 
 import backend.backend.common.exception.*;
-import backend.backend.user.entity.User;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -17,12 +14,14 @@ import backend.backend.auth.dto.EmailSendResponse;
 import backend.backend.auth.dto.VerificationResponse;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -32,65 +31,66 @@ public class EmailService {
 
 
     private MimeMessage createReservationMessage(String targetEmail, String roomName) throws MessagingException, UnsupportedEncodingException {
-        System.out.println("보내는 대상 : "+ targetEmail);
+        System.out.println("보내는 대상 : " + targetEmail);
         MimeMessage message = emailSender.createMimeMessage();
 
         message.addRecipients(RecipientType.TO, targetEmail); //보내는 대상
         message.setSubject("예약 완료");//제목
 
-        String msgg="";
-        msgg+="<img " +
+        String msgg = "";
+        msgg += "<img " +
                 "src='https://miro.medium.com/v2/resize:fit:1200/1*lL3lJHoc96tbsPw8BKd27g.jpeg' " +
                 "style='display: block; width: 900px; height: 300px' " +
                 ">";
-        msgg+= "<div style='margin:20px;'>";
-        msgg+= "<h1> Team Achieve 입니다. </h1>";
-        msgg+= "<br>";
-        msgg+= "<p> 예약완료 되었습니다<p>";
-        msgg+= "<br>";
-        msgg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
-        msgg+= "<h3 style='color:blue;'>예약완료 되었습니다</h3>";
-        msgg+= "<div style='font-size:130%'>";
-        msgg+= "예약한 방 : <strong>";
-        msgg+=  roomName +"</strong><div><br/> ";
-        msgg+= "</div>";
-        msgg+= "</div>";
-        msgg+= "</div>";
-        msgg+= "<br>";
-        msgg+= "<br>";
-        msgg+= "<br>";
-        msgg+= "<br>";
-        msgg+= "<br>";
+        msgg += "<div style='margin:20px;'>";
+        msgg += "<h1> Team Achieve 입니다. </h1>";
+        msgg += "<br>";
+        msgg += "<p> 예약완료 되었습니다<p>";
+        msgg += "<br>";
+        msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msgg += "<h3 style='color:blue;'>예약완료 되었습니다</h3>";
+        msgg += "<div style='font-size:130%'>";
+        msgg += "예약한 방 : <strong>";
+        msgg += roomName + "</strong><div><br/> ";
+        msgg += "</div>";
+        msgg += "</div>";
+        msgg += "</div>";
+        msgg += "<br>";
+        msgg += "<br>";
+        msgg += "<br>";
+        msgg += "<br>";
+        msgg += "<br>";
         message.setText(msgg, "utf-8", "html");//내용
-        message.setFrom(new InternetAddress("academyschool7@gmail.com","Achieve"));//보내는 사람
+        message.setFrom(new InternetAddress("academyschool7@gmail.com", "Achieve"));//보내는 사람
         return message;
     }
 
 
     private MimeMessage createVerificationMessage(String targetEmail) throws MessagingException, UnsupportedEncodingException {
         String ePw = createKey();
-        System.out.println("보내는 대상 : "+ targetEmail);
-        System.out.println("인증 번호 : "+ ePw);
+        System.out.println("보내는 대상 : " + targetEmail);
+        System.out.println("인증 번호 : " + ePw);
         MimeMessage message = emailSender.createMimeMessage();
 
         message.addRecipients(RecipientType.TO, targetEmail); //보내는 대상
         message.setSubject("회원가입 인증");//제목
 
-        String msgg="";
-        msgg+= "<div style='margin:20px;'>";
-        msgg+= "<h1> Team Achieve 입니다. </h1>";
-        msgg+= "<br>";
-        msgg+= "<p>아래 코드를 복사해 입력해주세요<p>";
-        msgg+= "<br>";
-        msgg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
-        msgg+= "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
-        msgg+= "<div style='font-size:130%'>";
-        msgg+= "CODE : <strong>";
-        msgg+= ePw+"</strong><div><br/> ";
-        msgg+= "</div>";
+        String msgg = "";
+        msgg += "<div style='margin:20px;'>";
+        msgg += "<h1> Team Achieve 입니다. </h1>";
+        msgg += "<br>";
+        msgg += "<p>아래 코드를 복사해 입력해주세요<p>";
+        msgg += "<br>";
+        msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msgg += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
+        msgg += "<div style='font-size:130%'>";
+        msgg += "CODE : <strong>";
+        msgg += ePw + "</strong><div><br/> ";
+        msgg += "</div>";
         message.setText(msgg, "utf-8", "html");//내용
-        message.setFrom(new InternetAddress("academyschool7@gmail.com","Achieve"));//보내는 사람
+        message.setFrom(new InternetAddress("academyschool7@gmail.com", "Achieve"));//보내는 사람
 
+//        redisUtil.setDataAfterVerification(targetEmail, "sent", 10 * 60L);
         redisUtil.setDataExpire(targetEmail, ePw, 10 * 60L);
         return message;
     }
@@ -126,12 +126,22 @@ public class EmailService {
             throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }
 
+        if (redisUtil.existData(targetEmail)) {
+            if (redisUtil.getData(targetEmail).equals("verified")) {
+                throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
+            }
+
+            if (!redisUtil.getData(targetEmail).equals("verified")) {
+                throw new AlreadyVerifiedException(ErrorCode.ALREADY_AUTH_CODE_SENT);
+            }
+        }
+
         MimeMessage message = createVerificationMessage(targetEmail);
-        try{//예외처리
+        try {
             emailSender.send(message);
-        }catch(MailException es){
-            es.printStackTrace();
-            throw new IllegalArgumentException();
+        } catch (MailException es) {
+            log.error(es.toString());
+            throw new BusinessException(ErrorCode.FAILED_EMAIL_SEND);
         }
     }
 
@@ -140,11 +150,11 @@ public class EmailService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendReservationEmail(String targetEmail, String meetingRoomName) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = createReservationMessage(targetEmail, meetingRoomName);
-        try{
+        try {
             emailSender.send(message);
-        }catch(MailException es){
-            es.printStackTrace();
-            throw new IllegalArgumentException();
+        } catch (MailException es) {
+            log.error(es.toString());
+            throw new BusinessException(ErrorCode.FAILED_EMAIL_SEND);
         }
     }
 
@@ -156,7 +166,11 @@ public class EmailService {
             throw new EmailAuthCodeSendException(ErrorCode.NEED_AUTH_CODE_SEND);
         }
 
-        if (verificationCode.equals("verified") || userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(email)) {
+            throw new AlreadyVerifiedException(ErrorCode.DUPLICATED_EMAIL);
+        }
+
+        if (verificationCode.equals("verified")) {
             throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }
 
@@ -173,6 +187,10 @@ public class EmailService {
         if (userRepository.findUserByEmail(email) == null) {
             sendVerificationCodeEmail(email);
             return new EmailSendResponse("10분내로 인증번호를 입력해주세요.");
+        }
+
+        if (redisUtil.existData(email)) {
+            throw new BusinessException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
     }

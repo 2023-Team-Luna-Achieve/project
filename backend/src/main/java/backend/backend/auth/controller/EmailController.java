@@ -7,11 +7,14 @@ import backend.backend.auth.dto.VerificationResponse;
 import backend.backend.auth.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Email API", description = "이메일 인증")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/email/verification")
@@ -20,7 +23,7 @@ public class EmailController {
 
     @Operation(summary = "이메일 인증 번호 요청", description = "이메일 인증 번호 요청")
     @PostMapping("/request")
-    public ResponseEntity<EmailSendResponse> emailVerificationRequest(@RequestBody EmailRequest emailRequest) throws Exception {
+    public ResponseEntity<EmailSendResponse> emailVerificationRequest(@Valid @RequestBody EmailRequest emailRequest) throws Exception {
         return ResponseEntity.ok().body(emailService.sendEmailIfNotExists(emailRequest.email()));
     }
 

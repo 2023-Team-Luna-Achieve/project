@@ -3,6 +3,7 @@ package backend.backend.comment.service;
 import backend.backend.comment.dto.CommentRequest;
 import backend.backend.comment.entity.Comment;
 import backend.backend.common.dto.SingleRecordResponse;
+import backend.backend.common.event.CommentCreateEvent;
 import backend.backend.common.exception.AuthException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
@@ -10,22 +11,28 @@ import backend.backend.comment.dto.CommentResponse;
 import backend.backend.comment.repository.CommentRepository;
 import backend.backend.board.entity.Board;
 import backend.backend.board.repository.BoardRepository;
+import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final FcmTokenRepository fcmTokenRepository;
     private final BoardRepository boardRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-        String maxCommentSequenceNumber = commentRepository.getMaxSequenceNumber(boardId).orElseGet(() -> "0");
-        return commentRepository.findCommentsByBoardId(boardId, maxCommentSequenceNumber);
+        if (cursor.equals("0")) {
+            String maxSequenceNumber = commentRepository.getMinSequenceNumber(boardId).orElseGet(() -> "0");
+            return commentRepository.findCommentsByBoardId(boardId, maxSequenceNumber);
+        }
+
+        return commentRepository.findCommentsByBoardId(boardId, cursor);
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {
@@ -34,13 +41,21 @@ public class CommentService {
 
         Long maxSequenceNumber = Long.parseLong(commentRepository.getMaxSequenceNumber(board.getId()).orElseGet(() -> "0"));
         Comment comment = commentRequest.toEntity(user, board, maxSequenceNumber);
+        commentRepository.save(comment);
 
-        return commentRepository.save(comment);
+        sendFcmNotification(board, comment);
+        return comment;
+    }
+
+    void sendFcmNotification(Board board, Comment comment) {
+        if (fcmTokenRepository.existsByUserId(comment.getBoard().getUser().getId())) {
+            eventPublisher.publishEvent(new CommentCreateEvent(comment.getUser().getName(), comment.getContext(), board.getId(), board.getUser().getId()));
+        }
     }
 
     public CommentResponse findOneComment(Long id) {
         Comment comment = findCommentById(id);
-        return CommentResponse.of(comment);
+        return CommentResponse.from(comment);
     }
 
     public void updateComment(User user, Long commentId, CommentRequest commentRequest) {
@@ -53,11 +68,9 @@ public class CommentService {
 
     public void deleteComment(User user, Long commentId) {
         Comment comment = findCommentById(commentId);
-        System.out.println("user: " + comment.getUser());
         if (user.hasAuthority(comment.getUser().getId())) {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
-        System.out.println("ddd");
         commentRepository.deleteById(commentId);
     }
 

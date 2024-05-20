@@ -53,7 +53,6 @@ public class BoardController {
         return ResponseEntity.created(URI.create("/api/boards/" + boardId)).build();
     }
 
-    //글 수정
     @Operation(summary = "공지사항 수정 API", description = "공지사항 수정을 진행한다")
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(
@@ -64,7 +63,6 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    //공지사항 글 삭제
     @Operation(summary = "공지사항 삭제 API", description = "공지사항 삭제를 진행한다")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBoard(@PathVariable Long id, @CurrentUser User user) {
