@@ -23,7 +23,9 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.reservationEndTime
                         ))
                 .from(reservation)
-                .where(goeNowDateTimeLoeNextDateTime(meetingRoomId, startTime, endTime))
+                .where(
+                        goeNowDateTimeLoeNextDateTime(meetingRoomId, startTime, endTime)
+                )
                 .orderBy(reservation.reservationStartTime.asc())
                 .fetch();
     }

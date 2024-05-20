@@ -74,4 +74,12 @@ public class ReservationController {
                                                                                                  @RequestParam(required = false) String dateTime) {
         return ResponseEntity.ok().body(reservationService.getReserveAvailTimes(meetingRoomId, dateTime));
     }
+
+
+    @Operation(summary = "각 동아리방 별 예약 가능 시간 조회 API", description = "각 방별 예약 가능 시간을 전체조회 한다.")
+    @GetMapping("/reservationReminder")
+    public ResponseEntity<Void> d() {
+        reservationService.reservationReminderNotification();
+        return ResponseEntity.ok().build();
+    }
 }

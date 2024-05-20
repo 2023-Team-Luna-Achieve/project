@@ -10,6 +10,7 @@ import backend.backend.user.entity.User;
 import backend.backend.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.net.URI;
 
 @Tag(name = "User API", description = "회원가입, 로그아웃")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -36,14 +38,14 @@ public class UserController {
 
     @Operation(tags = "회원가입 API", description = "회원가입 이전에 이메일 인증을 먼저 진행")
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         Long userId = userService.createUserIfEmailNotExists(signUpRequest);
         return ResponseEntity.created(URI.create("/api/user/" + userId)).build();
     }
 
     @Operation(tags = "로그인 API", description = "로그인을 진행한다. (헤더로 보낸 jwt 토큰 확인)")
     @PostMapping("/sign-in")
-    public ResponseEntity<String> authorize(@Valid @RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<Void> authorize(@Valid @RequestBody SignInRequest signInRequest) {
         Authentication authentication = settingAuthentication(signInRequest.getEmail(), signInRequest.getPassword());
         String accessToken = tokenProvider.createAccessToken(authentication);
 
