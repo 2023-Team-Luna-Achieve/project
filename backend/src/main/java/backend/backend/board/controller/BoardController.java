@@ -26,7 +26,7 @@ public class BoardController {
     @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다")
     @GetMapping
     public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category, @RequestParam(required = false) String cursor) {
-        return ResponseEntity.ok().body(boardService.getBoards(category, cursor));
+        return ResponseEntity.ok().body(boardService.findBoards(category, cursor));
     }
 
     @Operation(summary = "본인이 작성한 공지사항 API", description = "작성한 공지사항 조희를 진행한다")
@@ -34,7 +34,7 @@ public class BoardController {
     public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllMyBoards(@CurrentUser User user,
                                                                               @RequestParam(value = "category") Category category,
                                                                               @RequestParam(required = false) String cursor) {
-        return ResponseEntity.ok().body(boardService.getMyBoards(user.getId(), category, cursor));
+        return ResponseEntity.ok().body(boardService.findMyBoards(user.getId(), category, cursor));
     }
 
     @Operation(summary = "공지사항 단일 조회 API", description = "공지사항 단일 조회를 진행한다")
@@ -55,17 +55,17 @@ public class BoardController {
 
     @Operation(summary = "공지사항 수정 API", description = "공지사항 수정을 진행한다")
     @PutMapping("/{boardId}")
-    public ResponseEntity<BoardResponse> updateBoard(
-            @CurrentUser User user,
-            @PathVariable Long boardId,
-            @RequestBody BoardRequest boardRequest) {
+    public ResponseEntity<BoardResponse> updateBoard(@CurrentUser User user,
+                                                     @PathVariable Long boardId,
+                                                     @RequestBody BoardRequest boardRequest) {
         boardService.updateBoard(boardId, user, boardRequest);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "공지사항 삭제 API", description = "공지사항 삭제를 진행한다")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long id, @CurrentUser User user) {
+    public ResponseEntity<Void> deleteBoard(@CurrentUser User user,
+                                            @PathVariable Long id) {
         boardService.deleteBoard(id, user);
         return ResponseEntity.noContent().build();
     }

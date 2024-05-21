@@ -20,7 +20,6 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     public SingleRecordResponse<CommentResponse> findCommentsByBoardId(Long boardId, String cursor) {
         List<CommentResponse> comments = queryFactory.select(Projections.constructor(CommentResponse.class,
                         comment.id,
-                        comment.sequenceNumber,
                         comment.user.name,
                         comment.user.email,
                         comment.user.affiliation,
@@ -28,44 +27,21 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.createdAt
                 ))
                 .from(comment)
-                .where(ltCommentSequenceNumber(cursor),
+                .where(ltCommentId(cursor),
                         eqBoardId(boardId)
                 )
-                .orderBy(comment.sequenceNumber.asc())
+                .orderBy(comment.id.asc())
                 .limit(11)
                 .fetch();
 
-        return convertToSingleRecord(comments);
+        return SingleRecordResponse.convertToSingleRecord(comments);
     }
 
     private BooleanExpression eqBoardId(Long boardId) {
         return comment.board.id.eq(boardId);
     }
 
-    private BooleanExpression ltCommentSequenceNumber(String cursor) {
-        return comment.sequenceNumber.gt(Long.valueOf(cursor));
-    }
-
-    private SingleRecordResponse<CommentResponse> convertToSingleRecord(List<CommentResponse> comments) {
-        if (comments.isEmpty()) {
-            return SingleRecordResponse.of(comments, false, "0");
-        }
-        boolean hasNext = existNextPage(comments);
-        String cursor = generateCursor(comments);
-        return SingleRecordResponse.of(comments, hasNext, cursor);
-    }
-
-    private String generateCursor(List<CommentResponse> comments) {
-        CommentResponse commentResponse = comments.get(comments.size() - 1);
-        return String.valueOf(commentResponse.sequenceNumber());
-    }
-
-    private boolean existNextPage(List<CommentResponse> comments) {
-        if (comments.size() > 10) {
-            comments.remove(10);
-            return true;
-        }
-
-        return false;
+    private BooleanExpression ltCommentId(String cursor) {
+        return comment.id.gt(Long.valueOf(cursor));
     }
 }

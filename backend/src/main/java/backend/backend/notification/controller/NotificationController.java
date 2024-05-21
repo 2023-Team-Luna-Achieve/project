@@ -18,7 +18,7 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<SingleRecordResponse<FcmNotificationResponse>> getAllNotifications(@CurrentUser User user,
                                                                                              @RequestParam(required = false) String cursor) {
-        return ResponseEntity.ok().body(notificationService.getNotifications(user, cursor));
+        return ResponseEntity.ok().body(notificationService.findNotifications(user, cursor));
     }
 
     @PatchMapping("/{notificationId}")

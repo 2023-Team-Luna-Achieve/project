@@ -21,9 +21,6 @@ public class Board extends BaseEntity {
     @Column(name = "board_id")
     private Long id;
 
-    @ColumnDefault("0")
-    private Long sequenceNumber;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -43,8 +40,7 @@ public class Board extends BaseEntity {
     private int viewCount;
 
     @Builder
-    public Board(User user, Long sequenceNumber, String title, Category category, String context) {
-        this.sequenceNumber = sequenceNumber;
+    public Board(User user, String title, Category category, String context) {
         this.user = user;
         this.title = title;
         this.category = category;
