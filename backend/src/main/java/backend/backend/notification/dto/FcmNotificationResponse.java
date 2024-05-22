@@ -1,9 +1,11 @@
 package backend.backend.notification.dto;
 
+import backend.backend.common.constant.FcmNotificationCategory;
 import backend.backend.common.dto.Identifiable;
-import backend.backend.notification.domain.FcmNotification;
 
 public record FcmNotificationResponse(
+        FcmNotificationCategory fcmNotificationCategory,
+        Long targetId,
         Long notificationId,
         String content,
         boolean isRead
@@ -12,11 +14,13 @@ public record FcmNotificationResponse(
     public Long getId() {
         return notificationId;
     }
-        public static FcmNotificationResponse from(FcmNotification fcmNotification){
-        return new FcmNotificationResponse(
-                fcmNotification.getId(),
-                fcmNotification.getContent(),
-                fcmNotification.isRead()
-        );
-    }
+//        public static FcmNotificationResponse from(FcmNotification fcmNotification){
+//        return new FcmNotificationResponse(
+//                fcmNotification.getFcmNotificationCategory(),
+//                fcmNotification.getId(),
+//                fcmNotification.getTargetId(),
+//                fcmNotification.getContent(),
+//                fcmNotification.isRead()
+//        );
+//    }
 }

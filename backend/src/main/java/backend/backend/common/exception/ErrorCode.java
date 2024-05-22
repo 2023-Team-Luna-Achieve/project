@@ -28,7 +28,7 @@ public enum ErrorCode {
     ALREADY_RESERVATION_EXIST(400, "BE_003", "이미 예약을 보유하고 있습니다"),
     FCM_TOKEN_NOT_FOUND(404, "FCM_001", "FCM token이 존재하지 않습니다"),
     FAILED_FCM_ACCESS_TOKEN_REQUEST(500, "FCM_002", "FCM access token 발급을 실패했습니다"),
-    FAILED_FCM_REQUEST_ERROR(500, "FCM_003", "FCM 통신을 실패했습니다"),
+    FAILED_FCM_REQUEST(500, "FCM_003", "FCM 통신을 실패했습니다"),
     FAILED_JSON_CONVERT(500, "J_001", "Json 변환에 실패했습니다."),
     FAILED_EMAIL_SEND(400, "E_001", "이메일이 옳바른지 확인해주세요."),
     WRONG_EMAIL_(500, "E_002", "이메일 형식을 확인해주세요."),

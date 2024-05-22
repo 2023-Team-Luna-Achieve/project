@@ -18,6 +18,8 @@ public class FcmNotificationRepositoryImpl implements FcmNotificationRepositoryC
     @Override
     public SingleRecordResponse<FcmNotificationResponse> findNotifications(Long userId, String cursor) {
         List<FcmNotificationResponse> fcmNotifications = queryFactory.select(Projections.constructor(FcmNotificationResponse.class,
+                        fcmNotification.fcmNotificationCategory,
+                        fcmNotification.targetId,
                         fcmNotification.id,
                         fcmNotification.content,
                         fcmNotification.isRead
@@ -45,29 +47,4 @@ public class FcmNotificationRepositoryImpl implements FcmNotificationRepositoryC
     private BooleanExpression eqReceiverId(Long userId) {
         return fcmNotification.receiverId.eq(userId);
     }
-
-
-
-
-//    public <T extends Identifiable> SingleRecordResponse<T> convertToSingleRecord(List<T> responses) {
-//        if (responses.isEmpty()) {
-//            return SingleRecordResponse.of(responses, false, "0");
-//        }
-//        boolean hasNext = existNextPage(responses);
-//        String cursor = generateCursor(responses);
-//        return SingleRecordResponse.of(responses, hasNext, cursor);
-//    }
-//
-//    private <T> boolean existNextPage(List<T> responses) {
-//        if (responses.size() > 10) {
-//            responses.remove(10);
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//
-//    private <T extends Identifiable> String generateCursor(List<T> responses) {
-//        return String.valueOf(responses.get(responses.size() - 1).getId());
-//    }
 }

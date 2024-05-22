@@ -69,8 +69,8 @@ public class SecurityConfig {
                         ))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                            .requestMatchers("/").permitAll() // oauth2
-                            .requestMatchers("/error").permitAll() // oauth2
+                            .requestMatchers("/").permitAll()
+                            .requestMatchers("/error").permitAll()
                             .requestMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
                             .requestMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
                             .requestMatchers("/api/user/sign-in").permitAll() // 로그인

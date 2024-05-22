@@ -16,12 +16,12 @@ public record CommentNotificationMessage(
 
     public record Notification(
             String title,
-            String body,
-            String image
+            String body
+//            String image
     ) {
 
-        public static Notification of(String title, String body, String image) {
-            return new Notification(title, body, image);
+        public static Notification of(String title, String body/*String image*/) {
+            return new Notification(title, body /*image*/);
         }
     }
 

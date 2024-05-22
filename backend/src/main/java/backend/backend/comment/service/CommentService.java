@@ -1,7 +1,9 @@
 package backend.backend.comment.service;
 
+import backend.backend.board.entity.Category;
 import backend.backend.comment.dto.CommentRequest;
 import backend.backend.comment.entity.Comment;
+import backend.backend.common.constant.FcmNotificationCategory;
 import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.common.event.CommentCreateEvent;
 import backend.backend.common.exception.AuthException;
@@ -27,7 +29,7 @@ public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
 
     public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-            return commentRepository.findCommentsByBoardId(boardId, cursor);
+        return commentRepository.findCommentsByBoardId(boardId, cursor);
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {
@@ -41,14 +43,28 @@ public class CommentService {
     }
 
     void sendFcmNotification(Board board, Comment comment) {
+        FcmNotificationCategory notificationType = getNotificationTypeByBoardCategory(board);
+
         if (fcmTokenRepository.existsByUserId(comment.getBoard().getUser().getId())) {
-            eventPublisher.publishEvent(new CommentCreateEvent(comment.getUser().getName(), comment.getContext(), board.getId(), board.getUser().getId()));
+            eventPublisher.publishEvent(new CommentCreateEvent(notificationType, comment.getUser().getName(), comment.getContext(), board.getId(), board.getUser().getId()));
         }
     }
 
     public CommentResponse findOneComment(Long id) {
         Comment comment = findCommentById(id);
         return CommentResponse.from(comment);
+    }
+
+    FcmNotificationCategory getNotificationTypeByBoardCategory(Board board) {
+        if (board.getCategory().equals(Category.NOTICE)) {
+            return FcmNotificationCategory.NOTICE;
+        }
+
+        if (board.getCategory().equals(Category.SUGGESTION)) {
+            return FcmNotificationCategory.SUGGESTION;
+        }
+
+        return FcmNotificationCategory.LOST_ITEM;
     }
 
     public void updateComment(User user, Long commentId, CommentRequest commentRequest) {

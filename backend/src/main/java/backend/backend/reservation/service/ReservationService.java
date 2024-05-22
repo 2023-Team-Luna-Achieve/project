@@ -1,6 +1,7 @@
 package backend.backend.reservation.service;
 
 import backend.backend.auth.service.EmailService;
+import backend.backend.common.constant.FcmNotificationCategory;
 import backend.backend.common.event.ReservationReminderEvent;
 import backend.backend.common.exception.*;
 import backend.backend.notification.repository.FcmTokenRepository;
@@ -34,7 +35,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
-
     private final ReservationRepository reservationRepository;
     private final FcmTokenRepository fcmTokenRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -175,16 +175,20 @@ public class ReservationService {
     }
 
     void sendReminderNotification(List<Reservation> reservations) {
-        for (Reservation reservation : reservations) {
+        reservations.forEach(reservation -> {
             if (fcmTokenRepository.existsByUserId(reservation.getUser().getId())) {
-                eventPublisher.publishEvent(new ReservationReminderEvent(reservation.getUser().getName(), reservation.getId(), reservation.getUser().getId()));
+                try {
+                    eventPublisher.publishEvent(new ReservationReminderEvent(FcmNotificationCategory.RESERVATION, reservation.getUser().getName(), reservation.getId(), reservation.getUser().getId()));
+                } catch (Exception e) {
+                    log.error("reservation reminder error occurred - ", e.getStackTrace());
+                }
             }
-        }
+        });
     }
 
     @Transactional
     public void deleteExpiredReservations() {
-        LocalDateTime reservationEndTimeToDelete = LocalDateTime.now().plusHours(2);
+        LocalDateTime reservationEndTimeToDelete = LocalDateTime.now().plusHours(1);
         reservationRepository.deleteReservationsByReservationStartTimeBefore(reservationEndTimeToDelete);
     }
 }

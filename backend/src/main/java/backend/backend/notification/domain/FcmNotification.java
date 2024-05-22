@@ -1,5 +1,6 @@
 package backend.backend.notification.domain;
 
+import backend.backend.common.constant.FcmNotificationCategory;
 import backend.backend.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,8 +14,11 @@ import lombok.NoArgsConstructor;
 public class FcmNotification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "fcm_notification_id")
+    @Column(name = "fcm_notification_id")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private FcmNotificationCategory fcmNotificationCategory;
 
     private String content;
 
@@ -27,7 +31,8 @@ public class FcmNotification extends BaseEntity {
     private boolean isRead;
 
     @Builder
-    public FcmNotification(String content, Long targetId, Long receiverId, boolean isRead) {
+    public FcmNotification(String content, FcmNotificationCategory fcmNotificationCategory, Long targetId, Long receiverId, boolean isRead) {
+        this.fcmNotificationCategory = fcmNotificationCategory;
         this.content = content;
         this.targetId = targetId;
         this.receiverId = receiverId;
