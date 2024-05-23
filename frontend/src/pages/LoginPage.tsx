@@ -80,7 +80,7 @@ const LoginPage: React.FC = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const response = await axios.post('/api/user/sign-in', { email, password });

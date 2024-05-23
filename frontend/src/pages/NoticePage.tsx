@@ -12,7 +12,7 @@ const PageContainer = styled.div`
 `;
 
 const Box = styled.div`
-  width: 100%; // 너비를 100%로 조정하여 한 줄에 하나씩 표시
+  width: 100%;
   height: 180px;
   background-color: #ffffff;
   border: 1px solid #e4e4e4;
@@ -26,7 +26,7 @@ const Box = styled.div`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-  width: 100%; // 박스에서 사용 가능한 모든 공간을 사용하도록 함
+  width: 100%;
 `;
 
 const Title = styled.div`
@@ -56,12 +56,18 @@ const WriteButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
-  width: calc(33.333% - 14px); // 버튼이 하나의 슬롯을 차지하도록 조정
-  margin-right: 0; // 오른쪽에 배치한다고 가정
+  width: calc(33.333% - 14px);
+  margin-right: 0;
 `;
 
+interface BoardItem {
+  boardId: number;
+  title: string;
+  context: string;
+}
+
 const NoticePage: React.FC = () => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<BoardItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -78,9 +84,8 @@ const NoticePage: React.FC = () => {
       navigate('/login');
     }
 
-    // Initialize fetching data on mount
     fetchData();
-  }, []); // Ensure fetchData runs only on component mount
+  }, []);
 
   useEffect(() => {
     if (cursor) {
@@ -99,7 +104,7 @@ const NoticePage: React.FC = () => {
     }
 
     return () => observer.current?.disconnect();
-  }, [loading, hasMore, cursor]); // Dependencies ensure updates only when needed
+  }, [loading, hasMore, cursor]);
 
   const fetchData = async () => {
     if (!hasMore || loading) return;
@@ -114,7 +119,11 @@ const NoticePage: React.FC = () => {
       if (!values || values.length === 0) {
         setHasMore(false);
       } else {
-        setData(values); // 기존 데이터와 합치지 않고 새 데이터로 대체
+        setData((prevData) => {
+          const newDataIds = new Set(values.map((item: BoardItem) => item.boardId));
+          const filteredPrevData = prevData.filter((item) => !newDataIds.has(item.boardId));
+          return [...filteredPrevData, ...values];
+        });
         setCursor(newCursor);
         setHasMore(hasNext);
       }
@@ -128,11 +137,11 @@ const NoticePage: React.FC = () => {
   };
 
   const loadMore = () => {
-    fetchData(); // Load more data when user scrolls to bottom
+    fetchData();
   };
 
   const handleWriteClick = () => {
-    navigate('/WritePage'); // Navigate to write page on button click
+    navigate('/WritePage');
   };
 
   return (
@@ -140,8 +149,8 @@ const NoticePage: React.FC = () => {
       <PageContainer>
         <WriteButton onClick={handleWriteClick}>Write Post</WriteButton>
         {data.length > 0 ? (
-          data.map((item, index) => (
-            <StyledLink to={`/NewPage/${item.boardId}`} key={index}>
+          data.map((item) => (
+            <StyledLink to={`/NewPage/${item.boardId}`} key={item.boardId}>
               <Box>
                 <Title>{item.title}</Title>
                 <Content>{item.context}</Content>
