@@ -1,5 +1,6 @@
 package backend.backend.notification.service.fcm;
 
+import backend.backend.common.constant.FcmNotificationCategory;
 import backend.backend.common.event.CommentCreateEvent;
 import backend.backend.common.event.ReservationReminderEvent;
 import backend.backend.notification.domain.FcmNotification;
@@ -22,6 +23,7 @@ public class NotificationEventListener {
     @Async //***
     public void sendCreateCommentNotification(CommentCreateEvent commentCreateEvent) {
         FcmNotification fcmNotification = FcmNotification.builder()
+                .fcmNotificationCategory(commentCreateEvent.fcmNotificationCategory())
                 .content(commentCreateEvent.senderName() + "님이 댓글을 작성했습니다: " + commentCreateEvent.content())
                 .targetId(commentCreateEvent.targetId())
                 .receiverId(commentCreateEvent.receiverId())
@@ -37,6 +39,7 @@ public class NotificationEventListener {
     @Async
     public void sendReservationReminderNotification(ReservationReminderEvent reservationReminderEvent) {
         FcmNotification fcmNotification = FcmNotification.builder()
+                .fcmNotificationCategory(reservationReminderEvent.fcmNotificationCategory())
                 .content(reservationReminderEvent.receiverName() + "님 입장 10분 전 입니다!")
                 .targetId(reservationReminderEvent.targetId())
                 .receiverId(reservationReminderEvent.receiverId())

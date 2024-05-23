@@ -1,6 +1,5 @@
 package backend.backend.notification.service.fcm;
 
-import backend.backend.common.constant.FcmNotificationConstant;
 import backend.backend.common.exception.BusinessException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.notification.domain.FcmToken;
@@ -57,7 +56,7 @@ public class FcmService {
         );
 
         if (exchange.getStatusCode().isError()) {
-            throw new BusinessException(ErrorCode.FAILED_FCM_REQUEST_ERROR);
+            throw new BusinessException(ErrorCode.FAILED_FCM_REQUEST);
         }
     }
 
@@ -77,14 +76,14 @@ public class FcmService {
     private String createMessage(FcmNotification fcmNotification) {
         Long receiverId = fcmNotification.getReceiverId();
         validateUserUserExist(receiverId);
+
         FcmToken fcmToken = findFcmToken(receiverId);
         CommentNotificationMessage commentNotificationMessage = CommentNotificationMessage.of(
                 false,
                 Message.of(fcmToken.getToken(),
                         Notification.of(
-                                FcmNotificationConstant.title,
-                                fcmNotification.getContent(),
-                                FcmNotificationConstant.imageUrl
+                                fcmNotification.getFcmNotificationCategory().getValue(),
+                                fcmNotification.getContent()
                         ),
 
                         Data.from(fcmNotification)));

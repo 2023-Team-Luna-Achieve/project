@@ -20,7 +20,7 @@ public class ReservationScheduler {
         reservationService.reservationReminderNotification();
     }
 
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void deleteReservation() {
         reservationService.deleteExpiredReservations();
     }

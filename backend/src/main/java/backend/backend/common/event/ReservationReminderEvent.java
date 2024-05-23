@@ -1,6 +1,9 @@
 package backend.backend.common.event;
 
-public record ReservationReminderEvent(
+import backend.backend.common.constant.FcmNotificationCategory;
+
+public record ReservationReminderEvent (
+        FcmNotificationCategory fcmNotificationCategory,
         String receiverName,
         Long targetId,
         Long receiverId

@@ -51,7 +51,6 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationService.getReservationsByMeetingRoomId(roomId));
     }
 
-    //전체 예약 내역 조회
     @Operation(tags = "전체 예약 조회 API", description = "존재하는 전체 예약을 조회를 진행한다")
     @GetMapping("/all")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
@@ -59,7 +58,6 @@ public class ReservationController {
         return ResponseEntity.ok(allReservations);
     }
 
-    //예약 취소
     @Operation(tags = "예약 취소 API", description = "예약 취소를 진행한다")
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId,
@@ -73,13 +71,5 @@ public class ReservationController {
     public ResponseEntity<List<MeetingRoomReservationAvailTimeResponse>> getAvailReservationTime(@PathVariable Long meetingRoomId,
                                                                                                  @RequestParam(required = false) String dateTime) {
         return ResponseEntity.ok().body(reservationService.getReserveAvailTimes(meetingRoomId, dateTime));
-    }
-
-
-    @Operation(summary = "각 동아리방 별 예약 가능 시간 조회 API", description = "각 방별 예약 가능 시간을 전체조회 한다.")
-    @GetMapping("/reservationReminder")
-    public ResponseEntity<Void> d() {
-        reservationService.reservationReminderNotification();
-        return ResponseEntity.ok().build();
     }
 }
