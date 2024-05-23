@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // 리다이렉트를 위해 사용
 
 // axios 인스턴스 생성
 const instance = axios.create({
