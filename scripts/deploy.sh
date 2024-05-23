@@ -43,7 +43,7 @@ echo "배포 시작일자 : $(TZ="Asia/Seoul" date '+%Y-%m-%d %H:%M:%S')" >> /op
 if [ -z "$EXIST_BLUE" ]; then
   echo "blue 배포 시작 : $(TZ="Asia/Seoul" date '+%Y-%m-%d %H:%M:%S')" >> /opt/deploy.log
 
-  echo sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml up -d --build >> /opt/docker-deploy.log
+  sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml up -d --build
 
   sleep 120
 
@@ -53,8 +53,9 @@ if [ -z "$EXIST_BLUE" ]; then
   FRONTEND_CONTAINER_STATUS=docker inspect frontend-blue | grep '"Status":' | head -n 1 | awk -F: '{print $2}' | tr -d ' ",'
   REDIS_CONTAINER_STATUS=docker inspect redis-blue | grep '"Status":' | head -n 1 | awk -F: '{print $2}' | tr -d ' ",'
 
-  if [ -z "$BLUE_STATUS" ] || [ "$BACKEND_CONTAINER_STATUS" == "exited" ] || [ "$FRONTEND_CONTAINER_STATUS" == "exited" ] || [ "$REDIS_CONTAINER_STATUS" == "exited" ]; then
+  if [ -z "$BLUE_STATUS" ] || [ "$BACKEND_CONTAINER_STATUS" = "exited" ] || [ "$FRONTEND_CONTAINER_STATUS" = "exited" ] || [ "$REDIS_CONTAINER_STATUS" = "exited" ]; then
       "에러 발생" >> /opt/deploy.log
+      sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-green.yml down -v --rmi all
       echoIfContainerExcited BACKEND_CONTAINER_STATUS FRONTEND_CONTAINER_STATUS REDIS_CONTAINER_STATUS
 
       cat /opt/deploy-report-email/deploy-fail-email.txt | ssmtp -v -t
@@ -73,7 +74,7 @@ if [ -z "$EXIST_BLUE" ]; then
 
 else
       echo "green 배포 시작 : $(TZ="Asia/Seoul" date '+%Y-%m-%d %H:%M:%S')" >> /opt/deploy.log
-      echo sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml up -d --build >> /opt/docker-deploy.log
+      echo sudo docker-compose -p ${DOCKER_APP_NAME}-blue -f docker-compose-blue.yml up -d --build >> /opt/docker-deploy.log
       sleep 120
 
 
@@ -82,8 +83,9 @@ else
       FRONTEND_CONTAINER_STATUS=docker inspect frontend-green | grep '"Status":' | head -n 1 | awk -F: '{print $2}' | tr -d ' ",'
       REDIS_CONTAINER_STATUS=docker inspect redis-green | grep '"Status":' | head -n 1 | awk -F: '{print $2}' | tr -d ' ",'
 
-    if [ -z "$GREEN_STATUS" ] || [ "$BACKEND_CONTAINER_STATUS" == "exited" ] || [ "$FRONTEND_CONTAINER_STATUS" == "exited" ] || [ "$REDIS_CONTAINER_STATUS" == "exited" ]; then
+    if [ -z "$GREEN_STATUS" ] || [ "$BACKEND_CONTAINER_STATUS" = "exited" ] || [ "$FRONTEND_CONTAINER_STATUS" = "exited" ] || [ "$REDIS_CONTAINER_STATUS" = "exited" ]; then
         "에러 발생" >> /opt/deploy.log
+        sudo docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose-green.yml down -v --rmi all
         echoIfContainerExcited BACKEND_CONTAINER_STATUS FRONTEND_CONTAINER_STATUS REDIS_CONTAINER_STATUS
 
         cat /opt/deploy-report-email/deploy-fail-email.txt | ssmtp -v -t
