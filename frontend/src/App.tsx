@@ -21,18 +21,18 @@ const App: React.FC = () => {
         <div>
           <Header />
           <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/main" element={<MainPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/reservation" element={<ReservationPage />} />
-            <Route path="/select" element={<SelectPage />} />
-            <Route path="/notice" element={<NoticePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/join" element={<JoinPage />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/writepage" element={<WritePage />} />
-            <Route path="/newpage/:id" element={<NewPage />} />
+            <Route path="" element={<MainPage />} />
+            <Route path="Main" element={<MainPage />} />
+            <Route path="About" element={<AboutPage />} />
+            <Route path="Reservation" element={<ReservationPage />} />
+            <Route path="Select" element={<SelectPage />} />
+            <Route path="Notice" element={<NoticePage title={''} context={''} />} />
+            <Route path="Login" element={<LoginPage />} />
+            <Route path="Join" element={<JoinPage />} />
+            <Route path="Mypage" element={<MyPage />} />
+            <Route path="Community" element={<CommunityPage />} />
+            <Route path="WritePage" element={<WritePage />} />
+            <Route path="/NewPage/:id" element={<NewPage />} />
           </Routes>
         </div>
       </Router>

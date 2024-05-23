@@ -1,18 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from '../util/axiosConfig';
 import styled from 'styled-components';
+import axios from '../util/axiosConfig';
+
+type NoticeProps = {
+  title: string;
+  context: string;
+};
 
 const PageContainer = styled.div`
+  background-color: #ececec;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
   max-width: 100%;
   margin: 0 auto;
   padding: 20px;
 `;
 
 const Box = styled.div`
-  width: 100%;
+  width: 300px;
   height: 180px;
   background-color: #ffffff;
   border: 1px solid #e4e4e4;
@@ -26,7 +33,6 @@ const Box = styled.div`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-  width: 100%;
 `;
 
 const Title = styled.div`
@@ -48,120 +54,62 @@ const Content = styled.div`
   margin-bottom: 10px;
 `;
 
-const WriteButton = styled.button`
-  padding: 10px 20px;
-  background-color: #4caf50;
+const Button = styled.button`
+  width: 100px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid #232323;
+  background-color: #232323;
   color: white;
-  border: none;
-  border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
-  margin-top: 20px;
-  width: calc(33.333% - 14px);
-  margin-right: 0;
 `;
 
-interface BoardItem {
-  boardId: number;
-  title: string;
-  context: string;
-}
-
-const NoticePage: React.FC = () => {
-  const [data, setData] = useState<BoardItem[]>([]);
+const NoticePage: React.FC<NoticeProps> = ({}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [cursor, setCursor] = useState<string | null>(null);
   const navigate = useNavigate();
-  const observer = useRef<IntersectionObserver>();
-  const lastElementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
-
-    if (!accessToken || !refreshToken) {
-      console.log('Access token or refresh token is missing. Redirecting to login.');
-      navigate('/login');
-    }
-
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (cursor) {
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMore && !loading) {
-            loadMore();
-          }
-        },
-        { threshold: 1.0 },
-      );
-
-      if (lastElementRef.current) {
-        observer.current.observe(lastElementRef.current);
-      }
-    }
-
-    return () => observer.current?.disconnect();
-  }, [loading, hasMore, cursor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   const fetchData = async () => {
-    if (!hasMore || loading) return;
     setLoading(true);
     try {
-      const cursorParam = cursor ? `&cursor=${cursor}` : '&cursor=0';
-      const url = `/api/boards?category=NOTICE${cursorParam}`;
-
-      const response = await axios.get(url);
-      const { values, hasNext, cursor: newCursor } = response.data;
-
-      if (!values || values.length === 0) {
-        setHasMore(false);
-      } else {
-        setData((prevData) => {
-          const newDataIds = new Set(values.map((item: BoardItem) => item.boardId));
-          const filteredPrevData = prevData.filter((item) => !newDataIds.has(item.boardId));
-          return [...filteredPrevData, ...values];
-        });
-        setCursor(newCursor);
-        setHasMore(hasNext);
-      }
+      const response = await axios.get(`/board/notice?page=${page}&limit=10`);
+      setData([...data, ...response.data]);
+      setLoading(false);
     } catch (error) {
-      console.error('Error loading data:', error);
-      alert('An error occurred while loading data.');
-      setHasMore(false);
-    } finally {
+      console.error('Error fetching data:', error);
       setLoading(false);
     }
-  };
-
-  const loadMore = () => {
-    fetchData();
   };
 
   const handleWriteClick = () => {
     navigate('/WritePage');
   };
 
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+
   return (
     <>
+      <Button onClick={handleWriteClick}>글쓰기</Button>
       <PageContainer>
-        <WriteButton onClick={handleWriteClick}>Write Post</WriteButton>
-        {data.length > 0 ? (
-          data.map((item) => (
-            <StyledLink to={`/NewPage/${item.boardId}`} key={item.boardId}>
+        {data &&
+          data.map((item: any, index: number) => (
+            <StyledLink to={`/NewPage/${item.id}`} key={index}>
               <Box>
                 <Title>{item.title}</Title>
                 <Content>{item.context}</Content>
               </Box>
             </StyledLink>
-          ))
-        ) : (
-          <p>No posts available.</p>
-        )}
-        {loading && <p>Loading...</p>}
-        {hasMore && <div ref={lastElementRef} />}
+          ))}
+        {loading ? <p>Loading...</p> : <Button onClick={loadMore}>더 불러오기</Button>}
       </PageContainer>
     </>
   );

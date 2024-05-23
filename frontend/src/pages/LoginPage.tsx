@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from '../util/axiosConfig';
 import Modal from '../components/Modal';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil'; // Recoil 추가
 import { accessTokenState, refreshTokenState, isLoggedInState } from '../recoil/recoilState';
 
 const FormContainer = styled.div`
@@ -17,7 +17,6 @@ const FormContainer = styled.div`
   overflow: hidden;
   color: #585858;
 `;
-
 const LoginText = styled.div`
   font-size: 70px;
   font-weight: bold;
@@ -26,27 +25,22 @@ const LoginText = styled.div`
   margin-top: 60px;
   margin-bottom: 0px;
 `;
-
 const Input = styled.input`
   border-radius: 0;
   border: 0.7px solid #c0c0c0;
   height: 26px;
   width: 400px;
 `;
-
 const PasswordInput = styled(Input).attrs({ type: 'password', autoComplete: 'new-password' })`
   margin-bottom: 0px;
   border-radius: 0;
 `;
-
 const StyledForm = styled.form``;
-
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
 `;
-
 const LoginButton = styled.button`
   border: none;
   background-color: #c0c0c0;
@@ -61,7 +55,6 @@ const LoginButton = styled.button`
     background-color: #000000;
   }
 `;
-
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -80,7 +73,7 @@ const LoginPage: React.FC = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post('/api/user/sign-in', { email, password });
@@ -88,37 +81,26 @@ const LoginPage: React.FC = () => {
       const refreshTokenFromHeader = response.headers['refresh-token'];
 
       if (accessTokenFromHeader && accessTokenFromHeader.startsWith('Bearer ')) {
-        const accessToken = accessTokenFromHeader.split(' ')[1];
-        localStorage.setItem('accessToken', accessToken);
+        const accessToken = accessTokenFromHeader.split(' ')[1]; // 'Bearer ' 제거
         setAccessToken(accessToken);
-        console.log('Access Token saved:', localStorage.getItem('accessToken')); // 저장된 액세스 토큰 확인
-      } else {
-        console.error('No access token received');
+        localStorage.setItem('accessToken', accessToken);
       }
 
       if (refreshTokenFromHeader) {
-        localStorage.setItem('refreshToken', refreshTokenFromHeader);
         setRefreshToken(refreshTokenFromHeader);
-        console.log('Refresh Token saved:', localStorage.getItem('refreshToken')); // 저장된 리프레시 토큰 확인
-        setIsLoggedIn(true);
-      } else {
-        console.error('No refresh token received');
-        alert('로그인 성공, 하지만 리프레시 토큰을 받지 못했습니다. 다시 로그인해주세요.');
-        setIsLoggedIn(false);
-        navigate('/login'); // 리프레시 토큰이 없다면 다시 로그인을 유도
-        return;
+        localStorage.setItem('refreshToken', refreshTokenFromHeader);
+        setIsLoggedIn(true); // 로그인 상태를 true로 설정
       }
 
-      setIsModalOpen(true);
+      setIsModalOpen(true); // 모달 열기
     } catch (error) {
       console.error('로그인 실패:', error);
-      alert('로그인에 실패했습니다.');
     }
   };
 
   const closeModalAndRedirect = () => {
     setIsModalOpen(false);
-    navigate('/main');
+    navigate('/main'); // 로그인 성공 후 리디렉션
   };
 
   return (
@@ -126,17 +108,19 @@ const LoginPage: React.FC = () => {
       <Modal isOpen={isModalOpen} onClose={closeModalAndRedirect}>
         <p>로그인이 완료 되었습니다.</p>
       </Modal>
-      <LoginText>로그인</LoginText>
+      <LoginText className="login">로그인</LoginText>
       <StyledForm onSubmit={handleLogin}>
         <FormGroup>
-          <label htmlFor="email">이메일</label>
+          <label htmlFor="name">이메일</label>
           <Input type="email" id="email" name="email" value={email} onChange={handleEmailChange} />
         </FormGroup>
         <FormGroup>
           <label htmlFor="password">비밀번호</label>
           <PasswordInput id="password" name="password" value={password} onChange={handlePasswordChange} />
         </FormGroup>
-        <LoginButton type="submit">로그인</LoginButton>
+        <div>
+          <LoginButton type="submit">로그인</LoginButton>
+        </div>
       </StyledForm>
     </FormContainer>
   );

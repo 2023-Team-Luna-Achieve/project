@@ -22,7 +22,7 @@ const NewPage: React.FC = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`/api/boards/${id}`);
+        const response = await axios.get(`/board/${id}`);
         setPost(response.data); // 서버로부터 받은 데이터를 상태에 저장합니다.
       } catch (error) {
         console.error('Error fetching post:', error);

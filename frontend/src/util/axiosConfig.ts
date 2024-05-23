@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // 리다이렉트를 위해 사용
 
 // axios 인스턴스 생성
 const instance = axios.create({
@@ -7,52 +6,31 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-// 요청 인터셉터 추가: 모든 요청에 자동으로 액세스 토큰 추가
-instance.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-// 응답 인터셉터 추가: 401 응답을 받을 경우 리프레시 토큰으로 액세스 토큰 갱신
+// 응답 인터셉터를 추가하여 토큰 만료 시 자동으로 액세스 토큰을 갱신
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (!refreshToken) {
-        console.log('No refresh token available, redirecting to login.');
-        window.location.href = '/login';
-        return Promise.reject(error);
-      }
       try {
-        const res = await instance.post(
-          '/api/user/refresh',
-          {},
-          {
-            headers: {
-              'Refresh-Token': refreshToken,
-            },
-          },
-        );
-        const { accessToken } = res.data;
-        if (accessToken) {
-          localStorage.setItem('accessToken', accessToken);
-          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-          return instance(originalRequest);
+        // 서버에서 새 액세스 토큰을 요청
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (refreshToken) {
+          const res = await instance.post('/api/user/refresh', { refreshToken });
+          const newAccessToken = res.data.accessToken;
+          if (newAccessToken) {
+            // 새 토큰을 로컬 스토리지에 저장하고 요청 헤더를 업데이트
+            localStorage.setItem('accessToken', newAccessToken);
+            instance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+            // 원래 요청을 재시도
+            return instance(originalRequest);
+          }
         }
       } catch (refreshError) {
-        console.error('Failed to refresh token:', refreshError);
-        window.location.href = '/login';
+        console.error('Unable to refresh the token:', refreshError);
+        // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }

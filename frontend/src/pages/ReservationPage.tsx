@@ -108,12 +108,20 @@ const ReservationPage: React.FC = () => {
       const isoStartTime = reservationStartTime.toISOString().replace(/\.000Z$/, '');
       const isoEndTime = reservationEndTime.toISOString().replace(/\.000Z$/, '');
       try {
-        const response = await axios.post('/api/reservation', {
-          reservationStartTime: isoStartTime,
-          reservationEndTime: isoEndTime,
-          members: selectedMembers.value,
-          meetingRoomId: 1,
-        });
+        const response = await axios.post(
+          '/api/reservation',
+          {
+            reservationStartTime: isoStartTime,
+            reservationEndTime: isoEndTime,
+            members: selectedMembers.value,
+            meetingRoomId: 1,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
 
         if (response.status === 201) {
           console.log('예약에 성공 했습니다.');
