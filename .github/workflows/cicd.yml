@@ -38,7 +38,9 @@ jobs:
         shell: bash
 
       - name: Make firebase sdk env file
-        run: echo "${{ secrets.FIREBASE_ADMIN_SDK }}" > ./backend/src/main/resources/firebase/achieve-cc2aa-firebase-adminsdk-0ygsr-ff26214f49.json
+        run: |
+          mkdir ./backend/src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_ADMIN_SDK }}" > ./backend/src/main/resources/firebase/achieve-cc2aa-firebase-adminsdk-0ygsr-ff26214f49.json
 
       - name: Build with Gradle
         run: | 
