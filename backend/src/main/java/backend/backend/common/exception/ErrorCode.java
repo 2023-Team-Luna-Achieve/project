@@ -32,7 +32,8 @@ public enum ErrorCode {
     FAILED_JSON_CONVERT(500, "J_001", "Json 변환에 실패했습니다."),
     FAILED_EMAIL_SEND(400, "E_001", "이메일이 옳바른지 확인해주세요."),
     WRONG_EMAIL_(500, "E_002", "이메일 형식을 확인해주세요."),
-    NOTIFICATION_NOT_FOUND(404, "N_001","알림이 존재하지 않습니다");
+    NOTIFICATION_NOT_FOUND(404, "N_001","알림이 존재하지 않습니다"),
+    REPORT_NOT_FOUND(404, "N_001","REPORT가 존재하지 않습니다");
 
     private final int status;
     private final String code;
