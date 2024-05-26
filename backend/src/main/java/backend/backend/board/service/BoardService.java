@@ -54,8 +54,8 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
-    public SingleRecordResponse<BoardResponse> findBoards(Category category, String cursor) {
-        return boardRepository.findBoardsByCategory(cursor, category);
+    public SingleRecordResponse<BoardResponse> findBoards(Category category, String cursor, User currentUser) {
+        return boardRepository.findBoardsByCategory(cursor, category, currentUser.getId());
     }
 
     public SingleRecordResponse<BoardResponse> findMyBoards(Long userId, Category category, String cursor) {

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static backend.backend.comment.entity.QComment.comment;
+import static backend.backend.report.domain.QReport.report;
 
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
@@ -27,7 +28,12 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.createdAt
                 ))
                 .from(comment)
-                .where(ltCommentId(cursor),
+                .leftJoin(report).on(
+                        joinSameUserWithCommentAndReport()
+                )
+                .where(
+                        reportNullComments(),
+                        ltCommentId(cursor),
                         eqBoardId(boardId)
                 )
                 .orderBy(comment.id.asc())
@@ -35,6 +41,15 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .fetch();
 
         return SingleRecordResponse.convertToSingleRecord(comments);
+    }
+
+    private BooleanExpression reportNullComments() {
+        return comment.id.isNull();
+    }
+
+
+    private BooleanExpression joinSameUserWithCommentAndReport() {
+        return comment.user.id.eq(report.reporter.id);
     }
 
     private BooleanExpression eqBoardId(Long boardId) {

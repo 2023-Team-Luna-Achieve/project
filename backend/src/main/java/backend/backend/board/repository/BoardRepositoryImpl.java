@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static backend.backend.board.entity.QBoard.board;
+import static backend.backend.report.domain.QReport.report;
 
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
@@ -45,7 +46,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
 
     @Override
-    public SingleRecordResponse<BoardResponse> findBoardsByCategory(String cursor, Category category) {
+    public SingleRecordResponse<BoardResponse> findBoardsByCategory(String cursor, Category category, Long currentUserId) {
         List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
                         board.id,
                         board.user.name,
@@ -58,7 +59,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.createdAt
                 ))
                 .from(board)
+                .leftJoin(report).on(
+                        joinSameUserWithBoardAndReport()
+                )
                 .where(
+                        reportNullBoards(),
                         ltBoardId(cursor),
                         eqCategory(category)
                 )
@@ -67,6 +72,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .fetch();
 
         return SingleRecordResponse.convertToSingleRecord(boards);
+    }
+
+    private BooleanExpression joinSameUserWithBoardAndReport() {
+        return board.user.id.eq(report.reporter.id);
+    }
+
+    private BooleanExpression reportNullBoards() {
+        return report.id.isNull();
     }
 
     private BooleanExpression eqAuthorId(Long userId) {
@@ -92,4 +105,3 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return board.id.lt(Long.valueOf(cursor));
     }
 }
-
