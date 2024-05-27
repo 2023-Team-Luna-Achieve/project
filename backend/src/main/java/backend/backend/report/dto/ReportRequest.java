@@ -6,7 +6,7 @@ import backend.backend.user.entity.User;
 import jakarta.validation.constraints.NotNull;
 
 public record ReportRequest(
-        Long reportedUserId,
+        String reportedUserEmail,
         @NotNull
         Boolean isBlockUser,
         ReportContent reportContent

@@ -59,8 +59,8 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping("/sign-out")
     @Operation(tags = "로그아웃 API", description = "로그아웃을 진행한다")
+    @PostMapping("/sign-out")
     public ResponseEntity<Void> signOut(@CurrentUser User user) {
         userService.signOut(user);
         return ResponseEntity.ok().build();

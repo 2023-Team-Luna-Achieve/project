@@ -25,6 +25,12 @@ public class ReportController {
         return ResponseEntity.created(URI.create("/api/reports/" + reportId)).build();
     }
 
+    @PatchMapping
+    public ResponseEntity<Void> changStatusToBlockUser(@Valid @CurrentUser User currentUser, @RequestBody ReportRequest reportRequest) {
+        reportService.blockUser(currentUser, reportRequest);
+        return ResponseEntity.ok().build();
+    }
+
     // admin
     @DeleteMapping("/{reportId}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long reportId) {

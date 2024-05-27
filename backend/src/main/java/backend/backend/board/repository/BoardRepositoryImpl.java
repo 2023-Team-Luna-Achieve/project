@@ -5,6 +5,7 @@ import backend.backend.board.entity.Category;
 import backend.backend.common.dto.SingleRecordResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -44,10 +45,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return SingleRecordResponse.convertToSingleRecord(boards);
     }
 
-
     @Override
     public SingleRecordResponse<BoardResponse> findBoardsByCategory(String cursor, Category category, Long currentUserId) {
-        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
+        JPAQuery<BoardResponse> query = queryFactory.select(Projections.constructor(BoardResponse.class,
                         board.id,
                         board.user.name,
                         board.user.email,
@@ -58,28 +58,41 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.comments.size(),
                         board.createdAt
                 ))
-                .from(board)
-                .leftJoin(report).on(
-                        joinSameUserWithBoardAndReport()
-                )
-                .where(
-                        reportNullBoards(),
+                .from(board);
+
+        if (hasReport(currentUserId)) {
+            query.leftJoin(report)
+                    .on(joinReportByBoardWriterIdAndReportedUserAndCurrentUserId(currentUserId))
+                    .fetchJoin()
+                    .where(
+                            hasNoReportedUserIdOrNotBlockUser()
+                    );
+        }
+
+        List<BoardResponse> boards = query.where(
                         ltBoardId(cursor),
                         eqCategory(category)
                 )
                 .orderBy(board.id.desc())
                 .limit(11)
                 .fetch();
-
         return SingleRecordResponse.convertToSingleRecord(boards);
     }
 
-    private BooleanExpression joinSameUserWithBoardAndReport() {
-        return board.user.id.eq(report.reporter.id);
+    private boolean hasReport(Long currentUserId) {
+        return queryFactory.select(report.count())
+                .from(report)
+                .where(report.reporter.id.eq(currentUserId))
+                .fetchFirst() > 0;
     }
 
-    private BooleanExpression reportNullBoards() {
-        return report.id.isNull();
+    private BooleanExpression joinReportByBoardWriterIdAndReportedUserAndCurrentUserId(Long currentUserId) {
+        return board.user.id.eq(report.reportedUser.id)
+                .and(report.reporter.id.eq(currentUserId));
+    }
+
+    private BooleanExpression hasNoReportedUserIdOrNotBlockUser() {
+        return report.reportedUser.id.isNull().or(report.isBlockUser.eq(false));
     }
 
     private BooleanExpression eqAuthorId(Long userId) {

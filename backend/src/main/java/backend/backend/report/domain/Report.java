@@ -18,9 +18,12 @@ public class Report extends BaseEntity {
     @Column(name = "report_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private ReportContent reportContent;
 
     private boolean isBlockUser;
+
+    private String targetEntity;
 
     @JoinColumn(name = "reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,10 +34,14 @@ public class Report extends BaseEntity {
     private User reportedUser;
 
     @Builder
-    public Report(User reporter, User reportedUser, ReportContent reportContent, boolean isBlockUser) {
+    public Report(ReportContent reportContent, boolean isBlockUser, User reportedUser, User reporter) {
         this.reportContent = reportContent;
         this.isBlockUser = isBlockUser;
-        this.reportedUser = reporter;
-        this.reporter = reportedUser;
+        this.reporter = reporter;
+        this.reportedUser = reportedUser;
+    }
+
+    public void changeStatusToBlockUser() {
+        this.isBlockUser = true;
     }
 }
