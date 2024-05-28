@@ -3,7 +3,7 @@ package backend.backend.report.service;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
 import backend.backend.common.exception.ReportException;
-import backend.backend.report.domain.Report;
+import backend.backend.report.domain.ReportCategory;
 import backend.backend.report.dto.ReportRequest;
 import backend.backend.report.repository.ReportRepository;
 import backend.backend.user.entity.User;
@@ -17,31 +17,21 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
 
-    public Long makeReport(User currentUser, ReportRequest reportRequest) {
+    public Long createReport(User currentUser, ReportRequest reportRequest) {
         User reporter = userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        User reportedUser = userRepository.findByEmail(reportRequest.reportedUserEmail())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        if (reportRepository.existsByReporterIdAndReportedUserId(reporter.getId(), reportedUser.getId())) {
-            throw new ReportException(ErrorCode.ALREADY_REPORT_EXIST);
-        }
+        reportRepository.findReportByReporterIdAndReportCategoryAndTargetId(reporter.getId(), reportRequest.reportCategory(), reportRequest.targetId())
+                .ifPresent(present -> {
+                    if (present.getReportCategory().equals(ReportCategory.BOARD)) {
+                        throw new ReportException(ErrorCode.ALREADY_BOARD_REPORT_EXIST);
+                    }
 
-        return reportRepository.save(reportRequest.toEntity(reporter, reportedUser)).getId();
-    }
+                    throw new ReportException(ErrorCode.ALREADY_COMMENT_REPORT_EXIST);
+                });
 
-    public void blockUser(User currentUser, ReportRequest reportRequest) {
-        User reporter = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-
-        User reportedUser = userRepository.findByEmail(reportRequest.reportedUserEmail())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-
-        Report report = reportRepository.findReportByReporterIdAndReportedUserId(reporter.getId(), reportedUser.getId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.REPORT_NOT_FOUND));
-
-        report.changeStatusToBlockUser();
+        return reportRepository.save(reportRequest.toEntity(reporter)).getId();
     }
 
     public void deleteReport(Long reportId) {

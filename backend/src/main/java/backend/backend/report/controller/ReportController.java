@@ -21,14 +21,8 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<Void> report(@Valid @CurrentUser User currentUser, @RequestBody ReportRequest reportRequest) {
-        Long reportId = reportService.makeReport(currentUser, reportRequest);
+        Long reportId = reportService.createReport(currentUser, reportRequest);
         return ResponseEntity.created(URI.create("/api/reports/" + reportId)).build();
-    }
-
-    @PatchMapping
-    public ResponseEntity<Void> changStatusToBlockUser(@Valid @CurrentUser User currentUser, @RequestBody ReportRequest reportRequest) {
-        reportService.blockUser(currentUser, reportRequest);
-        return ResponseEntity.ok().build();
     }
 
     // admin

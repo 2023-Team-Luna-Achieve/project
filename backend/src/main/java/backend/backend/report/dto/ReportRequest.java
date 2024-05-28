@@ -1,22 +1,23 @@
 package backend.backend.report.dto;
 
 import backend.backend.report.domain.Report;
+import backend.backend.report.domain.ReportCategory;
 import backend.backend.report.domain.ReportContent;
 import backend.backend.user.entity.User;
-import jakarta.validation.constraints.NotNull;
 
 public record ReportRequest(
-        String reportedUserEmail,
-        @NotNull
-        Boolean isBlockUser,
+        Long targetId,
+        ReportCategory reportCategory,
         ReportContent reportContent
 ) {
-    public Report toEntity(User reporter, User reportedUser) {
+
+    public Report toEntity(User user) {
         return Report.builder()
+                .targetId(targetId)
+                .reporter(user)
                 .reportContent(reportContent)
-                .isBlockUser(isBlockUser)
-                .reporter(reporter)
-                .reportedUser(reportedUser)
+                .reportCategory(reportCategory)
+                .status("pending")
                 .build();
     }
 }

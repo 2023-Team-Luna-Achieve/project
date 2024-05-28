@@ -34,7 +34,9 @@ public enum ErrorCode {
     WRONG_EMAIL_(500, "E_002", "이메일 형식을 확인해주세요."),
     NOTIFICATION_NOT_FOUND(404, "N_001","알림이 존재하지 않습니다"),
     REPORT_NOT_FOUND(404, "R_001","REPORT가 존재하지 않습니다"),
-    ALREADY_REPORT_EXIST(404, "R_002","REPORT가 존재하지 않습니다");
+    ALREADY_BOARD_REPORT_EXIST(400, "R_002","이미 신고한 게시물입니다"),
+    ALREADY_COMMENT_REPORT_EXIST(400, "R_003","이미 신고한 댓글입니다"),
+    ALREADY_BLOCKED_USER(400, "R_004","이미 차단한 유저 입니다");
 
     private final int status;
     private final String code;

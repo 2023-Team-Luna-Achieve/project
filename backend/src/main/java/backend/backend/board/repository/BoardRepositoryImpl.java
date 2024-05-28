@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static backend.backend.board.entity.QBoard.board;
-import static backend.backend.report.domain.QReport.report;
+import static backend.backend.report.domain.QBlock.block;
 
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
@@ -61,7 +61,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .from(board);
 
         if (hasReport(currentUserId)) {
-            query.leftJoin(report)
+            query.leftJoin(block)
                     .on(joinReportByBoardWriterIdAndReportedUserAndCurrentUserId(currentUserId))
                     .fetchJoin()
                     .where(
@@ -80,19 +80,19 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     private boolean hasReport(Long currentUserId) {
-        return queryFactory.select(report.count())
-                .from(report)
-                .where(report.reporter.id.eq(currentUserId))
+        return queryFactory.select(block.count())
+                .from(block)
+                .where(block.blocker.id.eq(currentUserId))
                 .fetchFirst() > 0;
     }
 
     private BooleanExpression joinReportByBoardWriterIdAndReportedUserAndCurrentUserId(Long currentUserId) {
-        return board.user.id.eq(report.reportedUser.id)
-                .and(report.reporter.id.eq(currentUserId));
+        return board.user.id.eq(block.blockedUser.id)
+                .and(block.blocker.id.eq(currentUserId));
     }
 
     private BooleanExpression hasNoReportedUserIdOrNotBlockUser() {
-        return report.reportedUser.id.isNull().or(report.isBlockUser.eq(false));
+        return block.blockedUser.id.isNull();
     }
 
     private BooleanExpression eqAuthorId(Long userId) {
