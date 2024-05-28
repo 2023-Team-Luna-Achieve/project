@@ -2,6 +2,7 @@ package backend.backend.report.controller;
 
 import backend.backend.auth.jwt.CurrentUser;
 import backend.backend.report.dto.ReportRequest;
+import backend.backend.report.dto.ReportStatusChangeRequest;
 import backend.backend.report.service.ReportService;
 import backend.backend.user.entity.User;
 import jakarta.validation.Valid;
@@ -26,9 +27,10 @@ public class ReportController {
     }
 
     // admin
-    @DeleteMapping("/{reportId}")
-    public ResponseEntity<Void> deleteReport(@PathVariable Long reportId) {
-        reportService.deleteReport(reportId);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{reportId}")
+    public ResponseEntity<Void> updateReportStatus(@PathVariable Long reportId,
+                                                   @RequestBody @Valid ReportStatusChangeRequest reportStatusChangeRequest) {
+        reportService.updateReportStatus(reportId, reportStatusChangeRequest);
+        return ResponseEntity.ok().build();
     }
 }

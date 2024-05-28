@@ -39,6 +39,9 @@ public class Board extends BaseEntity {
     @ColumnDefault("0")
     private int viewCount;
 
+    @ColumnDefault("0")
+    private int reportCount;
+
     @Builder
     public Board(User user, String title, Category category, String context) {
         this.user = user;
@@ -55,5 +58,9 @@ public class Board extends BaseEntity {
 
     public void addViewCount() {
         this.viewCount ++;
+    }
+
+    public void addReportCount() {
+        this.reportCount ++;
     }
 }

@@ -17,7 +17,6 @@ public record ReportRequest(
                 .reporter(user)
                 .reportContent(reportContent)
                 .reportCategory(reportCategory)
-                .status("pending")
                 .build();
     }
 }

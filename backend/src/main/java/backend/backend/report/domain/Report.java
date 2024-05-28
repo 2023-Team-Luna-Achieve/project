@@ -30,14 +30,25 @@ public class Report extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ReportContent reportContent;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ReportStatus status;
+
+    @PrePersist
+    public void defaultStatusSetting() {
+        if (this.status == null) {
+            this.status = ReportStatus.PENDING;
+        }
+    }
 
     @Builder
-    public Report(Long targetId, User reporter, ReportCategory reportCategory, ReportContent reportContent, String status) {
+    public Report(Long targetId, User reporter, ReportCategory reportCategory, ReportContent reportContent) {
         this.targetId = targetId;
         this.reporter = reporter;
         this.reportCategory = reportCategory;
         this.reportContent = reportContent;
-        this.status = status;
+    }
+
+    public void updateStatus(ReportStatus reportStatus) {
+        this.status = reportStatus;
     }
 }

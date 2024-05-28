@@ -76,6 +76,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/user/sign-in").permitAll() // 로그인
                             .requestMatchers("/api/user/sign-up").permitAll() // 회원가입
                             .requestMatchers("/api/user/refresh").permitAll()
+                            .requestMatchers("/api/reports/*").hasRole("ADMIN")
                             .requestMatchers("/v3/**", "swagger-ui/**").permitAll()
                             .requestMatchers("/favicon.ico").permitAll()
                             .requestMatchers("/actuator/*").permitAll()

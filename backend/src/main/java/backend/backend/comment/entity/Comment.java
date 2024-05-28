@@ -4,6 +4,7 @@ import backend.backend.common.domain.BaseEntity;
 import backend.backend.board.entity.Board;
 import backend.backend.user.entity.User;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
@@ -11,7 +12,6 @@ import jakarta.persistence.*;
 @Entity
 @Getter
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Comment extends BaseEntity {
@@ -30,8 +30,16 @@ public class Comment extends BaseEntity {
 
     private String context;
 
+    @Column(name = "report_count")
+    @ColumnDefault("0")
+    private int reportCount;
+
     public Comment update(String context) {
         this.context = context;
         return this;
+    }
+
+    public void addReportCount() {
+        this.reportCount ++;
     }
 }
