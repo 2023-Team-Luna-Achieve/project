@@ -25,7 +25,7 @@ public class Report extends BaseEntity {
     private Long targetId;
 
     @Enumerated(EnumType.STRING)
-    private ReportCategory reportCategory;
+    private ReportedUserGeneratedCategory reportedUserGeneratedCategory;
 
     @Enumerated(EnumType.STRING)
     private ReportContent reportContent;
@@ -41,10 +41,10 @@ public class Report extends BaseEntity {
     }
 
     @Builder
-    public Report(Long targetId, User reporter, ReportCategory reportCategory, ReportContent reportContent) {
+    public Report(Long targetId, User reporter, ReportedUserGeneratedCategory reportedUserGeneratedCategory, ReportContent reportContent) {
         this.targetId = targetId;
         this.reporter = reporter;
-        this.reportCategory = reportCategory;
+        this.reportedUserGeneratedCategory = reportedUserGeneratedCategory;
         this.reportContent = reportContent;
     }
 

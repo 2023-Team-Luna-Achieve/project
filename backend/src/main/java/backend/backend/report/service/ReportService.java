@@ -1,14 +1,13 @@
 package backend.backend.report.service;
 
-import backend.backend.board.entity.Board;
 import backend.backend.board.repository.BoardRepository;
-import backend.backend.comment.entity.Comment;
 import backend.backend.comment.repository.CommentRepository;
+import backend.backend.common.domain.UserGeneratedContent;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
 import backend.backend.common.exception.ReportException;
 import backend.backend.report.domain.Report;
-import backend.backend.report.domain.ReportCategory;
+import backend.backend.report.domain.ReportedUserGeneratedCategory;
 import backend.backend.report.domain.ReportStatus;
 import backend.backend.report.dto.ReportRequest;
 import backend.backend.report.dto.ReportStatusChangeRequest;
@@ -27,6 +26,8 @@ public class ReportService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
+    private static final int MINIMUM_REPORT_COUNT = 0;
+
     public Long createReport(User currentUser, ReportRequest reportRequest) {
         User reporter = userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
@@ -35,9 +36,9 @@ public class ReportService {
     }
 
     private void throwExceptionIfCurrentUserAlreadyReportedSameBoardOrComment(User reporter, ReportRequest reportRequest) {
-        reportRepository.findReportByReporterIdAndReportCategoryAndTargetId(reporter.getId(), reportRequest.reportCategory(), reportRequest.targetId())
+        reportRepository.findReportByReporterIdAndReportedUserGeneratedCategoryAndTargetId(reporter.getId(), reportRequest.reportedUserGeneratedCategory(), reportRequest.targetId())
                 .ifPresent(present -> {
-                    if (present.getReportCategory().equals(ReportCategory.BOARD)) {
+                    if (present.getReportedUserGeneratedCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
                         throw new ReportException(ErrorCode.ALREADY_BOARD_REPORT_EXIST);
                     }
 
@@ -49,31 +50,39 @@ public class ReportService {
     public void updateReportStatus(Long reportId, ReportStatusChangeRequest reportStatusChangeRequest) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.REPORT_NOT_FOUND));
-        report.updateStatus(reportStatusChangeRequest.reportStatus());
+
         updateUserGenerateContentReportCount(report, reportStatusChangeRequest);
+        report.updateStatus(reportStatusChangeRequest.reportStatus());
     }
 
     private void updateUserGenerateContentReportCount(Report report, ReportStatusChangeRequest reportStatusChangeRequest) {
-        if (report.getReportCategory().equals(ReportCategory.BOARD)) {
-            Board board = boardRepository.findById(report.getTargetId())
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
-
-            if (reportStatusChangeRequest.reportStatus().equals(ReportStatus.ACCEPT)) {
-                board.addReportCount();
-            }
+        UserGeneratedContent content = findContentCategoryByReportedUserGeneratedContent(report);
+        if (!isCurrentReportStatusAccept(report) && isReportStatusChangeRequestAccept(reportStatusChangeRequest)) {
+            content.addReportCount();
         }
 
-        if (report.getReportCategory().equals(ReportCategory.COMMENT)) {
-            Comment comment = commentRepository.findById(report.getTargetId())
-                    .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
-
-            if (reportStatusChangeRequest.reportStatus().equals(ReportStatus.ACCEPT)) {
-                comment.addReportCount();
+        if (isCurrentReportStatusAccept(report) && !isReportStatusChangeRequestAccept(reportStatusChangeRequest)) {
+            if (content.getReportCount() >= MINIMUM_REPORT_COUNT) {
+                content.minusReportCount();
             }
         }
     }
 
-    public void deleteReport(Long reportId) {
-        reportRepository.deleteById(reportId);
+    private UserGeneratedContent findContentCategoryByReportedUserGeneratedContent(Report report) {
+        if (report.getReportedUserGeneratedCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
+            return boardRepository.findById(report.getTargetId())
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
+        }
+
+        return commentRepository.findById(report.getTargetId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    private boolean isCurrentReportStatusAccept(Report report) {
+        return report.getStatus().equals(ReportStatus.ACCEPT);
+    }
+
+    private boolean isReportStatusChangeRequestAccept(ReportStatusChangeRequest reportStatusChangeRequest) {
+        return reportStatusChangeRequest.reportStatus().equals(ReportStatus.ACCEPT);
     }
 }

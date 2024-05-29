@@ -1,13 +1,15 @@
 package backend.backend.report.dto;
 
 import backend.backend.report.domain.Report;
-import backend.backend.report.domain.ReportCategory;
+import backend.backend.report.domain.ReportedUserGeneratedCategory;
 import backend.backend.report.domain.ReportContent;
 import backend.backend.user.entity.User;
+import jakarta.validation.constraints.NotNull;
 
 public record ReportRequest(
         Long targetId,
-        ReportCategory reportCategory,
+        @NotNull
+        ReportedUserGeneratedCategory reportedUserGeneratedCategory,
         ReportContent reportContent
 ) {
 
@@ -16,7 +18,7 @@ public record ReportRequest(
                 .targetId(targetId)
                 .reporter(user)
                 .reportContent(reportContent)
-                .reportCategory(reportCategory)
+                .reportedUserGeneratedCategory(reportedUserGeneratedCategory)
                 .build();
     }
 }
