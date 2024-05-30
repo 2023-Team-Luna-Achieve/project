@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 public record ReportRequest(
         Long targetId,
         @NotNull
-        ReportedUserGeneratedCategory reportedUserGeneratedCategory,
+        ReportedUserGeneratedCategory reportedUserGenerateContentCategory,
         ReportContent reportContent
 ) {
 
@@ -18,7 +18,7 @@ public record ReportRequest(
                 .targetId(targetId)
                 .reporter(user)
                 .reportContent(reportContent)
-                .reportedUserGeneratedCategory(reportedUserGeneratedCategory)
+                .reportedUserGenerateContentCategory(reportedUserGenerateContentCategory)
                 .build();
     }
 }

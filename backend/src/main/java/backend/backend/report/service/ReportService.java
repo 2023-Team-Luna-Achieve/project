@@ -36,9 +36,9 @@ public class ReportService {
     }
 
     private void throwExceptionIfCurrentUserAlreadyReportedSameBoardOrComment(User reporter, ReportRequest reportRequest) {
-        reportRepository.findReportByReporterIdAndReportedUserGeneratedCategoryAndTargetId(reporter.getId(), reportRequest.reportedUserGeneratedCategory(), reportRequest.targetId())
+        reportRepository.findReportByReporterIdAndReportedUserGenerateContentCategoryAndTargetId(reporter.getId(), reportRequest.reportedUserGenerateContentCategory(), reportRequest.targetId())
                 .ifPresent(present -> {
-                    if (present.getReportedUserGeneratedCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
+                    if (present.getReportedUserGenerateContentCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
                         throw new ReportException(ErrorCode.ALREADY_BOARD_REPORT_EXIST);
                     }
 
@@ -69,7 +69,7 @@ public class ReportService {
     }
 
     private UserGeneratedContent findContentCategoryByReportedUserGeneratedContent(Report report) {
-        if (report.getReportedUserGeneratedCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
+        if (report.getReportedUserGenerateContentCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
             return boardRepository.findById(report.getTargetId())
                     .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         }

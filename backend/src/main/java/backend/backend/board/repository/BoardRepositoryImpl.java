@@ -3,6 +3,8 @@ package backend.backend.board.repository;
 import backend.backend.board.dto.BoardResponse;
 import backend.backend.board.entity.Category;
 import backend.backend.common.dto.SingleRecordResponse;
+import backend.backend.report.domain.ReportStatus;
+import backend.backend.report.domain.ReportedUserGeneratedCategory;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -13,11 +15,14 @@ import java.util.List;
 
 import static backend.backend.board.entity.QBoard.board;
 import static backend.backend.report.domain.QBlock.block;
+import static backend.backend.report.domain.QReport.report;
 
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    private static final int maxReportCount = 30;
 
     @Override
     public SingleRecordResponse<BoardResponse> findMyBoardsByCategory(Long userId, String cursor, Category category) {
@@ -60,18 +65,20 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 ))
                 .from(board);
 
-        if (hasReport(currentUserId)) {
+        if (hasBlock(currentUserId)) {
             query.leftJoin(block)
-                    .on(joinReportByBoardWriterIdAndReportedUserAndCurrentUserId(currentUserId))
+                    .on(joinBlockByBoardWriterIdAndReportedUserAndCurrentUserId(currentUserId))
+                    .on()
                     .fetchJoin()
                     .where(
-                            hasNoReportedUserIdOrNotBlockUser()
+                            hasNoBlockedUserIdOrNotBlockUser()
                     );
         }
 
         List<BoardResponse> boards = query.where(
                         ltBoardId(cursor),
-                        eqCategory(category)
+                        eqCategory(category),
+                        ltMaxReportCount()
                 )
                 .orderBy(board.id.desc())
                 .limit(11)
@@ -79,20 +86,24 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return SingleRecordResponse.convertToSingleRecord(boards);
     }
 
-    private boolean hasReport(Long currentUserId) {
+    private boolean hasBlock(Long currentUserId) {
         return queryFactory.select(block.count())
                 .from(block)
                 .where(block.blocker.id.eq(currentUserId))
                 .fetchFirst() > 0;
     }
 
-    private BooleanExpression joinReportByBoardWriterIdAndReportedUserAndCurrentUserId(Long currentUserId) {
+    private BooleanExpression joinBlockByBoardWriterIdAndReportedUserAndCurrentUserId(Long currentUserId) {
         return board.user.id.eq(block.blockedUser.id)
                 .and(block.blocker.id.eq(currentUserId));
     }
 
-    private BooleanExpression hasNoReportedUserIdOrNotBlockUser() {
+    private BooleanExpression hasNoBlockedUserIdOrNotBlockUser() {
         return block.blockedUser.id.isNull();
+    }
+
+    private BooleanExpression ltMaxReportCount() {
+        return board.reportCount.lt(maxReportCount);
     }
 
     private BooleanExpression eqAuthorId(Long userId) {

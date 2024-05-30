@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static backend.backend.board.entity.QBoard.board;
 import static backend.backend.comment.entity.QComment.comment;
 import static backend.backend.report.domain.QBlock.block;
 
@@ -17,6 +18,8 @@ import static backend.backend.report.domain.QBlock.block;
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    private static final int maxReportCount = 30;
 
     @Override
     public SingleRecordResponse<CommentResponse> findCommentsByBoardId(Long boardId, String cursor, Long currentUserId) {
@@ -30,19 +33,19 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 ))
                 .from(comment);
 
-
-        if (hasReport(currentUserId)) {
+        if (hasBlock(currentUserId)) {
             query.leftJoin(block)
-                    .on(joinReportByCommentWriterIdAndReportedUserAndCurrentUserId(currentUserId))
+                    .on(joinBlockByCommentWriterIdAndBlockedUserAndCurrentUserId(currentUserId))
                     .fetchJoin()
                     .where(
-                            hasNoReportedUserIdOrNotBlockUser()
+                            hasNoBlockUser()
                     );
         }
 
         List<CommentResponse> comments = query.where(
                         ltCommentId(cursor),
-                        eqBoardId(boardId)
+                        eqBoardId(boardId),
+                        ltMaxReportCount()
                 )
                 .orderBy(comment.id.asc())
                 .limit(11)
@@ -51,20 +54,24 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return SingleRecordResponse.convertToSingleRecord(comments);
     }
 
-    private boolean hasReport(Long currentUserId) {
+    private boolean hasBlock(Long currentUserId) {
         return queryFactory.select(block.count())
                 .from(block)
                 .where(block.blocker.id.eq(currentUserId))
                 .fetchFirst() > 0;
     }
 
-    private BooleanExpression hasNoReportedUserIdOrNotBlockUser() {
+    private BooleanExpression hasNoBlockUser() {
         return block.blockedUser.id.isNull();
     }
 
-    private BooleanExpression joinReportByCommentWriterIdAndReportedUserAndCurrentUserId(Long currentUserId) {
+    private BooleanExpression joinBlockByCommentWriterIdAndBlockedUserAndCurrentUserId(Long currentUserId) {
         return comment.user.id.eq(block.blockedUser.id)
                 .and(block.blocker.id.eq(currentUserId));
+    }
+
+    private BooleanExpression ltMaxReportCount() {
+        return comment.reportCount.lt(maxReportCount);
     }
 
     private BooleanExpression eqBoardId(Long boardId) {
