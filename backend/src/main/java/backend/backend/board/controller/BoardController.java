@@ -25,8 +25,10 @@ public class BoardController {
 
     @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다")
     @GetMapping
-    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@RequestParam(value = "category") Category category, @RequestParam(required = false) String cursor) {
-        return ResponseEntity.ok().body(boardService.findBoards(category, cursor));
+    public ResponseEntity<SingleRecordResponse<BoardResponse>> getAllBoards(@CurrentUser User user,
+                                                                            @RequestParam(value = "category") Category category,
+                                                                            @RequestParam(required = false) String cursor) {
+        return ResponseEntity.ok().body(boardService.findBoards(category, cursor, user));
     }
 
     @Operation(summary = "본인이 작성한 공지사항 API", description = "작성한 공지사항 조희를 진행한다")

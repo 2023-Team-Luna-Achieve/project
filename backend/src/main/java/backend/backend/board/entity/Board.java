@@ -2,6 +2,7 @@ package backend.backend.board.entity;
 
 import backend.backend.comment.entity.Comment;
 import backend.backend.common.domain.BaseEntity;
+import backend.backend.common.domain.UserGeneratedContent;
 import backend.backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board extends BaseEntity {
+public class Board extends BaseEntity implements UserGeneratedContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
@@ -39,6 +40,9 @@ public class Board extends BaseEntity {
     @ColumnDefault("0")
     private int viewCount;
 
+    @ColumnDefault("0")
+    private int reportCount;
+
     @Builder
     public Board(User user, String title, Category category, String context) {
         this.user = user;
@@ -55,5 +59,15 @@ public class Board extends BaseEntity {
 
     public void addViewCount() {
         this.viewCount ++;
+    }
+
+    @Override
+    public void addReportCount() {
+        this.reportCount ++;
+    }
+
+    @Override
+    public void minusReportCount() {
+        this.reportCount --;
     }
 }

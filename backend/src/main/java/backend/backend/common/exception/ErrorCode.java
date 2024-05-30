@@ -12,6 +12,7 @@ public enum ErrorCode {
     CLUB_ROOM_NOT_FOUND(404, "C_004","동아리방이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(404, "C_005","작성글이 존재하지 않습니다"),
     REFRESH_TOKEN_NOT_FOUND(404, "C_006","refresh 토큰이 존재하지 않습니다"),
+    EXPIRED_REFRESH_TOKEN(404, "C_007","만료된 refresh 토큰입니다"),
     DUPLICATED_EMAIL(409, "AU_001", "이미 가입된 Email입니다."),
     BAD_LOGIN(400, "AU_002", "잘못된 아이디 또는 패스워드입니다."),
     UNAUTHORIZED_EMAIL(400, "AU_003", "인증되지 않은 Email입니다."),
@@ -32,7 +33,11 @@ public enum ErrorCode {
     FAILED_JSON_CONVERT(500, "J_001", "Json 변환에 실패했습니다."),
     FAILED_EMAIL_SEND(400, "E_001", "이메일이 옳바른지 확인해주세요."),
     WRONG_EMAIL_(500, "E_002", "이메일 형식을 확인해주세요."),
-    NOTIFICATION_NOT_FOUND(404, "N_001","알림이 존재하지 않습니다");
+    NOTIFICATION_NOT_FOUND(404, "N_001","알림이 존재하지 않습니다"),
+    REPORT_NOT_FOUND(404, "R_001","REPORT가 존재하지 않습니다"),
+    ALREADY_BOARD_REPORT_EXIST(400, "R_002","이미 신고한 게시물입니다"),
+    ALREADY_COMMENT_REPORT_EXIST(400, "R_003","이미 신고한 댓글입니다"),
+    ALREADY_BLOCKED_USER(400, "R_004","이미 차단한 유저 입니다");
 
     private final int status;
     private final String code;

@@ -28,8 +28,8 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor) {
-        return commentRepository.findCommentsByBoardId(boardId, cursor);
+    public SingleRecordResponse<CommentResponse> getAllCommentsByBoardId(Long boardId, String cursor, User currentUser) {
+        return commentRepository.findCommentsByBoardId(boardId, cursor, currentUser.getId());
     }
 
     public Comment createComment(User user, CommentRequest commentRequest) {

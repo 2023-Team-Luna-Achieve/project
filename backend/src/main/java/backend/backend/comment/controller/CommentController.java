@@ -27,9 +27,10 @@ public class CommentController {
 
     @Operation(summary = "공지사항 댓글 전체 조회 API", description = "특정 공지사항의 댓글을 전체조회 한다.")
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<SingleRecordResponse<CommentResponse>> getAllCommentsByBoardId(@RequestParam(required = false) String cursor,
+    public ResponseEntity<SingleRecordResponse<CommentResponse>> getAllCommentsByBoardId(@CurrentUser User user,
+                                                                                         @RequestParam(required = false) String cursor,
                                                                                          @PathVariable Long boardId) {
-        return ResponseEntity.ok(commentService.getAllCommentsByBoardId(boardId, cursor));
+        return ResponseEntity.ok(commentService.getAllCommentsByBoardId(boardId, cursor, user));
     }
 
     @Operation(summary = "공지사항 댓글 생성 API", description = "특정 공지사항의 댓글을 생성 한다.")
