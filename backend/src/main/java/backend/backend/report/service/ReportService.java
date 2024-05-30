@@ -3,6 +3,7 @@ package backend.backend.report.service;
 import backend.backend.board.repository.BoardRepository;
 import backend.backend.comment.repository.CommentRepository;
 import backend.backend.common.domain.UserGeneratedContent;
+import backend.backend.common.exception.AuthException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
 import backend.backend.common.exception.ReportException;
@@ -12,6 +13,7 @@ import backend.backend.report.domain.ReportStatus;
 import backend.backend.report.dto.ReportRequest;
 import backend.backend.report.dto.ReportStatusChangeRequest;
 import backend.backend.report.repository.ReportRepository;
+import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +33,12 @@ public class ReportService {
     public Long createReport(User currentUser, ReportRequest reportRequest) {
         User reporter = userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-        throwExceptionIfCurrentUserAlreadyReportedSameBoardOrComment(reporter, reportRequest);
+        throwExceptionIfCurrentUserAlreadyReportedSameUGC(reporter, reportRequest);
+        throwExceptionIfUGCWriterIsAdmin(reportRequest);
         return reportRepository.save(reportRequest.toEntity(reporter)).getId();
     }
 
-    private void throwExceptionIfCurrentUserAlreadyReportedSameBoardOrComment(User reporter, ReportRequest reportRequest) {
+    private void throwExceptionIfCurrentUserAlreadyReportedSameUGC(User reporter, ReportRequest reportRequest) {
         reportRepository.findReportByReporterIdAndReportedUserGenerateContentCategoryAndTargetId(reporter.getId(), reportRequest.reportedUserGenerateContentCategory(), reportRequest.targetId())
                 .ifPresent(present -> {
                     if (present.getReportedUserGenerateContentCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
@@ -44,6 +47,22 @@ public class ReportService {
 
                     throw new ReportException(ErrorCode.ALREADY_COMMENT_REPORT_EXIST);
                 });
+    }
+
+    private void throwExceptionIfUGCWriterIsAdmin(ReportRequest reportRequest) {
+        UserGeneratedContent content = findUgcCategoryByReport(reportRequest.targetId(), reportRequest.reportedUserGenerateContentCategory());
+
+        if (reportRequest.reportedUserGenerateContentCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
+            content = boardRepository.findById(reportRequest.targetId()).orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
+        }
+
+        if (reportRequest.reportedUserGenerateContentCategory().equals(ReportedUserGeneratedCategory.COMMENT)) {
+            content = commentRepository.findById(reportRequest.targetId()).orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+        }
+
+        if (content.getUser().getRole().equals(Role.ROLE_ADMIN)) {
+            throw new AuthException(ErrorCode.ADMIN_REPORTING_NOT_ALLOWED);
+        }
     }
 
     @Transactional
@@ -56,7 +75,7 @@ public class ReportService {
     }
 
     private void updateUserGenerateContentReportCount(Report report, ReportStatusChangeRequest reportStatusChangeRequest) {
-        UserGeneratedContent content = findContentCategoryByReportedUserGeneratedContent(report);
+        UserGeneratedContent content = findUgcCategoryByReport(report.getTargetId(), report.getReportedUserGenerateContentCategory());
         if (!isCurrentReportStatusAccept(report) && isReportStatusChangeRequestAccept(reportStatusChangeRequest)) {
             content.addReportCount();
         }
@@ -68,13 +87,13 @@ public class ReportService {
         }
     }
 
-    private UserGeneratedContent findContentCategoryByReportedUserGeneratedContent(Report report) {
-        if (report.getReportedUserGenerateContentCategory().equals(ReportedUserGeneratedCategory.BOARD)) {
-            return boardRepository.findById(report.getTargetId())
+    private UserGeneratedContent findUgcCategoryByReport(Long targetId, ReportedUserGeneratedCategory ugcCategory) {
+        if (ugcCategory.equals(ReportedUserGeneratedCategory.BOARD)) {
+            return boardRepository.findById(targetId)
                     .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
         }
 
-        return commentRepository.findById(report.getTargetId())
+        return commentRepository.findById(targetId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
     }
 
