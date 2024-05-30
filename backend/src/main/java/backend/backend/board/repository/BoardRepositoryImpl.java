@@ -3,8 +3,6 @@ package backend.backend.board.repository;
 import backend.backend.board.dto.BoardResponse;
 import backend.backend.board.entity.Category;
 import backend.backend.common.dto.SingleRecordResponse;
-import backend.backend.report.domain.ReportStatus;
-import backend.backend.report.domain.ReportedUserGeneratedCategory;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -15,8 +13,6 @@ import java.util.List;
 
 import static backend.backend.board.entity.QBoard.board;
 import static backend.backend.report.domain.QBlock.block;
-import static backend.backend.report.domain.QReport.report;
-
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
