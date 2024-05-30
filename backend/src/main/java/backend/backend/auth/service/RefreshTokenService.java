@@ -6,6 +6,7 @@ import backend.backend.auth.repository.RefreshTokenRepository;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
 import backend.backend.common.exception.NotFoundRefreshTokenException;
+import backend.backend.common.exception.RefreshTokenException;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +33,11 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteAllByUserId(id);
     }
 
-    @Transactional(readOnly = true)
     public void validateRefreshToken(String refreshToken) {
         RefreshToken token = findRefreshToken(refreshToken);
-        tokenProvider.validateToken(token.getToken());
+        if (!tokenProvider.validateToken(token.getToken())) {
+            throw new RefreshTokenException(ErrorCode.EXPIRED_REFRESH_TOKEN);
+        }
     }
 
     public User findRefreshTokenOwner(String refreshToken) {
