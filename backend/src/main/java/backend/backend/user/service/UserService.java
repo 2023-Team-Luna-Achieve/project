@@ -5,6 +5,7 @@ import backend.backend.auth.repository.RefreshTokenRepository;
 import backend.backend.common.exception.AuthenticationException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.UnVerifiedAccountException;
+import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
 import backend.backend.user.entity.User;
@@ -21,9 +22,10 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final RedisUtil redisUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final FcmTokenRepository fcmTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisUtil redisUtil;
 
     private Long create(User user) {
         User savedUser = userRepository.save(user);
@@ -51,6 +53,7 @@ public class UserService {
     @Transactional
     public void signOut(User user) {
         refreshTokenRepository.deleteAllByUserId(user.getId());
+        fcmTokenRepository.deleteAllByUserId(user.getId());
     }
 
     @Transactional(readOnly = true)
