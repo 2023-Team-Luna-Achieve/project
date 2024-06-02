@@ -38,7 +38,10 @@ public class CommentService {
         Comment comment = commentRequest.toEntity(user, board);
         commentRepository.save(comment);
 
-        sendFcmNotification(board, comment);
+        if (!user.getId().equals(board.getUser().getId())) {
+            sendFcmNotification(board, comment);
+        }
+
         return comment;
     }
 
