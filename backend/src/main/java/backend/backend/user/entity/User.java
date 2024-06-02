@@ -29,15 +29,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Affiliation affiliation;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Board> boards;
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<Comment> comments;
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<Reservation> reservation;
-
     @ColumnDefault("0")
     private int reservationCount;
 
@@ -45,6 +36,13 @@ public class User extends BaseEntity {
     private AuthProvider provider;
 
     private String providerId;
+
+    private boolean isAccountDeleted;
+
+    @PrePersist
+    public void defaultDeleteAccountSetting() {
+        this.isAccountDeleted = false;
+    }
 
     public String roleName() {
         return role.name();
@@ -60,5 +58,9 @@ public class User extends BaseEntity {
 
     public void addReservationCount() {
         this.reservationCount ++;
+    }
+
+    public void deleteAccount() {
+        this.isAccountDeleted = true;
     }
 }

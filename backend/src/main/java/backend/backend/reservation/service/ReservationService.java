@@ -48,7 +48,8 @@ public class ReservationService {
         MeetingRoom meetingRoom = meetingRoomService.findById(request.meetingRoomId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLUB_ROOM_NOT_FOUND));
 
-        User reservUser = userRepository.findUserByEmail(user.getEmail());
+        User reservUser = userRepository.findUserByEmail(user.getEmail())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         checkUserHasReservation(user);
         reservationTimeValidator(request);

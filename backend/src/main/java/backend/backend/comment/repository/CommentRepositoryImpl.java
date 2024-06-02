@@ -45,7 +45,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         List<CommentResponse> comments = query.where(
                         ltCommentId(cursor),
                         eqBoardId(boardId),
-                        ltMaxReportCount()
+                        ltMaxReportCount(),
+                        notDeletedUser()
                 )
                 .orderBy(comment.id.asc())
                 .limit(11)
@@ -81,4 +82,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     private BooleanExpression ltCommentId(String cursor) {
         return comment.id.gt(Long.valueOf(cursor));
     }
+
+    private BooleanExpression notDeletedUser() {
+        return comment.user.isAccountDeleted.eq(false);
+    }
+
 }

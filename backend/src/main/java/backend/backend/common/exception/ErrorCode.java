@@ -13,6 +13,7 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(404, "C_005","작성글이 존재하지 않습니다"),
     REFRESH_TOKEN_NOT_FOUND(404, "C_006","refresh 토큰이 존재하지 않습니다"),
     EXPIRED_REFRESH_TOKEN(404, "C_007","만료된 refresh 토큰입니다"),
+    DELETED_ACCOUNT(404, "C_008","탈퇴한 유저 입니다"),
     DUPLICATED_EMAIL(409, "AU_001", "이미 가입된 Email입니다."),
     BAD_LOGIN(400, "AU_002", "잘못된 아이디 또는 패스워드입니다."),
     UNAUTHORIZED_EMAIL(400, "AU_003", "인증되지 않은 Email입니다."),

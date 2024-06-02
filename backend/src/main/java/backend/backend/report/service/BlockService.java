@@ -31,7 +31,7 @@ public class BlockService {
     }
 
     private User findBlockedUserByEmail(BlockRequest blockRequest) {
-        return userRepository.findByEmail(blockRequest.blockedUserEmail())
+        return userRepository.findUserByEmail(blockRequest.blockedUserEmail())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
