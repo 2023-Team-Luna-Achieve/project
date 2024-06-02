@@ -39,6 +39,7 @@ public class UserController {
     @Operation(tags = "회원가입 API", description = "회원가입 이전에 이메일 인증을 먼저 진행")
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+        userService.deletedAccountVerification(signUpRequest.email());
         Long userId = userService.createUserIfEmailNotExists(signUpRequest);
         return ResponseEntity.created(URI.create("/api/user/" + userId)).build();
     }
@@ -46,12 +47,12 @@ public class UserController {
     @Operation(tags = "로그인 API", description = "로그인을 진행한다. (헤더로 보낸 jwt 토큰 확인)")
     @PostMapping("/sign-in")
     public ResponseEntity<Void> authorize(@Valid @RequestBody SignInRequest signInRequest) {
-        Authentication authentication = settingAuthentication(signInRequest.getEmail(), signInRequest.getPassword());
+        userService.deletedAccountVerification(signInRequest.email());
+        Authentication authentication = settingAuthentication(signInRequest.email(), signInRequest.password());
         String accessToken = tokenProvider.createAccessToken(authentication);
-
         String refreshToken = tokenProvider.createRefreshToken();
 
-        refreshTokenService.saveRefreshToken(refreshToken, signInRequest.getEmail());
+        refreshTokenService.saveRefreshToken(refreshToken, signInRequest.email());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -95,5 +96,10 @@ public class UserController {
         authenticationToken.setDetails(principal);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return authentication;
+    }
+
+    @PatchMapping("/delete-account")
+    public void deleteAccount(@CurrentUser User user) {
+        userService.deleteAccount(user);
     }
 }

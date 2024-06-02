@@ -3,10 +3,7 @@ package backend.backend.auth.service;
 import backend.backend.auth.domain.RefreshToken;
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.repository.RefreshTokenRepository;
-import backend.backend.common.exception.ErrorCode;
-import backend.backend.common.exception.NotFoundException;
-import backend.backend.common.exception.NotFoundRefreshTokenException;
-import backend.backend.common.exception.RefreshTokenException;
+import backend.backend.common.exception.*;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,9 @@ public class RefreshTokenService {
 
     @Transactional
     public void saveRefreshToken(String refreshToken, String email) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
+
         deleteRefreshToken(user.getId());
         refreshTokenRepository.save(new RefreshToken(user.getId(), refreshToken));
     }

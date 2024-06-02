@@ -2,9 +2,8 @@ package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.repository.RefreshTokenRepository;
-import backend.backend.common.exception.AuthenticationException;
-import backend.backend.common.exception.ErrorCode;
-import backend.backend.common.exception.UnVerifiedAccountException;
+import backend.backend.common.exception.*;
+import backend.backend.notification.domain.FcmToken;
 import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -34,10 +33,8 @@ public class UserService {
 
     @Transactional
     public Long createUserIfEmailNotExists(SignUpRequest signUpRequest) {
-        if (userRepository.findUserByEmail(signUpRequest.getEmail()) == null) {
-            log.info("email: {}", redisUtil.getData(signUpRequest.getEmail()));
-
-            String emailAuthStatus = redisUtil.getData(signUpRequest.getEmail());
+        if (!userRepository.existsByEmail(signUpRequest.email())) {
+            String emailAuthStatus = redisUtil.getData(signUpRequest.email());
 
             if (emailAuthStatus == null || !emailAuthStatus.equals("verified")) {
                 throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
@@ -47,7 +44,18 @@ public class UserService {
             User user = signUpRequest.toEntity();
             return create(user);
         }
+
         throw new AuthenticationException(ErrorCode.DUPLICATED_EMAIL);
+    }
+
+    public void deletedAccountVerification(String email) {
+        userRepository.findUserByEmail(email).ifPresent(
+                user -> {
+                    if (user.isAccountDeleted()) {
+                        throw new AuthException(ErrorCode.DELETED_ACCOUNT);
+                    }
+                }
+        );
     }
 
     @Transactional
@@ -62,8 +70,16 @@ public class UserService {
         return UserResponse.from(loggesdUser);
     }
 
+    @Transactional
+    public void deleteAccount(User user) {
+        User currentUser = findUserById(user.getId());
+        refreshTokenRepository.deleteAllByUserId(user.getId());
+        fcmTokenRepository.deleteAllByUserId(user.getId());
+        currentUser.deleteAccount();
+    }
+
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("유저 정보 없음"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 }
