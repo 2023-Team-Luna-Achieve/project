@@ -3,6 +3,7 @@ package backend.backend.board.repository;
 import backend.backend.board.dto.BoardResponse;
 import backend.backend.board.entity.Category;
 import backend.backend.common.dto.SingleRecordResponse;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static backend.backend.board.entity.QBoard.board;
 import static backend.backend.report.domain.QBlock.block;
+
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
@@ -64,7 +66,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         if (hasBlock(currentUserId)) {
             query.leftJoin(block)
                     .on(joinBlockByBoardWriterIdAndReportedUserAndCurrentUserId(currentUserId))
-                    .on()
                     .fetchJoin()
                     .where(
                             hasNoBlockedUserIdOrNotBlockUser()
@@ -74,7 +75,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         List<BoardResponse> boards = query.where(
                         ltBoardId(cursor),
                         eqCategory(category),
-                        ltMaxReportCount()
+                        ltMaxReportCount(),
+                        notDeletedUser()
                 )
                 .orderBy(board.id.desc())
                 .limit(11)
@@ -101,6 +103,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private BooleanExpression ltMaxReportCount() {
         return board.reportCount.lt(maxReportCount);
     }
+
+    private BooleanExpression notDeletedUser() {
+        return board.user.isAccountDeleted.eq(false);
+    }
+
 
     private BooleanExpression eqAuthorId(Long userId) {
         return board.user.id.eq(userId);
