@@ -4,6 +4,7 @@ import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.UploadFailException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class S3Service {
 
     private final AmazonS3 amazonS3;
 
+    private static final String ACHIEVE_IMAGE_FOLDER = "achieve-image/";
 
     public String upload(MultipartFile file) {
         String imageUrl = "";
@@ -44,6 +46,13 @@ public class S3Service {
 
     private String createFileName(String fileName) {
         FileExtension extension = FileExtension.from(fileName);
-        return UUID.randomUUID().toString().concat(extension.getExtension());
+        return ACHIEVE_IMAGE_FOLDER + UUID.randomUUID().toString().concat(extension.getExtension());
     }
+
+//    public void deleteFile(String imageUrl) {
+//        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(
+//                bucket, parseKey
+//        )
+//    }
+
 }

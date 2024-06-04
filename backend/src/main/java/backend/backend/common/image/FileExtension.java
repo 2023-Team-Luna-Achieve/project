@@ -8,11 +8,11 @@ import java.util.Arrays;
 
 @Getter
 public enum FileExtension {
-    JPEG(".jpeg"),
-    JPG(".jpg"),
-    JFIF(".jfif"),
-    PNG(".png"),
-    SVG(".svg");
+    JPEG(".JPEG"),
+    JPG(".JPG"),
+    JFIF(".JFIF"),
+    PNG(".PNG"),
+    SVG(".SVG");
 
     private final String extension;
 
@@ -22,7 +22,7 @@ public enum FileExtension {
 
     static FileExtension from(String fileName) {
         return Arrays.stream(values())
-                .filter(fileExtension -> fileName.endsWith(fileExtension.getExtension()))
+                .filter(fileExtension -> fileName.toUpperCase().endsWith(fileExtension.getExtension()))
                 .findFirst()
                 .orElseThrow(() -> new FileExtensionException(ErrorCode.INVALID_FILE_EXTENSION));
     }

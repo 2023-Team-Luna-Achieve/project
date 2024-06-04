@@ -4,7 +4,7 @@ import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.dto.EmailRequest;
 import backend.backend.auth.dto.VerificationRequest;
 import backend.backend.board.controller.acceptance.step.BoardAcceptanceStep;
-import backend.backend.board.dto.BoardRequest;
+import backend.backend.board.dto.BoardRequestOnlyJson;
 import backend.backend.common.acceptance.AcceptanceTest;
 import backend.backend.common.acceptance.step.AcceptanceStep;
 import backend.backend.board.entity.Category;
@@ -66,8 +66,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(1)
     @Test
     void requestMakeSuggestionBoard() {
-        BoardRequest boardRequest = new BoardRequest("생성 테스트입니다", Category.SUGGESTION, "생성 테스트 글쓰기 입니다");
-        ExtractableResponse<Response> makeSuggestionBoardResponse = BoardAcceptanceStep.requestCreateBoard(boardRequest, authResponse1);
+        BoardRequestOnlyJson boardRequestOnlyJson = new BoardRequestOnlyJson("생성 테스트입니다", Category.SUGGESTION, "생성 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> makeSuggestionBoardResponse = BoardAcceptanceStep.requestCreateBoard(boardRequestOnlyJson, authResponse1);
         AcceptanceStep.assertThatStatusIsCreated(makeSuggestionBoardResponse);
     }
 
@@ -75,8 +75,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(2)
     @Test
     void requestUpdateExceptionSuggestionBoard() {
-        BoardRequest boardRequest = new BoardRequest("수정 테스트입니다", Category.SUGGESTION, "수정 테스트 글쓰기 입니다");
-        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateBoard(1L, boardRequest, authResponse2);
+        BoardRequestOnlyJson boardRequestOnlyJson = new BoardRequestOnlyJson("수정 테스트입니다", Category.SUGGESTION, "수정 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateBoard(1L, boardRequestOnlyJson, authResponse2);
         AcceptanceStep.assertThatStatusIsForbidden(updateSuggestionBoardResponse);
     }
 
@@ -84,8 +84,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
     @Order(3)
     @Test
     void requestUpdateSuggestionBoard() {
-        BoardRequest boardRequest = new BoardRequest("수정 테스트입니다", Category.SUGGESTION, "수정 테스트 글쓰기 입니다");
-        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateBoard(1L, boardRequest, authResponse1);
+        BoardRequestOnlyJson boardRequestOnlyJson = new BoardRequestOnlyJson("수정 테스트입니다", Category.SUGGESTION, "수정 테스트 글쓰기 입니다");
+        ExtractableResponse<Response> updateSuggestionBoardResponse = BoardAcceptanceStep.requestUpdateBoard(1L, boardRequestOnlyJson, authResponse1);
         AcceptanceStep.assertThatStatusIsOk(updateSuggestionBoardResponse);
     }
 

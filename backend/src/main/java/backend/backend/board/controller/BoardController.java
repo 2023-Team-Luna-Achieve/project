@@ -1,7 +1,7 @@
 package backend.backend.board.controller;
 
 import backend.backend.auth.jwt.CurrentUser;
-import backend.backend.board.dto.BoardRequest;
+import backend.backend.board.dto.BoardRequestOnlyJson;
 import backend.backend.board.dto.BoardResponse;
 import backend.backend.board.entity.Category;
 import backend.backend.board.service.BoardService;
@@ -12,15 +12,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.List;
 
 @Tag(name = "Board API", description = "공지사항 게시판")
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")
 @RestController
 public class BoardController {
-
     private final BoardService boardService;
 
     @Operation(summary = "공지사항 전체조회 API", description = "공지사항 조희를 진행한다")
@@ -50,8 +51,9 @@ public class BoardController {
             "category는 NOTICE, LOST_ITEM, SUGGESTION 3가지만 입력한다")
     @PostMapping
     public ResponseEntity<BoardResponse> createBoard(@CurrentUser User user,
-                                                     @RequestBody BoardRequest boardRequest) {
-        Long boardId = boardService.createBoard(user, boardRequest);
+                                                     @RequestPart BoardRequestOnlyJson boardRequestOnlyJson,
+                                                     @RequestPart(required = false) List<MultipartFile> files) {
+        Long boardId = boardService.createBoard(user, boardRequestOnlyJson, files);
         return ResponseEntity.created(URI.create("/api/boards/" + boardId)).build();
     }
 
@@ -59,8 +61,8 @@ public class BoardController {
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(@CurrentUser User user,
                                                      @PathVariable Long boardId,
-                                                     @RequestBody BoardRequest boardRequest) {
-        boardService.updateBoard(boardId, user, boardRequest);
+                                                     @RequestBody BoardRequestOnlyJson boardRequestOnlyJson) {
+        boardService.updateBoard(boardId, user, boardRequestOnlyJson);
         return ResponseEntity.ok().build();
     }
 

@@ -3,6 +3,7 @@ package backend.backend.board.entity;
 import backend.backend.comment.entity.Comment;
 import backend.backend.common.domain.BaseEntity;
 import backend.backend.common.domain.UserGeneratedContent;
+import backend.backend.image.domain.BoardImage;
 import backend.backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -28,6 +29,9 @@ public class Board extends BaseEntity implements UserGeneratedContent {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<BoardImage> images;
 
     private String title;
 
