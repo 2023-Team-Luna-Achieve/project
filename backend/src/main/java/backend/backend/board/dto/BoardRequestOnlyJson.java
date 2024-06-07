@@ -4,7 +4,7 @@ import backend.backend.board.entity.Board;
 import backend.backend.board.entity.Category;
 import backend.backend.user.entity.User;
 
-public record BoardRequest(
+public record BoardRequestOnlyJson(
         String title,
         Category category,
         String context

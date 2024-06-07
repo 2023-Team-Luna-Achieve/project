@@ -1,18 +1,19 @@
 package backend.backend.board.repository;
 
 import backend.backend.board.dto.BoardResponse;
+import backend.backend.board.entity.Board;
 import backend.backend.board.entity.Category;
 import backend.backend.common.dto.SingleRecordResponse;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static backend.backend.board.entity.QBoard.board;
+import static backend.backend.image.domain.QBoardImage.boardImage;
 import static backend.backend.report.domain.QBlock.block;
 
 @RequiredArgsConstructor
@@ -24,18 +25,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public SingleRecordResponse<BoardResponse> findMyBoardsByCategory(Long userId, String cursor, Category category) {
-        List<BoardResponse> boards = queryFactory.select(Projections.constructor(BoardResponse.class,
-                        board.id,
-                        board.user.name,
-                        board.user.email,
-                        board.category,
-                        board.title,
-                        board.context,
-                        board.viewCount,
-                        board.comments.size(),
-                        board.createdAt
-                ))
-                .from(board)
+        List<Board> boards = queryFactory.selectFrom(board)
+                .leftJoin(board.images, boardImage).fetchJoin()
                 .where(
                         eqAuthorId(userId),
                         ltBoardId(cursor),
@@ -45,23 +36,17 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .limit(11)
                 .fetch();
 
-        return SingleRecordResponse.convertToSingleRecord(boards);
+        List<BoardResponse> boardResponses = boards.stream()
+                .map(BoardResponse::from)
+                .collect(Collectors.toList());
+
+        return SingleRecordResponse.convertToSingleRecord(boardResponses);
     }
 
     @Override
     public SingleRecordResponse<BoardResponse> findBoardsByCategory(String cursor, Category category, Long currentUserId) {
-        JPAQuery<BoardResponse> query = queryFactory.select(Projections.constructor(BoardResponse.class,
-                        board.id,
-                        board.user.name,
-                        board.user.email,
-                        board.category,
-                        board.title,
-                        board.context,
-                        board.viewCount,
-                        board.comments.size(),
-                        board.createdAt
-                ))
-                .from(board);
+        JPAQuery<Board> query = queryFactory.selectFrom(board)
+                .leftJoin(board.images, boardImage).fetchJoin();
 
         if (hasBlock(currentUserId)) {
             query.leftJoin(block)
@@ -72,7 +57,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                     );
         }
 
-        List<BoardResponse> boards = query.where(
+        List<Board> boards = query.where(
                         ltBoardId(cursor),
                         eqCategory(category),
                         ltMaxReportCount(),
@@ -81,7 +66,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .orderBy(board.id.desc())
                 .limit(11)
                 .fetch();
-        return SingleRecordResponse.convertToSingleRecord(boards);
+
+        List<BoardResponse> boardResponses = boards.stream()
+                .map(BoardResponse::from)
+                .collect(Collectors.toList());
+
+        return SingleRecordResponse.convertToSingleRecord(boardResponses);
     }
 
     private boolean hasBlock(Long currentUserId) {

@@ -48,7 +48,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-//	implementation 'javax.validation:validation-api:2.0.1.Final'
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
@@ -59,6 +58,11 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
 
 //	// Rest Assured
 //	testImplementation 'io.rest-assured:spring-mock-mvc:4.4.0'

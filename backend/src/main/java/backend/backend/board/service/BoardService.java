@@ -5,20 +5,28 @@ import backend.backend.common.dto.SingleRecordResponse;
 import backend.backend.common.exception.AuthException;
 import backend.backend.common.exception.ErrorCode;
 import backend.backend.common.exception.NotFoundException;
-import backend.backend.board.dto.BoardRequest;
+import backend.backend.board.dto.BoardRequestOnlyJson;
 import backend.backend.board.dto.BoardResponse;
 import backend.backend.board.entity.Board;
 import backend.backend.board.repository.BoardRepository;
+import backend.backend.common.image.S3Service;
+import backend.backend.image.domain.BoardImage;
+import backend.backend.image.repository.BoardImageRepository;
 import backend.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
-
     private final BoardRepository boardRepository;
+    private final S3Service s3Service;
+    private final BoardImageRepository boardImageRepository;
 
     @Transactional
     public BoardResponse getBoardById(Long id) {
@@ -28,13 +36,28 @@ public class BoardService {
         return BoardResponse.from(board);
     }
 
-    public Long createBoard(User user, BoardRequest boardRequest) {
-        Board board = boardRequest.toEntity(user);
-        return boardRepository.save(board).getId();
+    @Transactional
+    public Long createBoard(User user, BoardRequestOnlyJson boardRequestOnlyJson, List<MultipartFile> files) {
+        Board board = boardRepository.save(boardRequestOnlyJson.toEntity(user));
+
+        if (files != null) {
+            files.forEach(
+                    file -> {
+                        BoardImage image = BoardImage.builder()
+                                .imageUrl(s3Service.upload(file))
+                                .board(board)
+                                .build();
+
+                        boardImageRepository.save(image);
+                    }
+            );
+        }
+
+        return board.getId();
     }
 
     @Transactional
-    public void updateBoard(Long id, User user, BoardRequest boardRequest) {
+    public void updateBoard(Long id, User user, BoardRequestOnlyJson boardRequestOnlyJson) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -42,7 +65,7 @@ public class BoardService {
             throw new AuthException(ErrorCode.FORBIDDEN);
         }
 
-        board.update(boardRequest.title(), boardRequest.category(), boardRequest.context());
+        board.update(boardRequestOnlyJson.title(), boardRequestOnlyJson.category(), boardRequestOnlyJson.context());
     }
 
     public void deleteBoard(Long id, User user) {
