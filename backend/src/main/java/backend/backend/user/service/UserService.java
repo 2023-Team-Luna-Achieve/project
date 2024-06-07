@@ -3,7 +3,6 @@ package backend.backend.user.service;
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.repository.RefreshTokenRepository;
 import backend.backend.common.exception.*;
-import backend.backend.notification.domain.FcmToken;
 import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -13,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -69,6 +66,22 @@ public class UserService {
         User loggesdUser = findUserById(user.getId());
         return UserResponse.from(loggesdUser);
     }
+
+    @Transactional
+    public void updatePassword(User currentUser, PasswordUpdateRequest passwordUpdateRequest) {
+        User user = findUserById(currentUser.getId());
+        updatePasswordIfCurrentPasswordCorrect(user, passwordUpdateRequest);
+    }
+
+    private void updatePasswordIfCurrentPasswordCorrect(User user, PasswordUpdateRequest passwordUpdateRequest) {
+        if (!passwordEncoder.matches(passwordUpdateRequest.originalPassword(), user.getPassword())) {
+            throw new AuthenticationException(ErrorCode.WRONG_PASSWORD);
+        }
+
+        String encodedRequestedPassword = passwordEncoder.encode(passwordUpdateRequest.requestPassword());
+        user.updatePassword(encodedRequestedPassword);
+    }
+
 
     @Transactional
     public void deleteAccount(User user) {

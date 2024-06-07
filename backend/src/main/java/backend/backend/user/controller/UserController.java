@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.URI;
 
 @Tag(name = "User API", description = "회원가입, 로그아웃")
@@ -82,7 +83,7 @@ public class UserController {
                 .build();
     }
 
-    @Operation(tags = "로그인된 유저 정보 API", description = "현재 유저 정보를 반환한다.. " )
+    @Operation(tags = "로그인된 유저 정보 API", description = "현재 유저 정보를 반환한다.. ")
     @GetMapping("/info")
     public ResponseEntity<UserResponse> getAccessTokenUsingRefresh(@CurrentUser User user) {
         return ResponseEntity.ok().body(userService.getUserInfo(user));
@@ -98,8 +99,16 @@ public class UserController {
         return authentication;
     }
 
+    @PatchMapping("/password")
+    public ResponseEntity<Void> updatePassword(@CurrentUser User user,
+                               @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        userService.updatePassword(user, passwordUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/delete-account")
-    public void deleteAccount(@CurrentUser User user) {
+    public ResponseEntity<Void> deleteAccount(@CurrentUser User user) {
         userService.deleteAccount(user);
+        return ResponseEntity.ok().build();
     }
 }

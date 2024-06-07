@@ -9,7 +9,6 @@ import backend.backend.user.entity.Role;
 import backend.backend.user.entity.User;
 import backend.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -75,7 +74,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.update(oAuth2UserInfo.getName());
+        existingUser.updateName(oAuth2UserInfo.getName());
         return userRepository.save(existingUser);
     }
 }
