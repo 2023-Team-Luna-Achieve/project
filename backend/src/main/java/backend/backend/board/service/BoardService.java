@@ -36,19 +36,22 @@ public class BoardService {
         return BoardResponse.from(board);
     }
 
+    @Transactional
     public Long createBoard(User user, BoardRequestOnlyJson boardRequestOnlyJson, List<MultipartFile> files) {
         Board board = boardRepository.save(boardRequestOnlyJson.toEntity(user));
 
-        files.forEach(
-                file -> {
-                    BoardImage image = BoardImage.builder()
-                            .imageUrl(s3Service.upload(file))
-                            .board(board)
-                            .build();
+        if (files != null) {
+            files.forEach(
+                    file -> {
+                        BoardImage image = BoardImage.builder()
+                                .imageUrl(s3Service.upload(file))
+                                .board(board)
+                                .build();
 
-                    boardImageRepository.save(image);
-                }
-        );
+                        boardImageRepository.save(image);
+                    }
+            );
+        }
 
         return board.getId();
     }
