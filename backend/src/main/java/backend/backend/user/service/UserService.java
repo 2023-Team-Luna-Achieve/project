@@ -68,6 +68,12 @@ public class UserService {
     }
 
     @Transactional
+    public void updateName(User currentUser, NameUpdateRequest nameUpdateRequest) {
+        User user = findUserById(currentUser.getId());
+        user.updateName(nameUpdateRequest.requestName());
+    }
+
+    @Transactional
     public void updatePassword(User currentUser, PasswordUpdateRequest passwordUpdateRequest) {
         User user = findUserById(currentUser.getId());
         updatePasswordIfCurrentPasswordCorrect(user, passwordUpdateRequest);

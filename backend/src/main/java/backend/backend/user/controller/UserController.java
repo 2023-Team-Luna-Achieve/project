@@ -99,6 +99,12 @@ public class UserController {
         return authentication;
     }
 
+    @PatchMapping("/name")
+    public void updateName(@CurrentUser User user,
+                           @RequestBody NameUpdateRequest nameUpdateRequest) {
+        userService.updateName(user, nameUpdateRequest);
+    }
+
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword(@CurrentUser User user,
                                @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
