@@ -5,6 +5,8 @@ import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.filter.JwtExtractUtil;
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.service.RefreshTokenService;
+import backend.backend.common.exception.AuthenticationException;
+import backend.backend.common.exception.ErrorCode;
 import backend.backend.user.dto.*;
 import backend.backend.user.entity.User;
 import backend.backend.user.service.UserService;
@@ -101,13 +103,21 @@ public class UserController {
 
     @PatchMapping("/name")
     public void updateName(@CurrentUser User user,
-                           @RequestBody NameUpdateRequest nameUpdateRequest) {
+                           @RequestBody NameUpdateRequest nameUpdateRequest) throws InterruptedException {
+        Thread.sleep(5000);
+        if (true) {
+            throw new AuthenticationException(ErrorCode.EXPIRED_REFRESH_TOKEN);
+        }
         userService.updateName(user, nameUpdateRequest);
     }
 
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword(@CurrentUser User user,
-                               @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+                                               @RequestBody PasswordUpdateRequest passwordUpdateRequest) throws InterruptedException {
+        Thread.sleep(5000);
+//        if (true) {
+//            throw new AuthenticationException(ErrorCode.EXPIRED_REFRESH_TOKEN);
+//        }
         userService.updatePassword(user, passwordUpdateRequest);
         return ResponseEntity.ok().build();
     }

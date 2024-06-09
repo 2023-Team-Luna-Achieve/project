@@ -81,7 +81,7 @@ public class UserService {
 
     private void updatePasswordIfCurrentPasswordCorrect(User user, PasswordUpdateRequest passwordUpdateRequest) {
         if (!passwordEncoder.matches(passwordUpdateRequest.originalPassword(), user.getPassword())) {
-            throw new AuthenticationException(ErrorCode.WRONG_PASSWORD);
+            throw new AuthenticationException(ErrorCode.WRONG_ORIGIN_PASSWORD);
         }
 
         String encodedRequestedPassword = passwordEncoder.encode(passwordUpdateRequest.requestPassword());

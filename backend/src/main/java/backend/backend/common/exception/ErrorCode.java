@@ -14,7 +14,7 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_FOUND(404, "C_006","refresh 토큰이 존재하지 않습니다"),
     EXPIRED_REFRESH_TOKEN(404, "C_007","만료된 refresh 토큰입니다"),
     DELETED_ACCOUNT(404, "C_008","탈퇴한 유저 입니다"),
-    WRONG_PASSWORD(404, "C_009","입력한 비밀번호가 옳지 않습니다"),
+    WRONG_ORIGIN_PASSWORD(400, "C_009","기존 비밀번호가 옳지 않습니다"),
     INVALID_FILE_EXTENSION(400, "C_0010", "유효하지 않은 파일 확장자입니다."),
     FAILED_IMAGE_UPLOAD(400, "C_011", "이미지 업로드에 실패했습니다."),
     DUPLICATED_EMAIL(409, "AU_001", "이미 가입된 Email입니다."),
