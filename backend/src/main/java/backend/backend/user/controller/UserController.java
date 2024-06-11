@@ -5,6 +5,8 @@ import backend.backend.auth.jwt.CustomUserDetails;
 import backend.backend.auth.jwt.filter.JwtExtractUtil;
 import backend.backend.auth.jwt.token.TokenProvider;
 import backend.backend.auth.service.RefreshTokenService;
+import backend.backend.common.exception.AuthenticationException;
+import backend.backend.common.exception.ErrorCode;
 import backend.backend.user.dto.*;
 import backend.backend.user.entity.User;
 import backend.backend.user.service.UserService;
@@ -22,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.URI;
 
 @Tag(name = "User API", description = "회원가입, 로그아웃")
@@ -82,7 +85,7 @@ public class UserController {
                 .build();
     }
 
-    @Operation(tags = "로그인된 유저 정보 API", description = "현재 유저 정보를 반환한다.. " )
+    @Operation(tags = "로그인된 유저 정보 API", description = "현재 유저 정보를 반환한다.. ")
     @GetMapping("/info")
     public ResponseEntity<UserResponse> getAccessTokenUsingRefresh(@CurrentUser User user) {
         return ResponseEntity.ok().body(userService.getUserInfo(user));
@@ -98,8 +101,29 @@ public class UserController {
         return authentication;
     }
 
+    @PatchMapping("/name")
+    public ResponseEntity<Void> updateName(@CurrentUser User user,
+                           @RequestBody NameUpdateRequest nameUpdateRequest) {
+        userService.updateName(user, nameUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<Void> updatePassword(@CurrentUser User user,
+                                               @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        userService.updatePassword(user, passwordUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/reset-password")
+    public ResponseEntity<Void> resetPasswordBeforeLogin(@RequestBody PasswordResetRequest passwordResetRequest) {
+        userService.resetPassword(passwordResetRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/delete-account")
-    public void deleteAccount(@CurrentUser User user) {
+    public ResponseEntity<Void> deleteAccount(@CurrentUser User user) {
         userService.deleteAccount(user);
+        return ResponseEntity.ok().build();
     }
 }

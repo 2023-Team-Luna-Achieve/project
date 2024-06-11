@@ -1,7 +1,11 @@
 package backend.backend.auth.dto;
 
+import jakarta.validation.constraints.Email;
+
 public record VerificationRequest(
-    String email,
-    String code
+
+        @Email
+        String email,
+        String code
 ) {
 }

@@ -48,7 +48,7 @@ public class User extends BaseEntity {
         return role.name();
     }
 
-    public void update(String name) {
+    public void updateName(String name) {
         this.name = name;
     }
 
@@ -58,6 +58,10 @@ public class User extends BaseEntity {
 
     public void addReservationCount() {
         this.reservationCount ++;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public void deleteAccount() {

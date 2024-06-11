@@ -2,8 +2,8 @@ package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.repository.RefreshTokenRepository;
+import backend.backend.common.constant.VerifiedType;
 import backend.backend.common.exception.*;
-import backend.backend.notification.domain.FcmToken;
 import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.user.dto.*;
 import backend.backend.user.repository.UserRepository;
@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -68,6 +66,47 @@ public class UserService {
     public UserResponse getUserInfo(User user) {
         User loggesdUser = findUserById(user.getId());
         return UserResponse.from(loggesdUser);
+    }
+
+    @Transactional
+    public void updateName(User currentUser, NameUpdateRequest nameUpdateRequest) {
+        User user = findUserById(currentUser.getId());
+        user.updateName(nameUpdateRequest.requestName());
+    }
+
+    @Transactional
+    public void updatePassword(User currentUser, PasswordUpdateRequest passwordUpdateRequest) {
+        User user = findUserById(currentUser.getId());
+        updatePasswordIfCurrentPasswordCorrect(user, passwordUpdateRequest);
+    }
+
+    private void updatePasswordIfCurrentPasswordCorrect(User user, PasswordUpdateRequest passwordUpdateRequest) {
+        if (!passwordEncoder.matches(passwordUpdateRequest.originalPassword(), user.getPassword())) {
+            throw new AuthenticationException(ErrorCode.WRONG_ORIGIN_PASSWORD);
+        }
+
+        String encodedRequestedPassword = passwordEncoder.encode(passwordUpdateRequest.requestPassword());
+        user.updatePassword(encodedRequestedPassword);
+    }
+
+    @Transactional
+    public void resetPassword(PasswordResetRequest passwordResetRequest) {
+        System.out.println(passwordResetRequest.email());
+        User user = userRepository.findUserByEmail(passwordResetRequest.email())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        resetPasswordIfEmailVerified(user, passwordResetRequest);
+    }
+
+    private void resetPasswordIfEmailVerified(User user, PasswordResetRequest passwordResetRequest) {
+        if (!redisUtil.getData(passwordResetRequest.email() + VerifiedType.PASSWORD_RESET).equals("verified")) {
+            throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
+        }
+
+        String encodedRequestedPassword = passwordEncoder.encode(passwordResetRequest.newPassword());
+        user.updatePassword(encodedRequestedPassword);
+
+        redisUtil.deleteData(passwordResetRequest.email() + VerifiedType.PASSWORD_RESET);
     }
 
     @Transactional

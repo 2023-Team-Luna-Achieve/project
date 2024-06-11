@@ -3,6 +3,7 @@ package backend.backend.auth.service;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
+import backend.backend.common.constant.VerifiedType;
 import backend.backend.common.exception.*;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.MessagingException;
@@ -90,17 +91,46 @@ public class EmailService {
         message.setText(msgg, "utf-8", "html");//내용
         message.setFrom(new InternetAddress("academyschool7@gmail.com", "Achieve"));//보내는 사람
 
-//        redisUtil.setDataAfterVerification(targetEmail, "sent", 10 * 60L);
         redisUtil.setDataExpire(targetEmail, ePw, 10 * 60L);
         return message;
     }
 
+    private MimeMessage createPasswordUpdateVerificationMessage(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+        String ePw = createKey();
+        System.out.println("보내는 대상 : " + targetEmail);
+        System.out.println("인증 번호 : " + ePw);
+        MimeMessage message = emailSender.createMimeMessage();
+
+        message.addRecipients(RecipientType.TO, targetEmail); //보내는 대상
+        message.setSubject("이메일 인증");//제목
+
+        String msgg = "";
+        msgg += "<div style='margin:20px;'>";
+        msgg += "<h1> Team Achieve 입니다. </h1>";
+        msgg += "<br>";
+        msgg += "<p>아래 코드를 입력해주세요<p>";
+        msgg += "<br>";
+        msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msgg += "<h3 style='color:blue;'>이메일 인증 코드입니다.</h3>";
+        msgg += "<div style='font-size:130%'>";
+        msgg += "CODE : <strong>";
+        msgg += ePw + "</strong><div><br/> ";
+        msgg += "</div>";
+        message.setText(msgg, "utf-8", "html");//내용
+        message.setFrom(new InternetAddress("academyschool7@gmail.com", "Achieve"));//보내는 사람
+
+        String redisDataPurposeKey = targetEmail + VerifiedType.PASSWORD_RESET;
+
+        redisUtil.setDataExpire(redisDataPurposeKey, ePw, 10 * 60L);
+        return message;
+    }
+
     private static String createKey() {
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
         Random rnd = new Random();
 
-        for (int i = 0; i < 8; i++) { // 인증코드 8자리
-            int index = rnd.nextInt(3); // 0~2 까지 랜덤
+        for (int i = 0; i < 8; i++) {
+            int index = rnd.nextInt(3);
 
             switch (index) {
                 case 0:
@@ -122,7 +152,7 @@ public class EmailService {
 
     //회원 가입용 이메일 전송
     protected void sendVerificationCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
-        if (userRepository.findUserByEmail(targetEmail) != null) {
+        if (userRepository.existsByEmail(targetEmail)) {
             throw new AlreadyVerifiedException(ErrorCode.ALREADY_VERIFIED_EMAIL);
         }
 
@@ -137,6 +167,18 @@ public class EmailService {
         }
 
         MimeMessage message = createVerificationMessage(targetEmail);
+        try {
+            emailSender.send(message);
+        } catch (MailException es) {
+            log.error(es.toString());
+            throw new BusinessException(ErrorCode.FAILED_EMAIL_SEND);
+        }
+    }
+
+    // 비밀번호 변경 메일 인증 전송
+    @Transactional//(propagation = Propagation.REQUIRES_NEW)
+    public void sendPasswordUpdateAuthCodeEmail(String targetEmail) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = createPasswordUpdateVerificationMessage(targetEmail);
         try {
             emailSender.send(message);
         } catch (MailException es) {
@@ -184,7 +226,7 @@ public class EmailService {
 
     @Transactional
     public EmailSendResponse sendEmailIfNotExists(String email) throws Exception {
-        if (userRepository.findUserByEmail(email) == null) {
+        if (!userRepository.existsByEmail(email)) {
             sendVerificationCodeEmail(email);
             return new EmailSendResponse("10분내로 인증번호를 입력해주세요.");
         }
