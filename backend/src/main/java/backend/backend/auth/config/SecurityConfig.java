@@ -71,6 +71,9 @@ public class SecurityConfig {
                             .requestMatchers("/error").permitAll()
                             .requestMatchers("/api/email/verification/request").permitAll() // 이메일 인증요청
                             .requestMatchers("/api/email/verification/confirm").permitAll() // 인증번호 확인
+                            .requestMatchers("/api/email/verification/password-update-request").permitAll() // 이메일 인증요청
+                            .requestMatchers("/api/email/verification/password-update-confirm").permitAll() // 인증번호 확인
+                            .requestMatchers("/api/user/reset-password").permitAll()
                             .requestMatchers("/api/user/sign-in").permitAll() // 로그인
                             .requestMatchers("/api/user/sign-up").permitAll() // 회원가입
                             .requestMatchers("/api/user/refresh").permitAll()

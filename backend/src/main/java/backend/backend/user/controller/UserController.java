@@ -102,23 +102,22 @@ public class UserController {
     }
 
     @PatchMapping("/name")
-    public void updateName(@CurrentUser User user,
-                           @RequestBody NameUpdateRequest nameUpdateRequest) throws InterruptedException {
-        Thread.sleep(5000);
-        if (true) {
-            throw new AuthenticationException(ErrorCode.EXPIRED_REFRESH_TOKEN);
-        }
+    public ResponseEntity<Void> updateName(@CurrentUser User user,
+                           @RequestBody NameUpdateRequest nameUpdateRequest) {
         userService.updateName(user, nameUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword(@CurrentUser User user,
-                                               @RequestBody PasswordUpdateRequest passwordUpdateRequest) throws InterruptedException {
-        Thread.sleep(5000);
-//        if (true) {
-//            throw new AuthenticationException(ErrorCode.EXPIRED_REFRESH_TOKEN);
-//        }
+                                               @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
         userService.updatePassword(user, passwordUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/reset-password")
+    public ResponseEntity<Void> resetPasswordBeforeLogin(@RequestBody PasswordResetRequest passwordResetRequest) {
+        userService.resetPassword(passwordResetRequest);
         return ResponseEntity.ok().build();
     }
 

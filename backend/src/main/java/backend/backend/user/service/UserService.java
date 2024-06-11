@@ -2,6 +2,7 @@ package backend.backend.user.service;
 
 import backend.backend.auth.config.util.RedisUtil;
 import backend.backend.auth.repository.RefreshTokenRepository;
+import backend.backend.common.constant.VerifiedType;
 import backend.backend.common.exception.*;
 import backend.backend.notification.repository.FcmTokenRepository;
 import backend.backend.user.dto.*;
@@ -88,6 +89,25 @@ public class UserService {
         user.updatePassword(encodedRequestedPassword);
     }
 
+    @Transactional
+    public void resetPassword(PasswordResetRequest passwordResetRequest) {
+        System.out.println(passwordResetRequest.email());
+        User user = userRepository.findUserByEmail(passwordResetRequest.email())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        resetPasswordIfEmailVerified(user, passwordResetRequest);
+    }
+
+    private void resetPasswordIfEmailVerified(User user, PasswordResetRequest passwordResetRequest) {
+        if (!redisUtil.getData(passwordResetRequest.email() + VerifiedType.PASSWORD_RESET).equals("verified")) {
+            throw new UnVerifiedAccountException(ErrorCode.UNAUTHORIZED_EMAIL);
+        }
+
+        String encodedRequestedPassword = passwordEncoder.encode(passwordResetRequest.newPassword());
+        user.updatePassword(encodedRequestedPassword);
+
+        redisUtil.deleteData(passwordResetRequest.email() + VerifiedType.PASSWORD_RESET);
+    }
 
     @Transactional
     public void deleteAccount(User user) {
